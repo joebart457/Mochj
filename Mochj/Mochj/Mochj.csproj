@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{35E2ED7A-42E3-48DE-AA77-47F1E5EC231A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Mochj</RootNamespace>
+    <AssemblyName>Mochj</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Builders\DefaultEnvironmentBuilder.cs" />
+    <Compile Include="Builders\DefaultTokenizerBuilder.cs" />
+    <Compile Include="Builders\QualifiedObjectBuilder.cs" />
+    <Compile Include="Enums\DataTypeEnum.cs" />
+    <Compile Include="Models\ControlFlow\BreakException.cs" />
+    <Compile Include="Models\ControlFlow\ContinueException.cs" />
+    <Compile Include="Models\DataType.cs" />
+    <Compile Include="Models\Fn\Args.cs" />
+    <Compile Include="Models\Fn\Function.cs" />
+    <Compile Include="Models\Fn\ReturnException.cs" />
+    <Compile Include="Models\Parameter.cs" />
+    <Compile Include="Models\QualifiedObject.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ProgramStartupService.cs" />
+    <Compile Include="Services\TypeMediatorService.cs" />
+    <Compile Include="_CmdParser\CmdParser.cs" />
+    <Compile Include="_Interpreter\Helpers\LoadFileHelper.cs" />
+    <Compile Include="_Interpreter\Helpers\StorageHelper.cs" />
+    <Compile Include="_Interpreter\Helpers\SymbolResolverHelper.cs" />
+    <Compile Include="_Interpreter\Helpers\TypeHelper.cs" />
+    <Compile Include="_Interpreter\Interpreter.cs" />
+    <Compile Include="_Parser\Helpers\ParsingHelper.cs" />
+    <Compile Include="_Parser\Models\Expressions\ExprArgument.cs" />
+    <Compile Include="_Parser\Models\Expressions\ExprCall.cs" />
+    <Compile Include="_Parser\Models\Expressions\ExprFnDeclaration.cs" />
+    <Compile Include="_Parser\Models\Expressions\Expression.cs" />
+    <Compile Include="_Parser\Models\Expressions\ExprIdentifier.cs" />
+    <Compile Include="_Parser\Models\Expressions\ExprLiteral.cs" />
+    <Compile Include="_Parser\Models\Statements\Statement.cs" />
+    <Compile Include="_Parser\Models\Statements\StmtEntry.cs" />
+    <Compile Include="_Parser\Models\Statements\StmtExpression.cs" />
+    <Compile Include="_Parser\Models\Statements\StmtFnDeclaration.cs" />
+    <Compile Include="_Parser\Models\Statements\StmtLoad.cs" />
+    <Compile Include="_Parser\Models\Statements\StmtNamespace.cs" />
+    <Compile Include="_Parser\Models\Statements\StmtParameter.cs" />
+    <Compile Include="_Parser\Models\Statements\StmtSet.cs" />
+    <Compile Include="_Parser\Models\Symbol.cs" />
+    <Compile Include="_Parser\Parser.cs" />
+    <Compile Include="_Storage\Environment.cs" />
+    <Compile Include="_Tokenizer\Constants\TokenTypes.cs" />
+    <Compile Include="_Tokenizer\Models\Location.cs" />
+    <Compile Include="_Tokenizer\Models\Token.cs" />
+    <Compile Include="_Tokenizer\Models\TokenizerRule.cs" />
+    <Compile Include="_Tokenizer\Tokenizer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="_Interpreter\Models\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

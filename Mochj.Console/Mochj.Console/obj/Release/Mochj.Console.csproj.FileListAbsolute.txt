@@ -1,0 +1,7 @@
+C:\zzz_WIP\new-project-space\Release\Mochj.Console.dll.config
+C:\zzz_WIP\new-project-space\Release\Mochj.Console.dll
+C:\zzz_WIP\new-project-space\Release\Mochj.Console.pdb
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\obj\Release\Mochj.Console.csproj.CoreCompileInputs.cache
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\obj\Release\Mochj.Console.csproj.CopyComplete
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\obj\Release\Mochj.Console.dll
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\obj\Release\Mochj.Console.pdb

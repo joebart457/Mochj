@@ -1,0 +1,10 @@
+C:\zzz_WIP\new-project-space\Mochj.Debug\Mochj.Debug\bin\Debug\Mochj.Debug.pdb
+C:\zzz_WIP\new-project-space\Mochj.Debug\Mochj.Debug\bin\Debug\Mochj.dll
+C:\zzz_WIP\new-project-space\Mochj.Debug\Mochj.Debug\bin\Debug\Mochj.dll.config
+C:\zzz_WIP\new-project-space\Mochj.Debug\Mochj.Debug\obj\Debug\Mochj.Debug.csproj.AssemblyReference.cache
+C:\zzz_WIP\new-project-space\Mochj.Debug\Mochj.Debug\obj\Debug\Mochj.Debug.csproj.CoreCompileInputs.cache
+C:\zzz_WIP\new-project-space\Mochj.Debug\Mochj.Debug\obj\Debug\Mochj.Debug.csproj.CopyComplete
+C:\zzz_WIP\new-project-space\Mochj.Debug\Mochj.Debug\obj\Debug\Mochj.Debug.pdb
+C:\zzz_WIP\new-project-space\Mochj.Debug\Mochj.Debug\bin\Debug\Mochj.Debug.dll.config
+C:\zzz_WIP\new-project-space\Mochj.Debug\Mochj.Debug\bin\Debug\Mochj.Debug.dll
+C:\zzz_WIP\new-project-space\Mochj.Debug\Mochj.Debug\obj\Debug\Mochj.Debug.dll

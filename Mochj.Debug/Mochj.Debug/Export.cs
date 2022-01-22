@@ -1,0 +1,39 @@
+﻿using Mochj.Builders;
+using Mochj.Models.Fn;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ExportItems
+{
+    public class Export
+    {
+        public int Setup(Mochj._Storage.Environment environment)
+        {
+            Mochj._Storage.Environment debugNamespace = new Mochj._Storage.Environment(null);
+
+
+            debugNamespace.Define("print",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+
+                      Console.WriteLine(args.Get<Mochj._Storage.Environment>(0).ToString());
+
+                      return QualifiedObjectBuilder.BuildEmptyValue();
+                  })
+                  .RegisterParameter<Mochj._Storage.Environment>("env")
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+            environment.Define("Debug", QualifiedObjectBuilder.BuildNamespace(debugNamespace));
+
+            return 0;
+        }
+    }
+}
+

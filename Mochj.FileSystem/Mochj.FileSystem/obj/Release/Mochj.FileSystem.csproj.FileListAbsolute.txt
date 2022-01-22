@@ -1,0 +1,8 @@
+C:\zzz_WIP\new-project-space\Release\Mochj.FileSystem.dll.config
+C:\zzz_WIP\new-project-space\Release\Mochj.FileSystem.dll
+C:\zzz_WIP\new-project-space\Release\Mochj.FileSystem.pdb
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\obj\Release\Mochj.FileSystem.csproj.CoreCompileInputs.cache
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\obj\Release\Mochj.FileSystem.csproj.CopyComplete
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\obj\Release\Mochj.FileSystem.dll
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\obj\Release\Mochj.FileSystem.pdb
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\obj\Release\Mochj.FileSystem.csproj.AssemblyReference.cache
