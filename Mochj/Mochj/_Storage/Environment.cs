@@ -13,6 +13,8 @@ namespace Mochj._Storage
 
         private IDictionary<string, QualifiedObject> _lookup = new Dictionary<string, QualifiedObject>();
 
+        public List<KeyValuePair<string, QualifiedObject>> Lookup { get { return _lookup.ToList(); } }
+
         private Environment _enclosing;
         public Environment Enclosing { get { return _enclosing; } }
 
@@ -24,7 +26,7 @@ namespace Mochj._Storage
         {
             if (bOverwrite)
             {
-                _lookup.Add(key, value);
+                _lookup[key] = value;
                 return true;
             }
             else
@@ -86,6 +88,15 @@ namespace Mochj._Storage
         public bool ExistsLocal(string key)
         {
             return _lookup.ContainsKey(key);
+        }
+
+        public Environment Top()
+        {
+            if (_enclosing == null)
+            {
+                return this;
+            }
+            return _enclosing.Top();
         }
 
         public override string ToString()

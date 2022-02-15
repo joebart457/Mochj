@@ -55,6 +55,9 @@ FILE21="Mochj.FileSystem.dll"
 FILE22="Mochj.FileSystem.dll.config"
 FILE23="Mochj.FileSystem.pdb"
 FILE24="Mochj.pdb"
+FILE25="Mochj.String.dll"
+FILE26="Mochj.String.dll.config"
+FILE27="Mochj.String.pdb"
 [SourceFiles]
 SourceFiles0=C:\zzz_WIP\new-project-space\Release\
 [SourceFiles0]
@@ -83,3 +86,6 @@ SourceFiles0=C:\zzz_WIP\new-project-space\Release\
 %FILE22%=
 %FILE23%=
 %FILE24%=
+%FILE25%=
+%FILE26%=
+%FILE27%=

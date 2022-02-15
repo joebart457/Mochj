@@ -6,6 +6,7 @@ using Mochj._Tokenizer.Constants;
 using Mochj._Tokenizer.Models;
 using Mochj.Builders;
 using Mochj.Models;
+using Mochj.Models.Fn;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,24 +16,49 @@ using System.Threading.Tasks;
 
 namespace Mochj._Parser
 {
-    public class Parser : ParsingHelper
+    public class ItemizedParser : ParsingHelper
     {
 
         private NumberFormatInfo DefaultNumberFormat = new NumberFormatInfo { NegativeSign = "-" };
-        public IEnumerable<Statement> Parse(IEnumerable<Token> tokens)
+
+        public Expression ParseExpression(string text)
         {
+
+            var tokens = DefaultTokenizerBuilder.Build().Tokenize(text).Where(x => x.Type != TokenTypes.EOF);
             init(tokens);
-            IList<Statement> statements = new List<Statement>();
-            while (!atEnd() && !match(TokenTypes.EOF))
+
+            Expression expr = parseExpression();
+            if (!atEnd())
             {
-                if (match(TokenTypes.LParen))
-                {
-                    statements.Add(parseStatement());
-                    continue;
-                }
-                throw new Exception($"expected statement but got token {current()}");
+                throw new Exception($"parsed expression but tokens still remain: {current()} ...");
             }
-            return statements;
+            return expr;
+        }
+
+        public UserDefinedFunction ParseFunction(string text)
+        {
+
+            var tokens = DefaultTokenizerBuilder.Build().Tokenize(text).Where(x => x.Type != TokenTypes.EOF);
+            init(tokens);
+
+            UserDefinedFunction fn = null;
+            if (match(TokenTypes.LParen))
+            {
+                if (match(TokenTypes.Defn))
+                {
+                    _Interpreter.Interpreter i = new _Interpreter.Interpreter(DefaultEnvironmentBuilder.Default);
+                    fn = i.Accept(parseLiteralFunctionDeclaration()).Object as UserDefinedFunction;
+                    if (!atEnd())
+                    {
+                        throw new Exception($"parsed function but tokens still remain: {current()} ...");
+                    }
+                    return fn;
+                } else
+                {
+                    throw new Exception($"expected function declaration but got token {current()}");
+                }
+            }
+            throw new Exception($"expected function declaration but got token {current()}");
         }
 
 
@@ -200,7 +226,8 @@ namespace Mochj._Parser
                 if (match(TokenTypes.Defn))
                 {
                     expr = parseLiteralFunctionDeclaration();
-                } else
+                }
+                else
                 {
                     expr = parseCall();
                 }
@@ -209,7 +236,7 @@ namespace Mochj._Parser
             return parsePrimary();
         }
 
-        private Expression parseLiteralFunctionDeclaration()
+        private ExprFnDeclaration parseLiteralFunctionDeclaration()
         {
             StmtParameter fnNameRetType = parseParameter(0, false);
             ExprFnDeclaration exprFnDeclaration = new ExprFnDeclaration(fnNameRetType.Loc);
@@ -231,8 +258,8 @@ namespace Mochj._Parser
             consume(TokenTypes.RParen, "expect enclosing ')' in 'defn'");
             return exprFnDeclaration;
         }
-       
-        
+
+
         private Expression parseCall()
         {
             ExprCall exprCall = new ExprCall(previous().Loc);
@@ -256,11 +283,13 @@ namespace Mochj._Parser
                 consume(TokenTypes.DoubleDash, "expect explicit parameter name '--<param-name>'");
                 exprArgument.ParameterAlias = consume(TokenTypes.TTWord, "expect parameter name after '--'").Lexeme;
                 wasExplicitlyNamed = true;
-            } else if (match(TokenTypes.DoubleDash))
+            }
+            else if (match(TokenTypes.DoubleDash))
             {
                 exprArgument.ParameterAlias = consume(TokenTypes.TTWord, "expect parameter name after '--'").Lexeme;
                 wasExplicitlyNamed = true;
-            } else
+            }
+            else
             {
                 exprArgument.Position = argCount;
             }
@@ -305,7 +334,7 @@ namespace Mochj._Parser
                 exprLiteral.Value = QualifiedObjectBuilder.BuildString(previous().Lexeme);
                 return exprLiteral;
             }
-            if (match(current(), TokenTypes.Dash) && 
+            if (match(current(), TokenTypes.Dash) &&
                 (peekMatch(1, TokenTypes.TTUnsignedInteger)
                 || peekMatch(1, TokenTypes.TTInteger)
                 || peekMatch(1, TokenTypes.TTFloat)

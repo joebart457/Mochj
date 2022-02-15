@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Mochj.Builders
 {
-    static class DefaultEnvironmentBuilder
+    public static class DefaultEnvironmentBuilder
     {
         private static _Storage.Environment _default = null;
         public static _Storage.Environment Default { get { return _default == null ? Build() : _default; } }
@@ -711,6 +711,67 @@ namespace Mochj.Builders
                    .Returns<bool>()
                    .Build()
                ));
+
+
+            environment.Define("success",
+                 QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        if (args.Get(0) == emptyObject) return QualifiedObjectBuilder.BuildBoolean(false);
+                        BoundFn fn = args.Get<BoundFn>(0);
+
+                        try
+                        {
+                            fn.Call(fn.ResolveArguments(new List<Argument>()));
+                            return QualifiedObjectBuilder.BuildBoolean(true);
+                        } catch(Exception)
+                        {
+                            return QualifiedObjectBuilder.BuildBoolean(false);
+                        }
+                    })
+                    .RegisterParameter<BoundFn>("fn")
+                    .Returns<bool>()
+                    .Build()
+            ));
+
+            environment.Define("try",
+                 QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        if (args.Get(0) == emptyObject) return QualifiedObjectBuilder.BuildBoolean(false);
+                        BoundFn fn = args.Get<BoundFn>(0);
+
+                        try
+                        {
+                            fn.Call(fn.ResolveArguments(new List<Argument>()));
+                            return QualifiedObjectBuilder.BuildString(string.Empty);
+                        }
+                        catch (Exception e)
+                        {
+                            return QualifiedObjectBuilder.BuildString(e.Message);
+                        }
+                    })
+                    .RegisterParameter<BoundFn>("fn")
+                    .Returns<string>()
+                    .Build()
+            ));
+
+            environment.Define("call",
+                 QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        Function fn = args.Get<Function>(0);
+                        return fn.Call(fn.ResolveArguments(args.ToList(0)));
+
+                    })
+                    .RegisterParameter<Function>("fn")
+                    .VariadicAfter(0)
+                    .Returns<object>()
+                    .Build()
+            ));
 
             return environment;
         }

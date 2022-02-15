@@ -194,7 +194,7 @@ namespace Mochj.Models.Fn
         }
         public override string ToString()
         {
-            return $"{Name}({ReturnType}:{Params})";
+            return $"{ReturnType} {Name}({Params})";
         }
     }
 

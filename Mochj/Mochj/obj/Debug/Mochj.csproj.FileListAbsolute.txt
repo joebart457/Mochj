@@ -2,6 +2,6 @@ C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\Mochj.pdb
 C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Debug\Mochj.csproj.AssemblyReference.cache
 C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Debug\Mochj.csproj.CoreCompileInputs.cache
 C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Debug\Mochj.pdb
-C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\Mochj.dll.config
-C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\Mochj.dll
-C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Debug\Mochj.dll
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\Mochj.exe.config
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\Mochj.exe
+C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Debug\Mochj.exe

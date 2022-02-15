@@ -39,7 +39,7 @@ namespace Mochj._Interpreter
             }
             try
             {
-                QualifiedObject entry = SymbolResolverHelper.Resolve(DefaultEnvironmentBuilder.Default, _entryPoint);
+                QualifiedObject entry = SymbolResolverHelper.Resolve(_environment.Top(), _entryPoint);
                 return TypeMediatorService.ToNativeType<Function>(entry);
             } catch(Exception e)
             {
@@ -47,7 +47,7 @@ namespace Mochj._Interpreter
             }
         }
 
-        internal void Accept(IEnumerable<Statement> statements)
+        public void Accept(IEnumerable<Statement> statements)
         {
             foreach(Statement statement in statements)
             {
@@ -62,7 +62,7 @@ namespace Mochj._Interpreter
 
         internal void Accept(StmtNamespace stmtNamespace)
         {
-            _environment = SymbolResolverHelper.ResolveToNamespace(DefaultEnvironmentBuilder.Default, stmtNamespace.Symbol);
+            _environment = SymbolResolverHelper.ResolveToNamespace(_environment.Top(), stmtNamespace.Symbol);
         }
 
         internal void Accept(StmtLoad stmtLoad)
@@ -78,11 +78,11 @@ namespace Mochj._Interpreter
             }
             if (Path.GetExtension(stmtLoad.Path) == ".dll")
             {
-                LoadFileHelper.LoadFromAssembly(DefaultEnvironmentBuilder.Default, path);
+                LoadFileHelper.LoadFromAssembly(_environment.Top(), path);
             }
             else
             {
-                LoadFileHelper.LoadFromRawCode(DefaultEnvironmentBuilder.Default, path);
+                LoadFileHelper.LoadFromRawCode(_environment.Top(), path);
             }
         }
 

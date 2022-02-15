@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Parser.Helpers
 {
-    class ParsingHelper
+    public class ParsingHelper
     {
         private int _index = 0;
         private bool _bAtEnd = false;

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{35E2ED7A-42E3-48DE-AA77-47F1E5EC231A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>Mochj</RootNamespace>
     <AssemblyName>Mochj</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -69,6 +69,7 @@
     <Compile Include="_Interpreter\Helpers\TypeHelper.cs" />
     <Compile Include="_Interpreter\Interpreter.cs" />
     <Compile Include="_Parser\Helpers\ParsingHelper.cs" />
+    <Compile Include="_Parser\ItemizedParser.cs" />
     <Compile Include="_Parser\Models\Expressions\ExprArgument.cs" />
     <Compile Include="_Parser\Models\Expressions\ExprCall.cs" />
     <Compile Include="_Parser\Models\Expressions\ExprFnDeclaration.cs" />

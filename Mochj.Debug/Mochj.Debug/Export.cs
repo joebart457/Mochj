@@ -30,6 +30,21 @@ namespace ExportItems
                   .Build()
               ));
 
+            debugNamespace.Define("help",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+
+                      Console.WriteLine(args.Get<Function>(0).ToString());
+
+                      return QualifiedObjectBuilder.BuildEmptyValue();
+                  })
+                  .RegisterParameter<Function>("fn")
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
             environment.Define("Debug", QualifiedObjectBuilder.BuildNamespace(debugNamespace));
 
             return 0;

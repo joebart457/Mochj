@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Interpreter.Helpers
 {
-    static class LoadFileHelper
+    public static class LoadFileHelper
     {
         public static string ExecutableDirectory()
         {
