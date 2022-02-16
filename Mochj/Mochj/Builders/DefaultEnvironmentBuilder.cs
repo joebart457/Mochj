@@ -468,10 +468,10 @@ namespace Mochj.Builders
                    new NativeFunction()
                    .Action((Args args) =>
                    {
-                       bool condition = args.Get<bool>(0);
+                       Function condition = args.Get<Function>(0);
                        Function doThis = args.Get<Function>(1);
 
-                       while (condition)
+                       while (TypeMediatorService.IsTruthy(condition.Call(new Args()).Object))
                        {
                            try
                            {
@@ -488,7 +488,7 @@ namespace Mochj.Builders
                        }
                        return QualifiedObjectBuilder.BuildEmptyValue();
                    })
-                   .RegisterParameter<bool>("condition")
+                   .RegisterParameter<Function>("condition")
                    .RegisterParameter<Function>("doThis")
                    .ReturnsEmpty()
                    .Build()
@@ -538,6 +538,33 @@ namespace Mochj.Builders
                    .Action((Args args) =>
                    {
                        return QualifiedObjectBuilder.BuildBoolean(args.Get(0).Equals(args.Get(1)));
+                   })
+                   .RegisterParameter<object>("a")
+                   .RegisterParameter<object>("b")
+                   .Returns<bool>()
+                   .Build()
+               ));
+
+
+            environment.Define("not-equal",
+               QualifiedObjectBuilder.BuildFunction(
+                   new NativeFunction()
+                   .Action((Args args) =>
+                   {
+                       return QualifiedObjectBuilder.BuildBoolean(!args.Get(0).Equals(args.Get(1)));
+                   })
+                   .RegisterParameter<object>("a")
+                   .RegisterParameter<object>("b")
+                   .Returns<bool>()
+                   .Build()
+               ));
+
+            environment.Define("not-equals",
+               QualifiedObjectBuilder.BuildFunction(
+                   new NativeFunction()
+                   .Action((Args args) =>
+                   {
+                       return QualifiedObjectBuilder.BuildBoolean(!args.Get(0).Equals(args.Get(1)));
                    })
                    .RegisterParameter<object>("a")
                    .RegisterParameter<object>("b")

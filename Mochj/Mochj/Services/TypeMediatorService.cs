@@ -143,5 +143,33 @@ namespace Mochj.Services
             }
             throw new Exception($"unable to convert object {value} to type {typeof(Ty).FullName}");
         }
+
+        public static bool IsTruthy(object obj)
+        {
+            Type ty = obj.GetType();
+
+            if (ty == typeof(int))
+            {
+                return (int)obj != 0;
+            }
+            if (ty == typeof(double))
+            {
+                return (double)obj != 0;
+            }
+            if (ty == typeof(float))
+            {
+                return (float)obj != 0;
+            }
+            if (ty == typeof(string))
+            {
+                return (string)obj != string.Empty;
+            }
+            if (ty == typeof(bool))
+            {
+                return (bool)obj;
+            }
+            
+            throw new Exception($"cannot determine truthiness of native type {ty.FullName}");
+        }
     }
 }
