@@ -17,6 +17,7 @@ namespace Mochj.Builders
             rules.Add(new TokenizerRule(TokenTypes.StringEnclosing, "\""));
             rules.Add(new TokenizerRule(TokenTypes.StringEnclosing, "'"));
             rules.Add(new TokenizerRule(TokenTypes.EOLComment, "---"));
+            rules.Add(new TokenizerRule(TokenTypes.EOLComment, "//"));
             rules.Add(new TokenizerRule(TokenTypes.MLCommentStart, "/*"));
             rules.Add(new TokenizerRule(TokenTypes.MLCommentEnd, "*/"));
             rules.Add(new TokenizerRule(TokenTypes.EOF, "EOF"));

@@ -1,4 +1,5 @@
 ﻿using Mochj.Builders;
+using Mochj.Models;
 using Mochj.Models.Fn;
 using System;
 using System.Collections.Generic;
@@ -148,6 +149,25 @@ namespace ExportItems
                   })
                   .RegisterParameter<string>("source")
                   .Returns<string>()
+                  .Build()
+              ));
+
+            stringNamespace.Define("split",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string source = args.Get<string>(0);
+                      string splitOn = args.Get<string>(1);
+
+                      List<QualifiedObject> results = new List<QualifiedObject>();
+
+                      results.AddRange(source.Split(new[] { splitOn }, StringSplitOptions.None).Select(x => QualifiedObjectBuilder.BuildString(x)));
+                      return QualifiedObjectBuilder.BuildList(results);
+                  })
+                  .RegisterParameter<string>("source")
+                  .RegisterParameter<string>("splitOn")
+                  .Returns<object>()
                   .Build()
               ));
 

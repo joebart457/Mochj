@@ -5,5 +5,5 @@ echo %ERRORLEVEL% created directory %ProgramFiles%\Mochj
 copy * C:\"Program Files"\Mochj
 echo %ERRORLEVEL% copied files
 del "C:\Program Files\Mochj\install.bat"
-echo %ERRORLEVEL% success?
+echo %ERRORLEVEL% success
 pause

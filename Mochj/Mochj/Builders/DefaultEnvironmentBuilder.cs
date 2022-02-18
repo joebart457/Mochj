@@ -3,6 +3,7 @@ using Mochj.Models.Fn;
 using Mochj.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -193,6 +194,21 @@ namespace Mochj.Builders
                     .RegisterParameter<BoundFn>("fn")
                     .RegisterParameter<string>("key")
                     .Returns<object>()
+                    .Build()
+                ));
+
+            environment.Define("replace-arg",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) => {
+                        BoundFn fn = args.Get<BoundFn>(0);
+                        fn.BoundArguments.Replace(args.Get<string>(1), args.Get(2));
+                        return QualifiedObjectBuilder.BuildEmptyValue();
+                    })
+                    .RegisterParameter<BoundFn>("fn")
+                    .RegisterParameter<string>("key")
+                    .RegisterParameter<object>("newValue")
+                    .ReturnsEmpty()
                     .Build()
                 ));
 
@@ -799,6 +815,30 @@ namespace Mochj.Builders
                     .Returns<object>()
                     .Build()
             ));
+
+
+            environment.Define("proc",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        Process cmd = new Process();
+                        cmd.StartInfo.FileName = args.Get<string>(0);
+                        cmd.StartInfo.Arguments = args.Get<string>(1);
+                        cmd.StartInfo.RedirectStandardOutput = true;
+                        cmd.StartInfo.CreateNoWindow = true;
+                        cmd.StartInfo.UseShellExecute = false;
+                        cmd.Start();
+
+                        cmd.WaitForExit();
+                        return QualifiedObjectBuilder.BuildString(cmd.StandardOutput.ReadToEnd());
+
+                    })
+                    .RegisterParameter<string>("filename")
+                    .RegisterParameter<string>("arguments")
+                    .Returns<string>()
+                    .Build()),
+                true);
 
             return environment;
         }
