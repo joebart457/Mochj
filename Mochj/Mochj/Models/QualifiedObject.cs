@@ -14,7 +14,7 @@ namespace Mochj.Models
         public bool Equals(QualifiedObject obj)
         {
             if (obj == null) return false;
-            return Type.Equals(obj.Type) && Object.Equals(obj.Object);
+            return Type.Equals(obj.Type) && ( (Object == null && obj.Object == null) || Object.Equals(obj.Object));
         }
 
         public override string ToString()

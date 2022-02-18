@@ -13,9 +13,17 @@ namespace Mochj.Builders
     {
         public static Tokenizer Build()
         {
+
+            TokenizerSettings settings = new TokenizerSettings
+            {
+                StringCatalystExcluded = ")",
+                StringCatalystEscapable = ")"
+            };
+
             List<TokenizerRule> rules = new List<TokenizerRule>();
             rules.Add(new TokenizerRule(TokenTypes.StringEnclosing, "\""));
             rules.Add(new TokenizerRule(TokenTypes.StringEnclosing, "'"));
+            rules.Add(new TokenizerRule(TokenTypes.StringCatalyst, "$"));
             rules.Add(new TokenizerRule(TokenTypes.EOLComment, "---"));
             rules.Add(new TokenizerRule(TokenTypes.EOLComment, "//"));
             rules.Add(new TokenizerRule(TokenTypes.MLCommentStart, "/*"));
@@ -71,7 +79,7 @@ namespace Mochj.Builders
             rules.Add(new TokenizerRule(TokenTypes.DoubleRCarat, ">>"));
             rules.Add(new TokenizerRule(TokenTypes.DoubleDash, "--"));
 
-            return new Tokenizer(rules);
+            return new Tokenizer(rules, settings);
         }
     }
 }

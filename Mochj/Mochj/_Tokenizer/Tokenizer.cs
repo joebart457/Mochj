@@ -9,7 +9,16 @@ using System.Threading.Tasks;
 
 namespace Mochj._Tokenizer
 {
-	public class Tokenizer
+    public class TokenizerSettings 
+	{
+		public string StringCatalystExcluded { get; set; } = "";
+		public string StringCatalystEscapable { get; set; } = "";
+	
+		public static TokenizerSettings Default { get { return new TokenizerSettings(); } }
+	}
+
+
+    public class Tokenizer
 	{
 		private bool _bAtEnd;
 		private int _nIndex;
@@ -18,10 +27,11 @@ namespace Mochj._Tokenizer
 		private char _cCurrent;
 		private string _text;
 		private IEnumerable<TokenizerRule> _rules = new List<TokenizerRule>();
-
-		public Tokenizer(IEnumerable<TokenizerRule> rules)
+		TokenizerSettings _settings;
+		public Tokenizer(IEnumerable<TokenizerRule> rules, TokenizerSettings settings = null)
 		{
 			_rules = rules.OrderBy((rule) => rule.Value.Length).Reverse();
+			_settings = settings?? TokenizerSettings.Default;
 		}
 
 
@@ -93,6 +103,10 @@ namespace Mochj._Tokenizer
 						{
 							return str(rule.Value);
 						}
+						if (rule.Type == TokenTypes.StringCatalyst)
+                        {
+							return strcatalyst();
+                        }
 
 						if (rule.Type == TokenTypes.EOLComment)
 						{
@@ -341,6 +355,104 @@ namespace Mochj._Tokenizer
 			}
 
 			return new Token(type, result.ToString(), _nRow, _nColumn);
+		}
+
+		private Token strcatalyst()
+		{
+			StringBuilder result = new StringBuilder();
+			bool bSlash = false;
+			while (!_bAtEnd && !char.IsWhiteSpace(_cCurrent) && (_settings.StringCatalystExcluded.Contains(_cCurrent)? _settings.StringCatalystEscapable.Contains(_cCurrent) && bSlash : true) )
+			{
+				if (_cCurrent == '\\' && !bSlash)
+				{
+					bSlash = true;
+					advance();
+					continue;
+				}
+				if (bSlash)
+				{
+					if (_cCurrent == 'n')
+					{
+						result.Append('\n');
+						advance();
+					}
+					else if (_cCurrent == 't')
+					{
+						result.Append('\t');
+						advance();
+					}
+					else if (_cCurrent == 'r')
+					{
+						result.Append('\r');
+						advance();
+					}
+					else if (_cCurrent == 'a')
+					{
+						result.Append('\a');
+						advance();
+					}
+					else if (_cCurrent == 'b')
+					{
+						result.Append('\b');
+						advance();
+					}
+					else if (_cCurrent == 'v')
+					{
+						result.Append('\v');
+						advance();
+					}
+					else if (_cCurrent == 'f')
+					{
+						result.Append('\f');
+						advance();
+					}
+					else if (_cCurrent == '"')
+					{
+						result.Append('\"');
+						advance();
+					}
+					else if (_cCurrent == '\'')
+					{
+						result.Append('\'');
+						advance();
+					}
+					else if (_cCurrent == '0')
+					{
+						result.Append('\0');
+						advance();
+					}
+					else if (_cCurrent == '\\')
+					{
+						result.Append('\\');
+						advance();
+					}
+					else
+					{
+						if (_settings.StringCatalystEscapable.Contains(_cCurrent))
+                        {
+							result.Append(_cCurrent);
+							advance();
+						} else
+                        {
+							result.Append('\\');
+							result.Append(_cCurrent);
+							advance();
+						}
+					}
+
+					bSlash = false;
+					continue;
+				}
+				else
+				{
+					result.Append(_cCurrent);
+					advance();
+					bSlash = false;
+				}
+			}
+
+
+			return new Token(TokenTypes.TTString, result.ToString(), _nRow, _nColumn);
 		}
 
 		private Token number()

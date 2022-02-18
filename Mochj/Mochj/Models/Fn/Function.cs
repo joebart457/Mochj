@@ -170,10 +170,21 @@ namespace Mochj.Models.Fn
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder("(");
-            foreach(Parameter parameter in _parametersByPosition.Values)
+            if (_parametersByPosition.Values.Count() > 0)
             {
-                sb.Append($"{parameter}, ");
+                sb.Append($"{_parametersByPosition.Values.ElementAt(0)}");
+
             }
+            for (int i = 1; i < _parametersByPosition.Values.Count(); i++)
+            {
+                sb.Append($", {_parametersByPosition.Values.ElementAt(i)}");
+            }
+
+            if (IsVariadic)
+            {
+                sb.Append($"...{VariadicType}");
+            }
+            
             sb.Append(")");
             return sb.ToString();
         }

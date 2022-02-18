@@ -10,6 +10,7 @@ namespace Mochj._Tokenizer.Constants
     {
         // Tokenizer required types
         public const string StringEnclosing = "StringEnclosing";
+        public const string StringCatalyst = "StringCatalyst";
         public const string EOLComment = "EOLComment";
         public const string MLCommentStart = "MLCommentStart";
         public const string MLCommentEnd = "MLCommentEnd";

@@ -49,7 +49,6 @@ namespace Mochj.Services
             } catch(Exception e)
             {
                 Console.WriteLine(e);
-                Console.ReadKey();
                 return -1;
             }
         }
@@ -60,11 +59,13 @@ namespace Mochj.Services
             var Parser = new _Parser.Parser();
             var Interpreter = new _Interpreter.Interpreter(DefaultEnvironmentBuilder.Default);
 
+
+            bool bDebug = false;
+
             while (true)
             {
                 Console.Write("% ");
                 string input = Console.ReadLine();
-                bool bDebug = false;
 
                 if (input.Trim() == "exit")
                 {
@@ -74,6 +75,7 @@ namespace Mochj.Services
                 if (input.Trim() == "-debug")
                 {
                     bDebug = !bDebug;
+                    continue;
                 }
 
                 try

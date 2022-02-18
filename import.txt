@@ -4,17 +4,17 @@
 
 (entry Program.Test.main)
 
-(namespace Program.Test2)
+(namespace Program.Test)
 
 (defn  main:empty [printthis:string]
 	(Console.write printthis)
 
 	(FileSystem.Dir.foreach "C:\\zzz_WIP\\new-project-space" 
-	(defn _:empty [filename:string] 
-		--- code here
-		(println filename)
+		(defn _:empty [filename:string] 
+			--- code here
+			(println filename)
+		)
 	)
-)
 
 (FileSystem.File.foreach-tag "C:\Users\joeba\Pictures\Saved Pictures\download.jpg"
 	(defn _:empty [tag:string] 
@@ -22,6 +22,4 @@
 	)
 )
 
-) 
-
-(defn _:empty)
+)

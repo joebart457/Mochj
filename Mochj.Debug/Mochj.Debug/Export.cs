@@ -15,7 +15,7 @@ namespace ExportItems
             Mochj._Storage.Environment debugNamespace = new Mochj._Storage.Environment(null);
 
 
-            debugNamespace.Define("print",
+            debugNamespace.Define("show",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -26,6 +26,20 @@ namespace ExportItems
                       return QualifiedObjectBuilder.BuildEmptyValue();
                   })
                   .RegisterParameter<Mochj._Storage.Environment>("env")
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+            debugNamespace.Define("top",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+
+                      Console.WriteLine(environment.Top().ToString());
+
+                      return QualifiedObjectBuilder.BuildEmptyValue();
+                  })
                   .ReturnsEmpty()
                   .Build()
               ));

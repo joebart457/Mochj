@@ -21,6 +21,40 @@ namespace Mochj.Builders
             _Storage.Environment environment = new _Storage.Environment(null);
             _default = environment;
 
+            environment.Define("Number",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0)); })
+                    .RegisterParameter<object>("convertibleObject")
+                    .Returns<double>()
+                    .Build()
+                ));
+
+            environment.Define("String",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) => { 
+                        if (QualifiedObjectBuilder.BuildEmptyValue().Equals(args.Get(0)))
+                        {
+                            return QualifiedObjectBuilder.BuildString("empty");
+                        }
+                        return QualifiedObjectBuilder.BuildString(args.Get<string>(0)); }
+                    )
+                    .RegisterParameter<object>("convertibleObject")
+                    .Returns<string>()
+                    .Build()
+                ));
+
+            environment.Define("Boolean",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) => { return QualifiedObjectBuilder.BuildBoolean(args.Get<bool>(0)); })
+                    .RegisterParameter<object>("convertibleObject")
+                    .Returns<bool>()
+                    .Build()
+                ));
+
+
             environment.Define("add-number", 
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
@@ -825,17 +859,22 @@ namespace Mochj.Builders
                         Process cmd = new Process();
                         cmd.StartInfo.FileName = args.Get<string>(0);
                         cmd.StartInfo.Arguments = args.Get<string>(1);
-                        cmd.StartInfo.RedirectStandardOutput = true;
+                        cmd.StartInfo.RedirectStandardOutput = args.Get<bool>(2);
+                        cmd.StartInfo.RedirectStandardInput = args.Get<bool>(3);
                         cmd.StartInfo.CreateNoWindow = true;
                         cmd.StartInfo.UseShellExecute = false;
                         cmd.Start();
-
+                        
+                        string result = args.Get<bool>(2)? cmd.StandardOutput.ReadToEnd() : "";
                         cmd.WaitForExit();
-                        return QualifiedObjectBuilder.BuildString(cmd.StandardOutput.ReadToEnd());
+      
+                        return QualifiedObjectBuilder.BuildString(result);
 
                     })
                     .RegisterParameter<string>("filename")
-                    .RegisterParameter<string>("arguments")
+                    .RegisterParameter<string>("arguments", QualifiedObjectBuilder.BuildString(""))
+                    .RegisterParameter<bool>("redirectStandardOutput", QualifiedObjectBuilder.BuildBoolean(true))
+                    .RegisterParameter<bool>("redirectStandardInput", QualifiedObjectBuilder.BuildBoolean(true))
                     .Returns<string>()
                     .Build()),
                 true);
