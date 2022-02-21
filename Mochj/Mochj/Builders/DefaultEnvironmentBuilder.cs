@@ -21,6 +21,8 @@ namespace Mochj.Builders
             _Storage.Environment environment = new _Storage.Environment(null);
             _default = environment;
 
+            environment.Define("version", QualifiedObjectBuilder.BuildString("1.01"));
+
             environment.Define("Number",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
