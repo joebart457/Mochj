@@ -6,3 +6,17 @@ C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\obj\Release\Mochj
 C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\obj\Release\Mochj.FileSystem.dll
 C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\obj\Release\Mochj.FileSystem.pdb
 C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\obj\Release\Mochj.FileSystem.csproj.AssemblyReference.cache
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Mochj.FileSystem.dll.config
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Mochj.FileSystem.dll
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Mochj.FileSystem.pdb
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.dll
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.Shell.dll
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.ShellExtensions.dll
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Mochj.dll
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.pdb
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.xml
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.Shell.pdb
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.Shell.xml
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.ShellExtensions.pdb
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.ShellExtensions.xml
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Mochj.dll.config

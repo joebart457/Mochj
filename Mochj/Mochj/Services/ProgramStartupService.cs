@@ -1,5 +1,6 @@
 ﻿using Mochj._Tokenizer.Models;
 using Mochj.Builders;
+using Mochj.Models;
 using Mochj.Models.Fn;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,16 @@ namespace Mochj.Services
                 Function entryFn = Interpreter.GetEntryPoint();
                 entryFn.Call(entryFn.ResolveArguments(arguments.ToList(0)));
                 return 0;
-            } catch(Exception e)
+            }
+            catch(ExitException ee)
+            { 
+                if (ee.Value != 0)
+                {
+                    Console.WriteLine(ee);
+                }
+                return ee.Value;
+            }
+            catch(Exception e)
             {
                 Console.WriteLine(e);
                 return -1;
@@ -81,6 +91,11 @@ namespace Mochj.Services
                 try
                 {
                     Interpreter.Accept(Parser.Parse(Tokenizer.Tokenize(input, bDebug)));
+                }
+                catch(ExitException ee)
+                {
+                    Console.WriteLine(ee);
+                    break;
                 }
                 catch (Exception e)
                 {

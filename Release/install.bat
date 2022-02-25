@@ -1,6 +1,7 @@
 @echo off
 rem install.bat
 mkdir "%ProgramFiles%\Mochj"
+mkdir "%ProgramFiles%\Mochj\pkg"
 echo %ERRORLEVEL% created directory %ProgramFiles%\Mochj
 copy * C:\"Program Files"\Mochj
 echo %ERRORLEVEL% copied files

@@ -6,3 +6,8 @@ C:\zzz_WIP\new-project-space\Release\Mochj.String.pdb
 C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\obj\Debug\Mochj.String.csproj.CopyComplete
 C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\obj\Debug\Mochj.String.dll
 C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\obj\Debug\Mochj.String.pdb
+C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Mochj.String.dll.config
+C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Mochj.String.dll
+C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Mochj.String.pdb
+C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Mochj.dll
+C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Mochj.dll.config

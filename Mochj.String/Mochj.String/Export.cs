@@ -171,6 +171,22 @@ namespace ExportItems
                   .Build()
               ));
 
+            stringNamespace.Define("starts-with",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string source = args.Get<string>(0);
+                      string testFor = args.Get<string>(1);
+
+                      return QualifiedObjectBuilder.BuildBoolean(source.StartsWith(testFor));
+                  })
+                  .RegisterParameter<string>("source")
+                  .RegisterParameter<string>("testFor")
+                  .Returns<bool>()
+                  .Build()
+              ));
+
             environment.Define("String", QualifiedObjectBuilder.BuildNamespace(stringNamespace));
 
             return 0;

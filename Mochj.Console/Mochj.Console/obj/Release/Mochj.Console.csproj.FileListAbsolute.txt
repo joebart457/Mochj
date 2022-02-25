@@ -5,3 +5,9 @@ C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\obj\Release\Mochj.Conso
 C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\obj\Release\Mochj.Console.csproj.CopyComplete
 C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\obj\Release\Mochj.Console.dll
 C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\obj\Release\Mochj.Console.pdb
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Mochj.Console.dll.config
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Mochj.Console.dll
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Mochj.Console.pdb
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Mochj.dll
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Mochj.dll.config
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\obj\Release\Mochj.Console.csproj.AssemblyReference.cache

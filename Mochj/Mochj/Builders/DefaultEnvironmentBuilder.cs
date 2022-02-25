@@ -1,11 +1,14 @@
-﻿using Mochj.Models.ControlFlow;
+﻿using Mochj.Models;
+using Mochj.Models.ControlFlow;
 using Mochj.Models.Fn;
 using Mochj.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +24,8 @@ namespace Mochj.Builders
             _Storage.Environment environment = new _Storage.Environment(null);
             _default = environment;
 
+            _Storage.Environment pmNamespace = new Mochj._Storage.Environment(null);
+
             environment.Define("version", QualifiedObjectBuilder.BuildString("1.01"));
 
             environment.Define("Number",
@@ -35,12 +40,14 @@ namespace Mochj.Builders
             environment.Define("String",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => { 
+                    .Action((Args args) =>
+                    {
                         if (QualifiedObjectBuilder.BuildEmptyValue().Equals(args.Get(0)))
                         {
                             return QualifiedObjectBuilder.BuildString("empty");
                         }
-                        return QualifiedObjectBuilder.BuildString(args.Get<string>(0)); }
+                        return QualifiedObjectBuilder.BuildString(args.Get<string>(0));
+                    }
                     )
                     .RegisterParameter<object>("convertibleObject")
                     .Returns<string>()
@@ -57,7 +64,7 @@ namespace Mochj.Builders
                 ));
 
 
-            environment.Define("add-number", 
+            environment.Define("add-number",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
                     .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) + args.Get<double>(1)); })
@@ -138,7 +145,8 @@ namespace Mochj.Builders
             environment.Define("add-string",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => {
+                    .Action((Args args) =>
+                    {
                         StringBuilder result = new StringBuilder(args.Get<string>(0));
 
                         var remainingArgs = args.ToList(0);
@@ -158,11 +166,12 @@ namespace Mochj.Builders
             environment.Define("adds",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => {
+                    .Action((Args args) =>
+                    {
                         StringBuilder result = new StringBuilder(args.Get<string>(0));
-                        
+
                         var remainingArgs = args.ToList(0);
-                        foreach(Argument argument in remainingArgs)
+                        foreach (Argument argument in remainingArgs)
                         {
                             result.Append(TypeMediatorService.ToNativeType<string>(argument.Value));
                         }
@@ -205,14 +214,15 @@ namespace Mochj.Builders
             environment.Define("bind",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => {
+                    .Action((Args args) =>
+                    {
                         Function fn = args.Get<Function>(0);
                         Function boundFn = new BoundFn
                         {
                             hFunc = fn,
                             BoundArguments = new Args(fn.Params.PatchArguments(args.ToList(0))),
                         };
-                        return QualifiedObjectBuilder.BuildFunction(boundFn); 
+                        return QualifiedObjectBuilder.BuildFunction(boundFn);
                     })
                     .RegisterParameter<Function>("fn")
                     .VariadicAfter(0)
@@ -223,7 +233,8 @@ namespace Mochj.Builders
             environment.Define("get-arg",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => {
+                    .Action((Args args) =>
+                    {
                         BoundFn fn = args.Get<BoundFn>(0);
                         return fn.BoundArguments.Get(args.Get<string>(1));
                     })
@@ -236,7 +247,8 @@ namespace Mochj.Builders
             environment.Define("replace-arg",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => {
+                    .Action((Args args) =>
+                    {
                         BoundFn fn = args.Get<BoundFn>(0);
                         fn.BoundArguments.Replace(args.Get<string>(1), args.Get(2));
                         return QualifiedObjectBuilder.BuildEmptyValue();
@@ -248,21 +260,14 @@ namespace Mochj.Builders
                     .Build()
                 ));
 
-            var empty = new NativeFunction()
-                    .Action((Args args) => {
-                        return QualifiedObjectBuilder.BuildEmptyValue();
-                    })
-                    .ReturnsEmpty()
-                    .Build();
 
-            var emptyObject = QualifiedObjectBuilder.BuildFunction(empty);
-
-            environment.Define("Empty", QualifiedObjectBuilder.BuildFunction(empty));
+            environment.Define("Empty", QualifiedObjectBuilder.EmptyFunction());
 
 
-            var lsNode = 
+            var lsNode =
                     new NativeFunction()
-                    .Action((Args args) => {
+                    .Action((Args args) =>
+                    {
                         return QualifiedObjectBuilder.BuildEmptyValue();
                     })
                     .RegisterParameter<BoundFn>("nextVal")
@@ -275,25 +280,9 @@ namespace Mochj.Builders
             environment.Define("list",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => {
-                        IList<Argument> arguments = args.ToList();
-                        Models.QualifiedObject previousNode = emptyObject;
-                        foreach (Argument arg in arguments.Reverse())
-                        {
-                            List<Argument> argsToBind = new List<Argument>();
-                            Models.QualifiedObject nextVal = previousNode;
-                            argsToBind.Add(new Argument { Position = 0, Value = nextVal });
-                            argsToBind.Add(new Argument { Position = 1, Value = arg.Value });
-
-                            BoundFn currentNode = new BoundFn 
-                            {
-                                hFunc = lsNode,
-                                BoundArguments = new Args(lsNode.Params.PatchArguments(argsToBind))
-                            };
-                            previousNode = QualifiedObjectBuilder.BuildFunction(currentNode);
-                        }
-
-                        return previousNode;
+                    .Action((Args args) =>
+                    {
+                        return QualifiedObjectBuilder.BuildList(args.ToList().Select(a => a.Value));
                     })
                     .VariadicAfter(-1)
                     .Returns<BoundFn>()
@@ -305,10 +294,10 @@ namespace Mochj.Builders
                     new NativeFunction()
                     .Action((Args args) =>
                     {
-                        if (args.Get(0) == emptyObject) return QualifiedObjectBuilder.BuildNumber(0);
+                        if (args.Get(0).Equals(QualifiedObjectBuilder.EmptyFunction())) return QualifiedObjectBuilder.BuildNumber(0);
                         BoundFn lsFn = args.Get<BoundFn>(0);
                         int count = 1;
-                        while (lsFn.BoundArguments.Get("nextVal") != emptyObject)
+                        while (!lsFn.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
                         {
                             lsFn = lsFn.BoundArguments.Get<BoundFn>("nextVal");
                             count++;
@@ -326,7 +315,7 @@ namespace Mochj.Builders
                     new NativeFunction()
                     .Action((Args args) =>
                     {
-                        if (args.Get(0) == emptyObject)
+                        if (args.Get(0).Equals(QualifiedObjectBuilder.EmptyFunction()))
                         {
                             throw new Exception($"unable to retrieve value at index {args.Get<int>(1)}; list was empty");
                         }
@@ -336,7 +325,7 @@ namespace Mochj.Builders
                         int count = 0;
                         while (count != targetIndex)
                         {
-                            if (lsFn.BoundArguments.Get("nextVal") == emptyObject)
+                            if (lsFn.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
                             {
                                 throw new Exception($"unable to retrieve value at index {targetIndex}; index out of range");
                             }
@@ -358,8 +347,8 @@ namespace Mochj.Builders
                     .Action((Args args) =>
                     {
                         List<Argument> argsToBind = new List<Argument>();
-                        argsToBind.Add(new Argument { Position = 0, Value = emptyObject });
-                        argsToBind.Add(new Argument { Position = 1, Value = args.Get(2) });
+                        argsToBind.Add(new Argument { Position = 0, Value = QualifiedObjectBuilder.EmptyFunction() });
+                        argsToBind.Add(new Argument { Position = 1, Value = args.Get(1) });
 
                         Models.QualifiedObject nodeToAdd = QualifiedObjectBuilder.BuildFunction(
                             new BoundFn
@@ -368,13 +357,13 @@ namespace Mochj.Builders
                                 BoundArguments = new Args(lsNode.Params.PatchArguments(argsToBind))
                             });
 
-                        if (args.Get(0) == emptyObject)
+                        if (args.Get(0).Equals(QualifiedObjectBuilder.EmptyFunction()))
                         {
                             return nodeToAdd;
                         }
 
                         BoundFn lsFn = args.Get<BoundFn>(0);
-                        while (lsFn.BoundArguments.Get("nextVal") != emptyObject)
+                        while (!lsFn.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
                         {
                             lsFn = lsFn.BoundArguments.Get<BoundFn>("nextVal");
                         }
@@ -395,7 +384,7 @@ namespace Mochj.Builders
                     {
                         int targetIndex = args.Get<int>(1);
 
-                        if (args.Get(0) == emptyObject)
+                        if (args.Get(0).Equals(QualifiedObjectBuilder.EmptyFunction()))
                         {
                             throw new Exception($"unable to remove value at {targetIndex}; list is empty");
                         }
@@ -405,7 +394,7 @@ namespace Mochj.Builders
                         int count = 0;
                         while (count != targetIndex)
                         {
-                            if (currentNode.BoundArguments.Get("nextVal") == emptyObject)
+                            if (currentNode.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
                             {
                                 throw new Exception($"unable to remove value at index {targetIndex}; index out of range");
                             }
@@ -433,17 +422,17 @@ namespace Mochj.Builders
                     new NativeFunction()
                     .Action((Args args) =>
                     {
-                        if (args.Get(0) == emptyObject)
+                        if (args.Get(0).Equals(QualifiedObjectBuilder.EmptyFunction()))
                         {
                             return args.Get(0);
                         }
 
                         BoundFn lsFn = args.Get<BoundFn>(0);
                         Models.QualifiedObject lsFnObject = args.Get(0);
-                        while (lsFn.BoundArguments.Get("nextVal") != emptyObject)
+                        while (!lsFn.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
                         {
-                            lsFn = lsFn.BoundArguments.Get<BoundFn>("nextVal");
                             lsFnObject = lsFn.BoundArguments.Get("nextVal");
+                            lsFn = lsFn.BoundArguments.Get<BoundFn>("nextVal");
                         }
 
                         return lsFnObject;
@@ -458,7 +447,7 @@ namespace Mochj.Builders
                    new NativeFunction()
                    .Action((Args args) =>
                    {
-                       if (args.Get(0) == emptyObject) return QualifiedObjectBuilder.BuildEmptyValue();
+                       if (args.Get(0).Equals(QualifiedObjectBuilder.BuildEmptyValue())) return QualifiedObjectBuilder.EmptyFunction();
                        BoundFn lsFn = args.Get<BoundFn>(0);
                        Function fn = args.Get<Function>(1);
                        int count = 0;
@@ -470,7 +459,7 @@ namespace Mochj.Builders
 
                            fn.Call(fn.ResolveArguments(arguments));
 
-                           if (lsFn.BoundArguments.Get("nextVal") == emptyObject)
+                           if (lsFn.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
                            {
                                break;
                            }
@@ -503,7 +492,8 @@ namespace Mochj.Builders
                        if (condition)
                        {
                            return doThis.Call(new Args());
-                       } else
+                       }
+                       else
                        {
                            return elseDo.Call(new Args());
                        }
@@ -797,14 +787,15 @@ namespace Mochj.Builders
                     new NativeFunction()
                     .Action((Args args) =>
                     {
-                        if (args.Get(0) == emptyObject) return QualifiedObjectBuilder.BuildBoolean(false);
+                        if (args.Get(0) == QualifiedObjectBuilder.EmptyFunction()) return QualifiedObjectBuilder.BuildBoolean(false);
                         BoundFn fn = args.Get<BoundFn>(0);
 
                         try
                         {
                             fn.Call(fn.ResolveArguments(new List<Argument>()));
                             return QualifiedObjectBuilder.BuildBoolean(true);
-                        } catch(Exception)
+                        }
+                        catch (Exception)
                         {
                             return QualifiedObjectBuilder.BuildBoolean(false);
                         }
@@ -819,7 +810,7 @@ namespace Mochj.Builders
                     new NativeFunction()
                     .Action((Args args) =>
                     {
-                        if (args.Get(0) == emptyObject) return QualifiedObjectBuilder.BuildBoolean(false);
+                        if (args.Get(0) == QualifiedObjectBuilder.EmptyFunction()) return QualifiedObjectBuilder.BuildBoolean(false);
                         BoundFn fn = args.Get<BoundFn>(0);
 
                         try
@@ -865,11 +856,12 @@ namespace Mochj.Builders
                         cmd.StartInfo.RedirectStandardInput = args.Get<bool>(3);
                         cmd.StartInfo.CreateNoWindow = true;
                         cmd.StartInfo.UseShellExecute = false;
+                        cmd.StartInfo.WorkingDirectory = args.Get<string>(4);
                         cmd.Start();
-                        
-                        string result = args.Get<bool>(2)? cmd.StandardOutput.ReadToEnd() : "";
+
+                        string result = args.Get<bool>(2) ? cmd.StandardOutput.ReadToEnd() : "";
                         cmd.WaitForExit();
-      
+
                         return QualifiedObjectBuilder.BuildString(result);
 
                     })
@@ -877,9 +869,179 @@ namespace Mochj.Builders
                     .RegisterParameter<string>("arguments", QualifiedObjectBuilder.BuildString(""))
                     .RegisterParameter<bool>("redirectStandardOutput", QualifiedObjectBuilder.BuildBoolean(true))
                     .RegisterParameter<bool>("redirectStandardInput", QualifiedObjectBuilder.BuildBoolean(true))
+                    .RegisterParameter<string>("workingDirectory", QualifiedObjectBuilder.BuildString(""))
                     .Returns<string>()
                     .Build()),
                 true);
+
+            environment.Define("exit",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        throw new ExitException(args.Get<int>(0));
+                    }
+                    ).RegisterParameter<int>("code")
+                    .ReturnsEmpty()
+                    .Build())
+                );
+
+
+            // Package
+
+            pmNamespace.Define("package",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        bool force = args.Get<bool>(2);
+                        string outDir = args.Get<string>(1);
+                        if (!Directory.Exists(outDir))
+                        {
+                            Directory.CreateDirectory(outDir);
+                        }
+                        using (StreamReader r = new StreamReader(args.Get<string>(0)))
+                        {
+                            string json = r.ReadToEnd();
+                            List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
+
+                            foreach (Package pkg in items)
+                            {
+                                if (items.FindAll(p => p.Version == pkg.Version && p.Name == pkg.Name).Count() > 1)
+                                {
+                                    throw new Exception($"Duplicate package ({pkg.Name}) and version ({pkg.Version}) in manifest");
+                                }
+                                if (!force)
+                                {
+                                    string potentialDir = Path.Combine(outDir, $"{pkg.Name}/{pkg.Version}");
+                                    if (Directory.Exists(potentialDir))
+                                    {
+                                        throw new Exception($"Package ({pkg.Name}) with version ({pkg.Version}) already exists");
+                                    }
+                                }
+                            }
+                            foreach (Package pkg in items)
+                            {
+                                string potentialDir = Path.Combine(outDir, $"{pkg.Name}/{pkg.Version}");
+                                if (!Directory.Exists(potentialDir))
+                                {
+                                    Directory.CreateDirectory(potentialDir);
+                                }
+                                foreach (string file in pkg.Files)
+                                {
+                                    File.Copy(file, Path.Combine(potentialDir, Path.GetFileName(file)), force);
+                                }
+                            }
+                            return QualifiedObjectBuilder.BuildEmptyValue();
+                        }
+                    })
+                    .RegisterParameter<string>("filepath")
+                    .RegisterParameter<string>("outDir")
+                    .RegisterParameter<bool>("force", QualifiedObjectBuilder.BuildBoolean(false))
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
+            pmNamespace.Define("fetch",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string moduleName = args.Get<string>(0);
+                      string version = args.Get<string>(1);
+                      string manifestPath = args.Get<string>(2);
+
+                      using (StreamReader r = new StreamReader(manifestPath))
+                      {
+                          string json = r.ReadToEnd();
+                          List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
+
+                          Package pkg = items.Find(p => p.Name == moduleName && p.Version == version);
+                          if (pkg == null)
+                          {
+                              throw new Exception($"Unable to find package {moduleName} version {version} in manifest");
+                          }
+                          else
+                          {
+                              foreach (RemoteFile file in pkg.RemoteFiles)
+                              {
+                                  WebClient client = new WebClient();
+                                  client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{file.Local}");
+                              }
+                          }
+
+                          return QualifiedObjectBuilder.BuildEmptyValue();
+                      }
+                  })
+                  .RegisterParameter<string>("moduleName")
+                  .RegisterParameter<string>("version")
+                  .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+            pmNamespace.Define("fetch-all-latest",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string manifestPath = args.Get<string>(0);
+
+                      using (StreamReader r = new StreamReader(manifestPath))
+                      {
+                          string json = r.ReadToEnd();
+                          List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
+                          HashSet<string> completedPackages = new HashSet<string>();
+                          foreach(Package pkg in items)
+                          {
+                              if (completedPackages.Contains(pkg.Name))
+                              {
+                                  continue;
+                              }
+                              List<Package> versions = items.FindAll(p => p.Name == pkg.Name);
+                              versions.Sort((a, b) => a.Version.CompareTo(b.Version));
+                              Package latest = versions.First();
+                              foreach (RemoteFile file in latest.RemoteFiles)
+                              {
+                                  WebClient client = new WebClient();
+                                  client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{file.Local}");
+                              }
+                              completedPackages.Add(pkg.Name);
+                          }
+
+                          return QualifiedObjectBuilder.BuildEmptyValue();
+                      }
+                  })
+                  .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+            pmNamespace.Define("update",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string remoteInfoPath = args.Get<string>(0);
+
+
+                      using (StreamReader r = new StreamReader(remoteInfoPath))
+                      {
+                          string json = r.ReadToEnd();
+                          RemoteFile file = JsonConvert.DeserializeObject<RemoteFile>(json);
+
+                          WebClient client = new WebClient();
+                          client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/{file.Local}");
+                          return QualifiedObjectBuilder.BuildEmptyValue();
+                      }
+                  })
+                  .RegisterParameter<string>("remoteInfoPath", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "remote.json")))
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+
+            environment.Define("PackageManager", QualifiedObjectBuilder.BuildNamespace(pmNamespace));
 
             return environment;
         }

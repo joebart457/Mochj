@@ -1,0 +1,8 @@
+C:\zzz_WIP\new-project-space\Release\Mochj.Web.dll.config
+C:\zzz_WIP\new-project-space\Release\Mochj.Web.dll
+C:\zzz_WIP\new-project-space\Release\Mochj.Web.pdb
+C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\obj\Debug\Mochj.Web.csproj.AssemblyReference.cache
+C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\obj\Debug\Mochj.Web.csproj.CoreCompileInputs.cache
+C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\obj\Debug\Mochj.Web.csproj.CopyComplete
+C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\obj\Debug\Mochj.Web.dll
+C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\obj\Debug\Mochj.Web.pdb

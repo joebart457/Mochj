@@ -1,10 +1,13 @@
-C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Mochj.dll.config
-C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Mochj.dll
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Mochj.pdb
 C:\zzz_WIP\new-project-space\Release\Mochj.pdb
 C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Release\Mochj.csproj.AssemblyReference.cache
 C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Release\Mochj.csproj.CoreCompileInputs.cache
 C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Release\Mochj.pdb
+C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Release\Mochj.csproj.CopyComplete
 C:\zzz_WIP\new-project-space\Release\Mochj.exe.config
 C:\zzz_WIP\new-project-space\Release\Mochj.exe
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Newtonsoft.Json.dll
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Newtonsoft.Json.xml
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Mochj.exe.config
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Mochj.exe
 C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Release\Mochj.exe

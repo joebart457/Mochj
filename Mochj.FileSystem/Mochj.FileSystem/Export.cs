@@ -20,7 +20,7 @@ namespace ExportItems
             Mochj._Storage.Environment dirNamespace = new Mochj._Storage.Environment(null);
 
             fsNamespace.Define("File", QualifiedObjectBuilder.BuildNamespace(fileNamespace));
-            fsNamespace.Define("Dir", QualifiedObjectBuilder.BuildNamespace(dirNamespace));
+            fsNamespace.Define("Directory", QualifiedObjectBuilder.BuildNamespace(dirNamespace));
 
             dirNamespace.Define("foreach",
               QualifiedObjectBuilder.BuildFunction(
@@ -113,7 +113,7 @@ namespace ExportItems
                           foreach (string tag in tags)
                           {
                               IList<Argument> arguments = new List<Argument>();
-                              arguments.Add(new Argument { Position = 0, Value = QualifiedObjectBuilder.BuildString(tag) });
+                              arguments.Add(new Argument { Position = 0, Value = QualifiedObjectBuilder.BuildString(tag) }); 
 
                               fn.Call(fn.ResolveArguments(arguments));
                           }
@@ -333,7 +333,7 @@ namespace ExportItems
                   new NativeFunction()
                   .Action((Args args) =>
                   {
-                      string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                      string strExeFilePath = System.Reflection.Assembly.GetCallingAssembly().Location;
                       return QualifiedObjectBuilder.BuildString(Path.GetDirectoryName(strExeFilePath));
                   })
                   .Returns<string>()
@@ -345,7 +345,7 @@ namespace ExportItems
                   new NativeFunction()
                   .Action((Args args) =>
                   {
-                      string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                      string strExeFilePath = System.Reflection.Assembly.GetCallingAssembly().Location;
                       return QualifiedObjectBuilder.BuildString(strExeFilePath);
                   })
                   .Returns<string>()

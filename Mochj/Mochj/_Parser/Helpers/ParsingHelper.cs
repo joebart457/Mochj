@@ -103,7 +103,7 @@ namespace Mochj._Parser.Helpers
             {
                 return previous();
             }
-            throw new ArgumentException(errorMessage);
+            throw new ArgumentException($"{errorMessage} at {(!_bAtEnd? current().ToString(): "null")}");
         }
 
         protected bool peekMatch(int offset, string type)

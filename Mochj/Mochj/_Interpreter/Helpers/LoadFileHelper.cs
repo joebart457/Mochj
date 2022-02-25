@@ -12,7 +12,7 @@ namespace Mochj._Interpreter.Helpers
     {
         public static string ExecutableDirectory()
         {
-            string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string strExeFilePath = Assembly.GetCallingAssembly().Location;
             return System.IO.Path.GetDirectoryName(strExeFilePath);
         }
         /// <summary>
@@ -25,7 +25,7 @@ namespace Mochj._Interpreter.Helpers
         {
             string filename = System.IO.Path.GetFileName(path);
             if (string.IsNullOrEmpty(filename)) return null;
-            return $"{ExecutableDirectory()}\\{filename}";
+            return $"{ExecutableDirectory()}\\pkg\\{filename}";
         }
         public static void LoadFromAssembly(_Storage.Environment environment, string path)
         {
