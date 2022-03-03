@@ -50,10 +50,7 @@ namespace Mochj.Services
             }
             catch(ExitException ee)
             { 
-                if (ee.Value != 0)
-                {
-                    Console.WriteLine(ee);
-                }
+                Environment.ExitCode = ee.Value;
                 return ee.Value;
             }
             catch(Exception e)
@@ -95,6 +92,7 @@ namespace Mochj.Services
                 catch(ExitException ee)
                 {
                     Console.WriteLine(ee);
+                    Environment.ExitCode = ee.Value;
                     break;
                 }
                 catch (Exception e)
