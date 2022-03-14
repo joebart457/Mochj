@@ -37,7 +37,7 @@ namespace Mochj.Models
 
         public override string ToString()
         {
-            if (TypeId != DataTypeEnum.List)
+            if (TypeId != DataTypeEnum.NativeList)
             {
                 return $"{TypeId}";
             }

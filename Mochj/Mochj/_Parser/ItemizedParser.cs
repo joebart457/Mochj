@@ -236,12 +236,22 @@ namespace Mochj._Parser
             return parsePrimary();
         }
 
-        private ExprFnDeclaration parseLiteralFunctionDeclaration()
+        private Expression parseLiteralFunctionDeclaration()
         {
-            StmtParameter fnNameRetType = parseParameter(0, false);
-            ExprFnDeclaration exprFnDeclaration = new ExprFnDeclaration(fnNameRetType.Loc);
-            exprFnDeclaration.Name = fnNameRetType.Alias;
-            exprFnDeclaration.ReturnType = fnNameRetType.DataType;
+            ExprFnDeclaration exprFnDeclaration = new ExprFnDeclaration(previous().Loc);
+            if (!match(current(), TokenTypes.LBracket))
+            {
+                StmtParameter fnNameRetType = parseParameter(0, false);
+                exprFnDeclaration.Name = fnNameRetType.Alias;
+                exprFnDeclaration.ReturnType = fnNameRetType.DataType;
+            }
+            else
+            {
+                // It is lambda function
+                exprFnDeclaration.Name = "[lambda]";
+                exprFnDeclaration.ReturnType = new DataType { TypeId = Enums.DataTypeEnum.Empty };
+            }
+
             exprFnDeclaration.Parameters = new List<StmtParameter>();
             int paramCount = 0;
             while (match(TokenTypes.LBracket))

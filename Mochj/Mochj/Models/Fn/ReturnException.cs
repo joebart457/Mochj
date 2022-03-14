@@ -11,17 +11,20 @@ namespace Mochj.Models.Fn
     {
         public Location Loc { get; set; }
         public QualifiedObject Value { get; set; }
-        public ReturnException(QualifiedObject value, Location loc)
+        public Function Fn { get; set; } = null;
+        public ReturnException(QualifiedObject value, Function fn, Location loc)
             :base($"return exception at {loc}")
         {
             Loc = loc;
             Value = value;
+            Fn = fn;
         }
 
-        public ReturnException(QualifiedObject value)
+        public ReturnException(QualifiedObject value, Function fn)
             : base($"return exception")
         {
             Value = value;
+            Fn = fn;
         }
     }
 }

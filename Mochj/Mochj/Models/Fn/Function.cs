@@ -269,7 +269,11 @@ namespace Mochj.Models.Fn
                 return TypeHelper.CheckType(QualifiedObjectBuilder.BuildEmptyValue(), ReturnType);
             }catch (ReturnException re)
             {
-                return TypeHelper.CheckType(re.Value, ReturnType);
+                if (re.Fn == null || re.Fn == this)
+                {
+                    return TypeHelper.CheckType(re.Value, ReturnType);
+                }
+                throw re;
             } 
             catch (Exception e)
             {

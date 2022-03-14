@@ -25,8 +25,10 @@ namespace Mochj.Builders
             _Storage.Environment environment = new _Storage.Environment(null);
             _default = environment;
 
-            _Storage.Environment listNamespace = new _Storage.Environment(null);
+            _Storage.Environment convertNamespace = new _Storage.Environment(null);
+            _Storage.Environment fnNamespace = new _Storage.Environment(null);
             _Storage.Environment pmNamespace = new _Storage.Environment(null);
+            _Storage.Environment processNamespace = new _Storage.Environment(null);
             _Storage.Environment nativeListNamespace = new _Storage.Environment(null);
 
             environment.Define("version", QualifiedObjectBuilder.BuildString("2.00"));
@@ -44,6 +46,28 @@ namespace Mochj.Builders
                     .Returns<DataType>()
                     .Build()
                 ));
+
+            environment.Define("println",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) => { Console.WriteLine(args.Get<object>(0)); return QualifiedObjectBuilder.BuildEmptyValue(); })
+                    .RegisterParameter<object>("a")
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
+            #region Convert
+
+            convertNamespace.Define("ToString",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) => { return QualifiedObjectBuilder.BuildString(args.Get<object>(0).ToString()); })
+                    .RegisterParameter<object>("obj")
+                    .Returns<string>()
+                    .Build()
+                ));
+
+            #endregion
 
             #region TypeInitializations
 
@@ -210,34 +234,25 @@ namespace Mochj.Builders
 
             #endregion
 
-            environment.Define("println",
-                QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) => { Console.WriteLine(args.Get<object>(0)); return QualifiedObjectBuilder.BuildEmptyValue(); })
-                    .RegisterParameter<object>("a")
-                    .ReturnsEmpty()
-                    .Build()
-                ));
+            #region Fn
 
-            environment.Define("return",
+            fnNamespace.Define("Return",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => { throw new ReturnException(args.Get(0)); })
+                    .Action((Args args) => { 
+                        if (args.Get(1) == QualifiedObjectBuilder.EmptyFunction())
+                        {
+                            throw new ReturnException(args.Get(0), null);
+                        }
+                        throw new ReturnException(args.Get(0), args.Get<Function>(1)); 
+                    })
                     .RegisterParameter<object>("obj")
+                    .RegisterParameter<Function>("toFn", QualifiedObjectBuilder.EmptyFunction())
                     .Returns<object>()
                     .Build()
                 ));
 
-            environment.Define("ToString",
-                QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) => { return QualifiedObjectBuilder.BuildString(args.Get<object>(0).ToString()); })
-                    .RegisterParameter<object>("obj")
-                    .Returns<string>()
-                    .Build()
-                ));
-
-            environment.Define("bind",
+            fnNamespace.Define("Bind",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
                     .Action((Args args) =>
@@ -256,7 +271,7 @@ namespace Mochj.Builders
                     .Build()
                 ));
 
-            environment.Define("get-arg",
+            fnNamespace.Define("GetArgument",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
                     .Action((Args args) =>
@@ -270,7 +285,7 @@ namespace Mochj.Builders
                     .Build()
                 ));
 
-            environment.Define("replace-arg",
+            fnNamespace.Define("ReplaceArgument",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
                     .Action((Args args) =>
@@ -286,7 +301,45 @@ namespace Mochj.Builders
                     .Build()
                 ));
 
+            fnNamespace.Define("Success",
+                QualifiedObjectBuilder.BuildFunction(
+                   new NativeFunction()
+                   .Action((Args args) =>
+                   {
+                       if (args.Get(0) == QualifiedObjectBuilder.EmptyFunction()) return QualifiedObjectBuilder.BuildBoolean(false);
+                       BoundFn fn = args.Get<BoundFn>(0);
 
+                       try
+                       {
+                           fn.Call(fn.ResolveArguments(new List<Argument>()));
+                           return QualifiedObjectBuilder.BuildBoolean(true);
+                       }
+                       catch (Exception)
+                       {
+                           return QualifiedObjectBuilder.BuildBoolean(false);
+                       }
+                   })
+                   .RegisterParameter<BoundFn>("fn")
+                   .Returns<bool>()
+                   .Build()
+           ));
+
+            fnNamespace.Define("Call",
+                 QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        Function fn = args.Get<Function>(0);
+                        return fn.Call(fn.ResolveArguments(args.ToList(0)));
+
+                    })
+                    .RegisterParameter<Function>("fn")
+                    .VariadicAfter(0)
+                    .Returns<object>()
+                    .Build()
+            ));
+
+            #endregion
 
             #region ControlFlow
 
@@ -622,47 +675,9 @@ namespace Mochj.Builders
 
             #endregion
 
-            environment.Define("success",
-                 QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) =>
-                    {
-                        if (args.Get(0) == QualifiedObjectBuilder.EmptyFunction()) return QualifiedObjectBuilder.BuildBoolean(false);
-                        BoundFn fn = args.Get<BoundFn>(0);
+            #region Process
 
-                        try
-                        {
-                            fn.Call(fn.ResolveArguments(new List<Argument>()));
-                            return QualifiedObjectBuilder.BuildBoolean(true);
-                        }
-                        catch (Exception)
-                        {
-                            return QualifiedObjectBuilder.BuildBoolean(false);
-                        }
-                    })
-                    .RegisterParameter<BoundFn>("fn")
-                    .Returns<bool>()
-                    .Build()
-            ));
-
-
-            environment.Define("call",
-                 QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) =>
-                    {
-                        Function fn = args.Get<Function>(0);
-                        return fn.Call(fn.ResolveArguments(args.ToList(0)));
-
-                    })
-                    .RegisterParameter<Function>("fn")
-                    .VariadicAfter(0)
-                    .Returns<object>()
-                    .Build()
-            ));
-
-
-            environment.Define("proc",
+            processNamespace.Define("Create",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
                     .Action((Args args) =>
@@ -692,7 +707,7 @@ namespace Mochj.Builders
                     .Build()),
                 true);
 
-            environment.Define("exit",
+            processNamespace.Define("Exit",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
                     .Action((Args args) =>
@@ -704,6 +719,7 @@ namespace Mochj.Builders
                     .Build())
                 );
 
+            #endregion
 
             #region PackageManager
 
@@ -848,7 +864,7 @@ namespace Mochj.Builders
                           string json = r.ReadToEnd();
                           List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
                           HashSet<string> completedPackages = new HashSet<string>();
-                          foreach(Package pkg in items)
+                          foreach (Package pkg in items)
                           {
                               if (completedPackages.Contains(pkg.Name))
                               {
@@ -875,7 +891,7 @@ namespace Mochj.Builders
                                       Console.SetCursorPosition(cursorLeft, cursorTop);
                                       Console.WriteLine($"Downloading files [{new string('#', counter).PadRight(latest.RemoteFiles.Count(), '.')}]");
                                   }
-                                  
+
                                   WebClient client = new WebClient();
                                   client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{file.Local}");
                                   counter++;
@@ -889,7 +905,7 @@ namespace Mochj.Builders
                                   Console.ResetColor();
                                   Console.WriteLine($"Finished installing {latest.Name}@{latest.Version}");
                               }
-                              
+
                               completedPackages.Add(pkg.Name);
                           }
 
@@ -1154,8 +1170,10 @@ namespace Mochj.Builders
 
             #endregion
 
-
+            environment.Define("Convert", QualifiedObjectBuilder.BuildNamespace(convertNamespace));
+            environment.Define("Fn", QualifiedObjectBuilder.BuildNamespace(fnNamespace));
             environment.Define("PackageManager", QualifiedObjectBuilder.BuildNamespace(pmNamespace));
+            environment.Define("Process", QualifiedObjectBuilder.BuildNamespace(processNamespace));
             environment.Define("NativeList", QualifiedObjectBuilder.BuildNamespace(nativeListNamespace));
 
             return environment;
