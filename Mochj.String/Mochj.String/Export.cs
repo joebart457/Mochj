@@ -16,7 +16,7 @@ namespace ExportItems
             Mochj._Storage.Environment stringNamespace = new Mochj._Storage.Environment(null);
 
 
-            stringNamespace.Define("replace",
+            stringNamespace.Define("Replace",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -33,7 +33,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            stringNamespace.Define("contains",
+            stringNamespace.Define("Contains",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
                    .Action((Args args) =>
@@ -48,7 +48,7 @@ namespace ExportItems
                    .Build()
                ));
 
-            stringNamespace.Define("length",
+            stringNamespace.Define("Length",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -61,7 +61,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            stringNamespace.Define("substring",
+            stringNamespace.Define("Substring",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -78,7 +78,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            stringNamespace.Define("remove",
+            stringNamespace.Define("Remove",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -95,7 +95,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            stringNamespace.Define("at",
+            stringNamespace.Define("At",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -110,7 +110,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            stringNamespace.Define("trim",
+            stringNamespace.Define("Trim",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -124,7 +124,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            stringNamespace.Define("to-lower",
+            stringNamespace.Define("ToLower",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -138,7 +138,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            stringNamespace.Define("to-upper",
+            stringNamespace.Define("ToUpper",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -152,7 +152,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            stringNamespace.Define("split",
+            stringNamespace.Define("Split",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -167,11 +167,11 @@ namespace ExportItems
                   })
                   .RegisterParameter<string>("source")
                   .RegisterParameter<string>("splitOn")
-                  .Returns<object>()
+                  .Returns<Function>()
                   .Build()
               ));
 
-            stringNamespace.Define("starts-with",
+            stringNamespace.Define("StartsWith",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>

@@ -199,6 +199,10 @@ namespace Mochj.Models.Fn
         public _Storage.Environment Enclosing { get; set; }
         public abstract QualifiedObject Call(Args args);
 
+        public virtual Args ResolveArguments(QualifiedObject argument)
+        {
+            return Params.ResolveArguments(new List<Argument> { new Argument { Position = 0, Value = argument } });
+        }
         public virtual Args ResolveArguments(IList<Argument> arguments)
         {
             return Params.ResolveArguments(arguments);

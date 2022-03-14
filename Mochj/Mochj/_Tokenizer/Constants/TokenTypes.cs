@@ -28,13 +28,14 @@ namespace Mochj._Tokenizer.Constants
         public const string Namespace = "Namespace";
         public const string Load = "Load";
         public const string Entry = "Entry";
+        public const string Use = "Use";
 
         public const string LiteralTrue = "LiteralTrue";
         public const string LiteralFalse = "LiteralFalse";
 
         public const string Number = "Number";
         public const string Boolean = "Boolean";
-        public const string List = "List";
+        public const string NativeList = "NativeList";
         public const string String = "String";
         public const string Fn = "Fn";
         public const string Empty = "Empty";

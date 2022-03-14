@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mochj.Builders
@@ -24,9 +25,29 @@ namespace Mochj.Builders
             _Storage.Environment environment = new _Storage.Environment(null);
             _default = environment;
 
-            _Storage.Environment pmNamespace = new Mochj._Storage.Environment(null);
+            _Storage.Environment listNamespace = new _Storage.Environment(null);
+            _Storage.Environment pmNamespace = new _Storage.Environment(null);
+            _Storage.Environment nativeListNamespace = new _Storage.Environment(null);
 
-            environment.Define("version", QualifiedObjectBuilder.BuildString("1.01"));
+            environment.Define("version", QualifiedObjectBuilder.BuildString("2.00"));
+
+            environment.Define("typeof",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        QualifiedObject obj = args.Get(0);
+
+                        return QualifiedObjectBuilder.BuildTypeInfo(obj.Type);
+                    })
+                    .RegisterParameter<object>("any")
+                    .Returns<DataType>()
+                    .Build()
+                ));
+
+            #region TypeInitializations
+
+            environment.Define("Empty", QualifiedObjectBuilder.EmptyFunction());
 
             environment.Define("Number",
                 QualifiedObjectBuilder.BuildFunction(
@@ -63,6 +84,9 @@ namespace Mochj.Builders
                     .Build()
                 ));
 
+            #endregion
+
+            #region BasicOps
 
             environment.Define("add-number",
                 QualifiedObjectBuilder.BuildFunction(
@@ -184,6 +208,8 @@ namespace Mochj.Builders
                     .Build()
                 ));
 
+            #endregion
+
             environment.Define("println",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
@@ -202,10 +228,10 @@ namespace Mochj.Builders
                     .Build()
                 ));
 
-            environment.Define("to-string",
+            environment.Define("ToString",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => { return QualifiedObjectBuilder.BuildString(Convert.ToString(args.Get<object>(0))); })
+                    .Action((Args args) => { return QualifiedObjectBuilder.BuildString(args.Get<object>(0).ToString()); })
                     .RegisterParameter<object>("obj")
                     .Returns<string>()
                     .Build()
@@ -261,224 +287,8 @@ namespace Mochj.Builders
                 ));
 
 
-            environment.Define("Empty", QualifiedObjectBuilder.EmptyFunction());
 
-
-            var lsNode =
-                    new NativeFunction()
-                    .Action((Args args) =>
-                    {
-                        return QualifiedObjectBuilder.BuildEmptyValue();
-                    })
-                    .RegisterParameter<BoundFn>("nextVal")
-                    .RegisterParameter<object>("data")
-                    .ReturnsEmpty()
-                    .Build();
-
-            environment.Define("ls-node", QualifiedObjectBuilder.BuildFunction(lsNode));
-
-            environment.Define("list",
-                QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) =>
-                    {
-                        return QualifiedObjectBuilder.BuildList(args.ToList().Select(a => a.Value));
-                    })
-                    .VariadicAfter(-1)
-                    .Returns<BoundFn>()
-                    .Build()
-                ));
-
-            environment.Define("ls-size",
-                QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) =>
-                    {
-                        if (args.Get(0).Equals(QualifiedObjectBuilder.EmptyFunction())) return QualifiedObjectBuilder.BuildNumber(0);
-                        BoundFn lsFn = args.Get<BoundFn>(0);
-                        int count = 1;
-                        while (!lsFn.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
-                        {
-                            lsFn = lsFn.BoundArguments.Get<BoundFn>("nextVal");
-                            count++;
-                        }
-
-                        return QualifiedObjectBuilder.BuildNumber(count);
-                    })
-                    .RegisterParameter<BoundFn>("ls")
-                    .Returns<int>()
-                    .Build()
-                ));
-
-            environment.Define("ls-get",
-                QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) =>
-                    {
-                        if (args.Get(0).Equals(QualifiedObjectBuilder.EmptyFunction()))
-                        {
-                            throw new Exception($"unable to retrieve value at index {args.Get<int>(1)}; list was empty");
-                        }
-
-                        BoundFn lsFn = args.Get<BoundFn>(0);
-                        int targetIndex = args.Get<int>(1);
-                        int count = 0;
-                        while (count != targetIndex)
-                        {
-                            if (lsFn.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
-                            {
-                                throw new Exception($"unable to retrieve value at index {targetIndex}; index out of range");
-                            }
-                            lsFn = lsFn.BoundArguments.Get<BoundFn>("nextVal");
-                            count++;
-                        }
-
-                        return lsFn.BoundArguments.Get("data");
-                    })
-                    .RegisterParameter<BoundFn>("ls")
-                    .RegisterParameter<int>("index")
-                    .Returns<object>()
-                    .Build()
-                ));
-
-            environment.Define("ls-add",
-                QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) =>
-                    {
-                        List<Argument> argsToBind = new List<Argument>();
-                        argsToBind.Add(new Argument { Position = 0, Value = QualifiedObjectBuilder.EmptyFunction() });
-                        argsToBind.Add(new Argument { Position = 1, Value = args.Get(1) });
-
-                        Models.QualifiedObject nodeToAdd = QualifiedObjectBuilder.BuildFunction(
-                            new BoundFn
-                            {
-                                hFunc = lsNode,
-                                BoundArguments = new Args(lsNode.Params.PatchArguments(argsToBind))
-                            });
-
-                        if (args.Get(0).Equals(QualifiedObjectBuilder.EmptyFunction()))
-                        {
-                            return nodeToAdd;
-                        }
-
-                        BoundFn lsFn = args.Get<BoundFn>(0);
-                        while (!lsFn.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
-                        {
-                            lsFn = lsFn.BoundArguments.Get<BoundFn>("nextVal");
-                        }
-
-                        lsFn.BoundArguments.Replace("nextVal", nodeToAdd);
-                        return args.Get(0);
-                    })
-                    .RegisterParameter<BoundFn>("ls")
-                    .RegisterParameter<object>("data")
-                    .Returns<Function>()
-                    .Build()
-                ));
-
-            environment.Define("ls-remove",
-                QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) =>
-                    {
-                        int targetIndex = args.Get<int>(1);
-
-                        if (args.Get(0).Equals(QualifiedObjectBuilder.EmptyFunction()))
-                        {
-                            throw new Exception($"unable to remove value at {targetIndex}; list is empty");
-                        }
-
-                        BoundFn currentNode = args.Get<BoundFn>(0);
-                        BoundFn previousNode = null;
-                        int count = 0;
-                        while (count != targetIndex)
-                        {
-                            if (currentNode.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
-                            {
-                                throw new Exception($"unable to remove value at index {targetIndex}; index out of range");
-                            }
-                            previousNode = currentNode;
-                            currentNode = currentNode.BoundArguments.Get<BoundFn>("nextVal");
-                            count++;
-                        }
-                        if (previousNode == null)
-                        {
-                            // Chop off head
-                            return currentNode.BoundArguments.Get("nextVal");
-                        }
-                        previousNode.BoundArguments.Replace("nextVal", currentNode.BoundArguments.Get("nextVal"));
-                        return args.Get(0);
-
-                    })
-                    .RegisterParameter<BoundFn>("ls")
-                    .RegisterParameter<int>("index")
-                    .Returns<Function>()
-                    .Build()
-                ));
-
-            environment.Define("ls-tail",
-                QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) =>
-                    {
-                        if (args.Get(0).Equals(QualifiedObjectBuilder.EmptyFunction()))
-                        {
-                            return args.Get(0);
-                        }
-
-                        BoundFn lsFn = args.Get<BoundFn>(0);
-                        Models.QualifiedObject lsFnObject = args.Get(0);
-                        while (!lsFn.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
-                        {
-                            lsFnObject = lsFn.BoundArguments.Get("nextVal");
-                            lsFn = lsFn.BoundArguments.Get<BoundFn>("nextVal");
-                        }
-
-                        return lsFnObject;
-                    })
-                    .RegisterParameter<BoundFn>("ls")
-                    .Returns<Function>()
-                    .Build()
-                ));
-
-            environment.Define("ls-foreach",
-               QualifiedObjectBuilder.BuildFunction(
-                   new NativeFunction()
-                   .Action((Args args) =>
-                   {
-                       if (args.Get(0).Equals(QualifiedObjectBuilder.BuildEmptyValue())) return QualifiedObjectBuilder.EmptyFunction();
-                       BoundFn lsFn = args.Get<BoundFn>(0);
-                       Function fn = args.Get<Function>(1);
-                       int count = 0;
-                       while (true)
-                       {
-                           IList<Argument> arguments = new List<Argument>();
-                           arguments.Add(new Argument { Alias = "data", Position = 0, Value = lsFn.BoundArguments.Get("data") });
-                           arguments.Add(new Argument { Alias = "index", Position = 1, Value = QualifiedObjectBuilder.BuildNumber(count) });
-
-                           fn.Call(fn.ResolveArguments(arguments));
-
-                           if (lsFn.BoundArguments.Get("nextVal").Equals(QualifiedObjectBuilder.EmptyFunction()))
-                           {
-                               break;
-                           }
-
-                           lsFn = lsFn.BoundArguments.Get<BoundFn>("nextVal");
-                           count++;
-                       }
-
-                       return QualifiedObjectBuilder.BuildEmptyValue();
-                   })
-                   .RegisterParameter<BoundFn>("ls")
-                   .RegisterParameter<Function>("fn")
-                   .ReturnsEmpty()
-                   .Build()
-               ));
-
-
-
-            // control flow
+            #region ControlFlow
 
             environment.Define("if",
                QualifiedObjectBuilder.BuildFunction(
@@ -558,8 +368,32 @@ namespace Mochj.Builders
                    .Build()
                ));
 
+            environment.Define("try",
+                 QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        if (args.Get(0) == QualifiedObjectBuilder.EmptyFunction()) return QualifiedObjectBuilder.BuildBoolean(false);
+                        BoundFn fn = args.Get<BoundFn>(0);
 
-            // Comparisons
+                        try
+                        {
+                            fn.Call(fn.ResolveArguments(new List<Argument>()));
+                            return QualifiedObjectBuilder.BuildString(string.Empty);
+                        }
+                        catch (Exception e)
+                        {
+                            return QualifiedObjectBuilder.BuildString(e.Message);
+                        }
+                    })
+                    .RegisterParameter<BoundFn>("fn")
+                    .Returns<string>()
+                    .Build()
+            ));
+
+            #endregion
+
+            #region Comparators
 
             environment.Define("equal",
                QualifiedObjectBuilder.BuildFunction(
@@ -742,6 +576,11 @@ namespace Mochj.Builders
                    .Build()
                ));
 
+            #endregion
+
+            #region LogicOps
+
+
             environment.Define("not",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
@@ -781,6 +620,7 @@ namespace Mochj.Builders
                    .Build()
                ));
 
+            #endregion
 
             environment.Define("success",
                  QualifiedObjectBuilder.BuildFunction(
@@ -805,28 +645,6 @@ namespace Mochj.Builders
                     .Build()
             ));
 
-            environment.Define("try",
-                 QualifiedObjectBuilder.BuildFunction(
-                    new NativeFunction()
-                    .Action((Args args) =>
-                    {
-                        if (args.Get(0) == QualifiedObjectBuilder.EmptyFunction()) return QualifiedObjectBuilder.BuildBoolean(false);
-                        BoundFn fn = args.Get<BoundFn>(0);
-
-                        try
-                        {
-                            fn.Call(fn.ResolveArguments(new List<Argument>()));
-                            return QualifiedObjectBuilder.BuildString(string.Empty);
-                        }
-                        catch (Exception e)
-                        {
-                            return QualifiedObjectBuilder.BuildString(e.Message);
-                        }
-                    })
-                    .RegisterParameter<BoundFn>("fn")
-                    .Returns<string>()
-                    .Build()
-            ));
 
             environment.Define("call",
                  QualifiedObjectBuilder.BuildFunction(
@@ -887,9 +705,9 @@ namespace Mochj.Builders
                 );
 
 
-            // Package
+            #region PackageManager
 
-            pmNamespace.Define("package",
+            pmNamespace.Define("Package",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
                     .Action((Args args) =>
@@ -942,7 +760,7 @@ namespace Mochj.Builders
                     .Build()
                 ));
 
-            pmNamespace.Define("fetch",
+            pmNamespace.Define("Fetch",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -980,12 +798,50 @@ namespace Mochj.Builders
                   .Build()
               ));
 
-            pmNamespace.Define("fetch-all-latest",
+            pmNamespace.Define("Remove",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string moduleName = args.Get<string>(0);
+                      string version = args.Get<string>(1);
+                      string manifestPath = args.Get<string>(2);
+
+                      using (StreamReader r = new StreamReader(manifestPath))
+                      {
+                          string json = r.ReadToEnd();
+                          List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
+
+                          Package pkg = items.Find(p => p.Name == moduleName && p.Version == version);
+                          if (pkg == null)
+                          {
+                              throw new Exception($"Unable to find package {moduleName} version {version} in manifest");
+                          }
+                          else
+                          {
+                              foreach (RemoteFile file in pkg.RemoteFiles)
+                              {
+                                  File.Delete($"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{file.Local}");
+                              }
+                          }
+
+                          return QualifiedObjectBuilder.BuildEmptyValue();
+                      }
+                  })
+                  .RegisterParameter<string>("moduleName")
+                  .RegisterParameter<string>("version")
+                  .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+            pmNamespace.Define("Fetch-All-Latest",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
                   {
                       string manifestPath = args.Get<string>(0);
+                      bool showStatus = args.Get<bool>(1);
 
                       using (StreamReader r = new StreamReader(manifestPath))
                       {
@@ -1001,11 +857,39 @@ namespace Mochj.Builders
                               List<Package> versions = items.FindAll(p => p.Name == pkg.Name);
                               versions.Sort((a, b) => a.Version.CompareTo(b.Version));
                               Package latest = versions.First();
+                              if (showStatus)
+                              {
+                                  Console.WriteLine("==========================================");
+                                  Console.WriteLine($"Found package: {latest.Name}@{latest.Version} in manifest");
+                                  Console.ForegroundColor = ConsoleColor.DarkYellow;
+                                  Console.WriteLine("Installing package...");
+                                  Console.ResetColor();
+                              }
+                              var cursorLeft = Console.CursorLeft;
+                              var cursorTop = Console.CursorTop;
+                              int counter = 1;
                               foreach (RemoteFile file in latest.RemoteFiles)
                               {
+                                  if (showStatus)
+                                  {
+                                      Console.SetCursorPosition(cursorLeft, cursorTop);
+                                      Console.WriteLine($"Downloading files [{new string('#', counter).PadRight(latest.RemoteFiles.Count(), '.')}]");
+                                  }
+                                  
                                   WebClient client = new WebClient();
                                   client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{file.Local}");
+                                  counter++;
                               }
+                              if (showStatus)
+                              {
+                                  Console.SetCursorPosition(cursorLeft, cursorTop);
+                                  Console.Write($"Downloading files ");
+                                  Console.ForegroundColor = ConsoleColor.Green;
+                                  Console.WriteLine($"[{new string('#', counter).PadRight(latest.RemoteFiles.Count(), '.')}]");
+                                  Console.ResetColor();
+                                  Console.WriteLine($"Finished installing {latest.Name}@{latest.Version}");
+                              }
+                              
                               completedPackages.Add(pkg.Name);
                           }
 
@@ -1013,11 +897,12 @@ namespace Mochj.Builders
                       }
                   })
                   .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                  .RegisterParameter<bool>("showStatus", QualifiedObjectBuilder.BuildBoolean(true))
                   .ReturnsEmpty()
                   .Build()
               ));
 
-            pmNamespace.Define("update",
+            pmNamespace.Define("Update",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -1040,8 +925,238 @@ namespace Mochj.Builders
                   .Build()
               ));
 
+            pmNamespace.Define("List",
+               QualifiedObjectBuilder.BuildFunction(
+                   new NativeFunction()
+                   .Action((Args args) =>
+                   {
+                       string manifestPath = args.Get<string>(0);
+
+                       using (StreamReader r = new StreamReader(manifestPath))
+                       {
+                           string json = r.ReadToEnd();
+                           List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
+                           HashSet<string> completedPackages = new HashSet<string>();
+                           foreach (Package pkg in items)
+                           {
+                               if (completedPackages.Contains(pkg.Name))
+                               {
+                                   continue;
+                               }
+                               List<Package> versions = items.FindAll(p => p.Name == pkg.Name);
+                               versions.Sort((a, b) => a.Version.CompareTo(b.Version));
+                               foreach (Package v in versions)
+                               {
+                                   Console.WriteLine($"{v.Name}@{v.Version}");
+                               }
+                               completedPackages.Add(pkg.Name);
+                           }
+
+                           return QualifiedObjectBuilder.BuildEmptyValue();
+                       }
+                   })
+                   .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                   .ReturnsEmpty()
+                   .Build()
+               ));
+
+            pmNamespace.Define("Install-From-Remote",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string moduleName = args.Get<string>(0);
+                      string version = args.Get<string>(1);
+                      string manifestPath = args.Get<string>(3);
+
+                      using (StreamReader r = new StreamReader(manifestPath))
+                      {
+                          string json = r.ReadToEnd();
+                          List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
+
+                          Package pkg = items.Find(p => p.Name == moduleName && p.Version == version);
+                          if (pkg == null)
+                          {
+                              throw new Exception($"Unable to find package {moduleName} version {version} in manifest");
+                          }
+                          else
+                          {
+                              string pkgName = args.Get<string>(2) == string.Empty ? $"{pkg.Name}@{pkg.Version}" : args.Get<string>(2);
+                              foreach (RemoteFile file in pkg.RemoteFiles)
+                              {
+                                  WebClient client = new WebClient();
+                                  client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{pkgName}/{file.Local}");
+                              }
+                          }
+
+                          return QualifiedObjectBuilder.BuildEmptyValue();
+                      }
+                  })
+                  .RegisterParameter<string>("moduleName")
+                  .RegisterParameter<string>("version")
+                  .RegisterParameter<string>("nameOverride", QualifiedObjectBuilder.BuildString(string.Empty))
+                  .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+            pmNamespace.Define("Install-From-Local",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string manifestPath = args.Get<string>(0);
+
+                      using (StreamReader r = new StreamReader(manifestPath))
+                      {
+                          string json = r.ReadToEnd();
+                          Package pkg = JsonConvert.DeserializeObject<Package>(json);
+
+                          if (pkg == null)
+                          {
+                              throw new Exception($"Package not found in manifest");
+                          }
+                          else
+                          {
+                              string pkgName = args.Get<string>(1) == string.Empty ? $"{pkg.Name}@{pkg.Version}" : args.Get<string>(1);
+                              foreach (string file in pkg.Files)
+                              {
+                                  File.Copy(file, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{pkgName}/{Path.GetFileName(file)}");
+                              }
+                          }
+
+                          return QualifiedObjectBuilder.BuildEmptyValue();
+                      }
+                  })
+                  .RegisterParameter<string>("manifestPath")
+                  .RegisterParameter<string>("nameOverride", QualifiedObjectBuilder.BuildString(string.Empty))
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+            #endregion
+
+            #region NativeList
+
+            nativeListNamespace.Define("Create",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      return QualifiedObjectBuilder.BuildNativeList(args.ToList().Select(x => x.Value).ToList());
+                  })
+                  .VariadicAfter(-1)
+                  .VariadicType<object>()
+                  .Returns<NativeList>()
+                  .Build()
+              ));
+
+            nativeListNamespace.Define("CreateEmpty",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      return QualifiedObjectBuilder.BuildNativeList(new NativeList(args.Get<DataType>(0)));
+                  })
+                  .RegisterParameter<DataType>("type")
+                  .Returns<NativeList>()
+                  .Build()
+              ));
+
+            nativeListNamespace.Define("IsEmpty",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      var ls = args.Get<NativeList>(0);
+
+                      return QualifiedObjectBuilder.BuildBoolean(ls.IsEmpty());
+                  })
+                  .RegisterParameter<NativeList>("ls")
+                  .Returns<bool>()
+                  .Build()
+              ));
+
+            nativeListNamespace.Define("Add",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      var ls = args.Get<NativeList>(0);
+                      ls.AddRange(args.ToList(0).Select(x => x.Value).ToList());
+                      return QualifiedObjectBuilder.BuildEmptyValue();
+                  })
+                  .RegisterParameter<NativeList>("ls")
+                  .VariadicAfter(0)
+                  .VariadicType<object>()
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+            nativeListNamespace.Define("RemoveAt",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      var ls = args.Get<NativeList>(0);
+                      ls.Remove(args.Get<int>(1));
+                      return QualifiedObjectBuilder.BuildEmptyValue();
+                  })
+                  .RegisterParameter<NativeList>("ls")
+                  .RegisterParameter<double>("index")
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+            nativeListNamespace.Define("Remove",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      var ls = args.Get<NativeList>(0);
+                      ls.Remove(args.Get(1));
+                      return QualifiedObjectBuilder.BuildEmptyValue();
+                  })
+                  .RegisterParameter<NativeList>("ls")
+                  .RegisterParameter<object>("item")
+                  .ReturnsEmpty()
+                  .Build()
+              ));
+
+            nativeListNamespace.Define("Find",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      var ls = args.Get<NativeList>(0);
+                      return ls.Find(args.Get<Function>(1));
+                  })
+                  .RegisterParameter<NativeList>("ls")
+                  .RegisterParameter<Function>("predicate")
+                  .Returns<object>()
+                  .Build()
+              ));
+
+            nativeListNamespace.Define("ForEach",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      var ls = args.Get<NativeList>(0);
+                      ls.ForEach(args.Get<Function>(1));
+                      return QualifiedObjectBuilder.BuildEmptyValue();
+                  })
+                  .RegisterParameter<NativeList>("ls")
+                  .RegisterParameter<Function>("predicate")
+                  .Returns<object>()
+                  .Build()
+              ));
+
+            #endregion
+
 
             environment.Define("PackageManager", QualifiedObjectBuilder.BuildNamespace(pmNamespace));
+            environment.Define("NativeList", QualifiedObjectBuilder.BuildNamespace(nativeListNamespace));
 
             return environment;
         }

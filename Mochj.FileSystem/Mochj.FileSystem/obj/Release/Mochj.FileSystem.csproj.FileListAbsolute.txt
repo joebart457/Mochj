@@ -20,3 +20,6 @@ C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Micro
 C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.ShellExtensions.pdb
 C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Microsoft.WindowsAPICodePack.ShellExtensions.xml
 C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Mochj.dll.config
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Newtonsoft.Json.dll
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Mochj.pdb
+C:\zzz_WIP\new-project-space\Mochj.FileSystem\Mochj.FileSystem\bin\Release\Newtonsoft.Json.xml

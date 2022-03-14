@@ -22,7 +22,7 @@ namespace ExportItems
             fsNamespace.Define("File", QualifiedObjectBuilder.BuildNamespace(fileNamespace));
             fsNamespace.Define("Directory", QualifiedObjectBuilder.BuildNamespace(dirNamespace));
 
-            dirNamespace.Define("foreach",
+            dirNamespace.Define("ForEach",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -49,7 +49,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            dirNamespace.Define("exists",
+            dirNamespace.Define("Exists",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -63,7 +63,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            dirNamespace.Define("create",
+            dirNamespace.Define("Create",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -78,7 +78,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            dirNamespace.Define("delete",
+            dirNamespace.Define("Delete",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -96,7 +96,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("foreach-tag",
+            fileNamespace.Define("ForEachTag",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -127,7 +127,25 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("exists",
+            fileNamespace.Define("GetTags",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string path = args.Get<string>("path");
+
+                      ShellFile shellFile = ShellFile.FromFilePath(path);
+
+                      string[] tags = (string[])shellFile.Properties.System.Keywords.ValueAsObject ?? new string[0];
+
+                      return QualifiedObjectBuilder.BuildList(tags.Select(value => QualifiedObjectBuilder.BuildString(value)));
+                  })
+                  .RegisterParameter<string>("path")
+                  .Returns<Function>()
+                  .Build()
+              ));
+
+            fileNamespace.Define("Exists",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -141,7 +159,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("create",
+            fileNamespace.Define("Create",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -156,7 +174,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("move",
+            fileNamespace.Define("Move",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -173,7 +191,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("copy",
+            fileNamespace.Define("Copy",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -192,7 +210,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("delete",
+            fileNamespace.Define("Delete",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -207,7 +225,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("write",
+            fileNamespace.Define("Write",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -225,7 +243,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("read",
+            fileNamespace.Define("Read",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -235,12 +253,26 @@ namespace ExportItems
                       return QualifiedObjectBuilder.BuildString(File.ReadAllText(path));
                   })
                   .RegisterParameter<string>("path")
-                  .RegisterParameter<string>("data")
                   .Returns<string>()
                   .Build()
               ));
 
-            fileNamespace.Define("foreach-line",
+            fileNamespace.Define("ReadLines",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string path = args.Get<string>("path");
+
+                      string[] lines = File.ReadAllLines(path);
+                      return QualifiedObjectBuilder.BuildList(lines.Select(value => QualifiedObjectBuilder.BuildString(value)));
+                  })
+                  .RegisterParameter<string>("path")
+                  .Returns<Function>()
+                  .Build()
+              ));
+
+            fileNamespace.Define("ForEachLine",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -263,7 +295,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("get-filename",
+            fileNamespace.Define("GetFilename",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -276,7 +308,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("get-directory",
+            fileNamespace.Define("GetDirectory",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -289,7 +321,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("get-ext",
+            fileNamespace.Define("GetExtension",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -302,7 +334,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("get-filename-without-ext",
+            fileNamespace.Define("GetFileNameWithoutExtension",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -315,7 +347,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("get-fullpath",
+            fileNamespace.Define("GetFullPath",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -328,7 +360,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fsNamespace.Define("exe-home",
+            fsNamespace.Define("GetExeHome",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -340,7 +372,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fsNamespace.Define("exe-path",
+            fsNamespace.Define("GetExePath",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>

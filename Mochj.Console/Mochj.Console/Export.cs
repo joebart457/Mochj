@@ -15,7 +15,7 @@ namespace ExportItems
             Mochj._Storage.Environment consoleNamespace = new Mochj._Storage.Environment(null);
 
 
-            consoleNamespace.Define("writeln",
+            consoleNamespace.Define("WriteLine",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -29,7 +29,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            consoleNamespace.Define("write",
+            consoleNamespace.Define("Write",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -43,7 +43,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            consoleNamespace.Define("readln",
+            consoleNamespace.Define("ReadLine",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -54,7 +54,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            consoleNamespace.Define("read-key",
+            consoleNamespace.Define("ReadKey",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>
@@ -65,7 +65,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            consoleNamespace.Define("read",
+            consoleNamespace.Define("Read",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Action((Args args) =>

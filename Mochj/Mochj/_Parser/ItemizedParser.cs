@@ -200,9 +200,9 @@ namespace Mochj._Parser
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.Any };
             }
-            if (match(TokenTypes.List))
+            if (match(TokenTypes.NativeList))
             {
-                DataType dt = new DataType { TypeId = Enums.DataTypeEnum.List };
+                DataType dt = new DataType { TypeId = Enums.DataTypeEnum.NativeList };
                 consume(TokenTypes.LCarat, "expect List<contained-typename> ");
                 dt.ContainedType = parseDataType();
                 consume(TokenTypes.RCarat, "expect enclosing '>'");

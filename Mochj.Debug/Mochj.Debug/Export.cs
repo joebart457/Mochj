@@ -25,7 +25,7 @@ namespace ExportItems
 
                       return QualifiedObjectBuilder.BuildEmptyValue();
                   })
-                  .RegisterParameter<Mochj._Storage.Environment>("env")
+                  .RegisterParameter<Mochj._Storage.Environment>("env", QualifiedObjectBuilder.BuildNamespace(environment))
                   .ReturnsEmpty()
                   .Build()
               ));
@@ -58,6 +58,21 @@ namespace ExportItems
                   .ReturnsEmpty()
                   .Build()
               ));
+
+            debugNamespace.Define("exists",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Action((Args args) =>
+                  {
+                      string variable = args.Get<string>(0);
+                      return QualifiedObjectBuilder.BuildBoolean(environment.Exists(variable));
+                  })
+                  .RegisterParameter<string>("var")
+                  .RegisterParameter<Mochj._Storage.Environment>("env", QualifiedObjectBuilder.BuildNamespace(environment))
+                  .Returns<bool>()
+                  .Build()
+              ));
+
 
             environment.Define("Debug", QualifiedObjectBuilder.BuildNamespace(debugNamespace));
 

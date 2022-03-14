@@ -11,7 +11,7 @@ namespace Mochj._Tokenizer
 {
     public class TokenizerSettings 
 	{
-		public string StringCatalystExcluded { get; set; } = "";
+		public string StringCatalystExcluded { get; set; } = " \t\n\r";
 		public string StringCatalystEscapable { get; set; } = "";
 	
 		public static TokenizerSettings Default { get { return new TokenizerSettings(); } }
@@ -361,7 +361,7 @@ namespace Mochj._Tokenizer
 		{
 			StringBuilder result = new StringBuilder();
 			bool bSlash = false;
-			while (!_bAtEnd && !char.IsWhiteSpace(_cCurrent) && (_settings.StringCatalystExcluded.Contains(_cCurrent)? _settings.StringCatalystEscapable.Contains(_cCurrent) && bSlash : true) )
+			while (!_bAtEnd && (_settings.StringCatalystExcluded.Contains(_cCurrent)? _settings.StringCatalystEscapable.Contains(_cCurrent) && bSlash : true) )
 			{
 				if (_cCurrent == '\\' && !bSlash)
 				{
@@ -371,73 +371,16 @@ namespace Mochj._Tokenizer
 				}
 				if (bSlash)
 				{
-					if (_cCurrent == 'n')
+					if (_settings.StringCatalystEscapable.Contains(_cCurrent))
 					{
-						result.Append('\n');
-						advance();
-					}
-					else if (_cCurrent == 't')
-					{
-						result.Append('\t');
-						advance();
-					}
-					else if (_cCurrent == 'r')
-					{
-						result.Append('\r');
-						advance();
-					}
-					else if (_cCurrent == 'a')
-					{
-						result.Append('\a');
-						advance();
-					}
-					else if (_cCurrent == 'b')
-					{
-						result.Append('\b');
-						advance();
-					}
-					else if (_cCurrent == 'v')
-					{
-						result.Append('\v');
-						advance();
-					}
-					else if (_cCurrent == 'f')
-					{
-						result.Append('\f');
-						advance();
-					}
-					else if (_cCurrent == '"')
-					{
-						result.Append('\"');
-						advance();
-					}
-					else if (_cCurrent == '\'')
-					{
-						result.Append('\'');
-						advance();
-					}
-					else if (_cCurrent == '0')
-					{
-						result.Append('\0');
-						advance();
-					}
-					else if (_cCurrent == '\\')
-					{
-						result.Append('\\');
+						result.Append(_cCurrent);
 						advance();
 					}
 					else
 					{
-						if (_settings.StringCatalystEscapable.Contains(_cCurrent))
-                        {
-							result.Append(_cCurrent);
-							advance();
-						} else
-                        {
-							result.Append('\\');
-							result.Append(_cCurrent);
-							advance();
-						}
+						result.Append('\\');
+						result.Append(_cCurrent);
+						advance();
 					}
 
 					bSlash = false;

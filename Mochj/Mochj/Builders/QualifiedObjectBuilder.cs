@@ -12,6 +12,13 @@ namespace Mochj.Builders
     public static class QualifiedObjectBuilder
     {
         private static QualifiedObject emptyFunction = null;
+
+        public static QualifiedObject BuildValue(object obj)
+        {
+            if (obj == null) return BuildEmptyValue();
+            return new QualifiedObject { Object = obj, Type = TypeMediatorService.DataType(obj.GetType()) };
+        }
+
         public static QualifiedObject BuildEmptyValue()
         {
             return new QualifiedObject { Object = null, Type = new DataType { TypeId = Enums.DataTypeEnum.Empty } };
@@ -54,41 +61,30 @@ namespace Mochj.Builders
             return emptyFunction;
         }
 
-        public static QualifiedObject BuildList(IEnumerable<QualifiedObject> values)
+        public static QualifiedObject BuildNativeList<Ty>(List<Ty> values)
         {
-            var lsNode =
-                    new NativeFunction()
-                    .Action((Args args) => {
-                        return BuildEmptyValue();
-                    })
-                    .RegisterParameter<BoundFn>("nextVal")
-                    .RegisterParameter<object>("data")
-                    .ReturnsEmpty()
-                    .Build();
-
-            QualifiedObject previousNode = EmptyFunction();
-            foreach (QualifiedObject obj in values.Reverse())
-            {
-                List<Argument> argsToBind = new List<Argument>();
-                QualifiedObject nextVal = previousNode;
-                argsToBind.Add(new Argument { Position = 0, Value = nextVal });
-                argsToBind.Add(new Argument { Position = 1, Value = obj });
-
-                BoundFn currentNode = new BoundFn
-                {
-                    hFunc = lsNode,
-                    BoundArguments = new Args(lsNode.Params.PatchArguments(argsToBind))
-                };
-                previousNode = BuildFunction(currentNode);
-            }
-
-            return previousNode;
+            return BuildNativeList(values.Select(x => BuildValue(x)).ToList());
         }
 
+        public static QualifiedObject BuildNativeList(List<QualifiedObject> values)
+        {
+            return BuildNativeList(new NativeList(values));
+        }
+
+        public static QualifiedObject BuildNativeList(NativeList value)
+        {
+            return new QualifiedObject { Object = value, Type = value.Type };
+        }
+        
 
         public static QualifiedObject BuildNamespace(_Storage.Environment value)
         {
             return new QualifiedObject { Object = value, Type = new DataType { TypeId = Enums.DataTypeEnum.Namespace } };
+        }
+
+        public static QualifiedObject BuildTypeInfo(DataType value)
+        {
+            return new QualifiedObject { Object = value, Type = new DataType { TypeId = Enums.DataTypeEnum.TypeInfo } };
         }
     }
 }

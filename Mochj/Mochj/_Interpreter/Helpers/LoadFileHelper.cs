@@ -1,6 +1,8 @@
 ﻿using Mochj.Builders;
+using Mochj.Models.Constants;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -59,6 +61,11 @@ namespace Mochj._Interpreter.Helpers
             {
                 throw new Exception($"error while loading {path}: {e.Message}");
             }
+        }
+
+        public static void LoadPackage(_Storage.Environment environment, string packageName)
+        {
+  
         }
 
     }

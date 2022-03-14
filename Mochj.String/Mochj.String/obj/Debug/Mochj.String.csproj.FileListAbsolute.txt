@@ -11,3 +11,6 @@ C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Mochj.String.
 C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Mochj.String.pdb
 C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Mochj.dll
 C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Mochj.dll.config
+C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Newtonsoft.Json.dll
+C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Mochj.pdb
+C:\zzz_WIP\new-project-space\Mochj.String\Mochj.String\bin\Release\Newtonsoft.Json.xml

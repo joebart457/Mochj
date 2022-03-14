@@ -39,13 +39,17 @@ namespace Mochj.Services
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.Fn };
             }
-            if (typeof(Ty).IsGenericType && typeof(Ty).GetGenericTypeDefinition() == typeof(List<>))
-            {
-                return new DataType { TypeId = Enums.DataTypeEnum.List, ContainedType = DataType(typeof(Ty).GetGenericArguments().Single()) };
-            }
             if (typeof(Ty) == typeof(_Storage.Environment))
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.Namespace };
+            }
+            if (typeof(Ty) == typeof(NativeList))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.NativeList };
+            }
+            if (typeof(Ty) == typeof(DataType))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.TypeInfo };
             }
             if (typeof(Ty) == typeof(object))
             {
@@ -84,13 +88,17 @@ namespace Mochj.Services
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.Fn };
             }
-            if (ty.IsGenericType && ty.GetGenericTypeDefinition() == typeof(List<>))
-            {
-                return new DataType { TypeId = Enums.DataTypeEnum.List, ContainedType = DataType(ty.GetGenericArguments().Single()) };
-            }
             if (ty == typeof(_Storage.Environment))
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.Namespace };
+            }
+            if (ty == typeof(NativeList))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.NativeList };
+            }
+            if (ty == typeof(DataType))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.TypeInfo };
             }
             if (ty == typeof(object))
             {
@@ -136,12 +144,51 @@ namespace Mochj.Services
                 }
                 throw new Exception($"unable to convert value of type {value.Type} to type {Enums.DataTypeEnum.Namespace}");
             }
+            if(typeof(Ty) == typeof(NativeList))
+            {
+                if (value.Type.Is(Enums.DataTypeEnum.NativeList))
+                {
+                    if (value.Object is Ty tyVal)
+                    {
+                        return tyVal;
+                    }
+                    throw new Exception($"error converting object {value} to type {typeof(Ty).FullName}");
+                }
+                throw new Exception($"unable to convert value of type {value.Type} to type {Enums.DataTypeEnum.NativeList}");
+            }
+            if (typeof(Ty) == typeof(DataType))
+            {
+                if (value.Type.Is(Enums.DataTypeEnum.TypeInfo))
+                {
+                    if (value.Object is Ty tyVal)
+                    {
+                        return tyVal;
+                    }
+                    throw new Exception($"error converting object {value} to type {typeof(Ty).FullName}");
+                }
+                throw new Exception($"unable to convert value of type {value.Type} to type {Enums.DataTypeEnum.TypeInfo}");
+            }
+
             object nativeObj = Convert.ChangeType(value.Object, typeof(Ty));
             if (nativeObj is Ty tyObj)
             {
                 return tyObj;
             }
             throw new Exception($"unable to convert object {value} to type {typeof(Ty).FullName}");
+        }
+
+        public static List<Ty> ToList<Ty>(QualifiedObject value)
+        {
+            if (value == null) { return null; }
+            if (value.Type.Is(Enums.DataTypeEnum.NativeList))
+            {
+                if (value.Object is NativeList ls)
+                {
+                    return ls.Get<Ty>();
+                }
+                throw new Exception($"error converting object {value} to native type {typeof(NativeList).FullName}");
+            }
+            throw new Exception($"unable to convert object {value} to type List<{typeof(Ty).FullName}>");
         }
 
         public static bool IsTruthy(object obj)

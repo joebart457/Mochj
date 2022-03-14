@@ -16,8 +16,8 @@ namespace Mochj.Builders
 
             TokenizerSettings settings = new TokenizerSettings
             {
-                StringCatalystExcluded = ")",
-                StringCatalystEscapable = ")"
+                StringCatalystExcluded = ") ",
+                StringCatalystEscapable = ") \\"
             };
 
             List<TokenizerRule> rules = new List<TokenizerRule>();
@@ -34,7 +34,7 @@ namespace Mochj.Builders
             rules.Add(new TokenizerRule(TokenTypes.String, "string"));
             rules.Add(new TokenizerRule(TokenTypes.Boolean, "boolean"));
             rules.Add(new TokenizerRule(TokenTypes.Fn, "function"));
-            rules.Add(new TokenizerRule(TokenTypes.List, "List"));
+            rules.Add(new TokenizerRule(TokenTypes.NativeList, "List"));
             rules.Add(new TokenizerRule(TokenTypes.Empty, "empty"));
             rules.Add(new TokenizerRule(TokenTypes.Any, "any"));
 
@@ -43,6 +43,7 @@ namespace Mochj.Builders
             rules.Add(new TokenizerRule(TokenTypes.Namespace, "namespace"));
             rules.Add(new TokenizerRule(TokenTypes.Load, "load"));
             rules.Add(new TokenizerRule(TokenTypes.Entry, "entry"));
+            rules.Add(new TokenizerRule(TokenTypes.Use, "use"));
 
             rules.Add(new TokenizerRule(TokenTypes.LiteralTrue, "true"));
             rules.Add(new TokenizerRule(TokenTypes.LiteralFalse, "false"));

@@ -11,3 +11,6 @@ C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Mochj.Conso
 C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Mochj.dll
 C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Mochj.dll.config
 C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\obj\Release\Mochj.Console.csproj.AssemblyReference.cache
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Newtonsoft.Json.dll
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Mochj.pdb
+C:\zzz_WIP\new-project-space\Mochj.Console\Mochj.Console\bin\Release\Newtonsoft.Json.xml

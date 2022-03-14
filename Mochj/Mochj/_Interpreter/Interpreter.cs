@@ -4,6 +4,7 @@ using Mochj._Parser.Models.Expressions;
 using Mochj._Parser.Models.Statements;
 using Mochj.Builders;
 using Mochj.Models;
+using Mochj.Models.Constants;
 using Mochj.Models.Fn;
 using Mochj.Services;
 using System;
@@ -76,7 +77,7 @@ namespace Mochj._Interpreter
                     throw new Exception($"unable to open {stmtLoad.Path}");
                 }
             }
-            if (Path.GetExtension(stmtLoad.Path) == ".dll")
+            if (Path.GetExtension(stmtLoad.Path).ToLower() == DefaultExtensions.DllExtension)
             {
                 LoadFileHelper.LoadFromAssembly(_environment.Top(), path);
             }
@@ -84,6 +85,11 @@ namespace Mochj._Interpreter
             {
                 LoadFileHelper.LoadFromRawCode(_environment.Top(), path);
             }
+        }
+
+        internal void Accept(StmtUse stmtUse)
+        {        
+            LoadFileHelper.LoadPackage(_environment.Top(), stmtUse.Name);      
         }
 
         internal void Accept(StmtEntry stmtEntry)
