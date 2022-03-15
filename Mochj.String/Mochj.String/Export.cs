@@ -163,11 +163,11 @@ namespace ExportItems
                       List<QualifiedObject> results = new List<QualifiedObject>();
 
                       results.AddRange(source.Split(new[] { splitOn }, StringSplitOptions.None).Select(x => QualifiedObjectBuilder.BuildString(x)));
-                      return QualifiedObjectBuilder.BuildList(results);
+                      return QualifiedObjectBuilder.BuildNativeList(results);
                   })
                   .RegisterParameter<string>("source")
                   .RegisterParameter<string>("splitOn")
-                  .Returns<Function>()
+                  .Returns<NativeList>()
                   .Build()
               ));
 

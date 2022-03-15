@@ -1,0 +1,9 @@
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\Mochj.dll.config
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\Mochj.dll
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\Mochj.pdb
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\Newtonsoft.Json.dll
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\Newtonsoft.Json.xml
+C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Package\Mochj.csproj.CoreCompileInputs.cache
+C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Package\Mochj.csproj.CopyComplete
+C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Package\Mochj.dll
+C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Package\Mochj.pdb

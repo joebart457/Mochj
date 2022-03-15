@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -723,97 +724,102 @@ namespace Mochj.Builders
 
             #region PackageManager
 
+            pmNamespace.Define("ShowOutput",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        bool showFlag = args.Get<bool>(0);
+
+                        _PackageManager.PackageManager.ShowOutput(showFlag);
+                        return QualifiedObjectBuilder.BuildEmptyValue();
+                    })
+                    .RegisterParameter<bool>("showFlag", QualifiedObjectBuilder.BuildBoolean(true))
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
             pmNamespace.Define("Package",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
                     .Action((Args args) =>
                     {
-                        bool force = args.Get<bool>(2);
+                        string settingsPath = args.Get<string>(0);
                         string outDir = args.Get<string>(1);
-                        if (!Directory.Exists(outDir))
-                        {
-                            Directory.CreateDirectory(outDir);
-                        }
-                        using (StreamReader r = new StreamReader(args.Get<string>(0)))
-                        {
-                            string json = r.ReadToEnd();
-                            List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
+                        string manifestOutput = args.Get<string>(2);
 
-                            foreach (Package pkg in items)
-                            {
-                                if (items.FindAll(p => p.Version == pkg.Version && p.Name == pkg.Name).Count() > 1)
-                                {
-                                    throw new Exception($"Duplicate package ({pkg.Name}) and version ({pkg.Version}) in manifest");
-                                }
-                                if (!force)
-                                {
-                                    string potentialDir = Path.Combine(outDir, $"{pkg.Name}/{pkg.Version}");
-                                    if (Directory.Exists(potentialDir))
-                                    {
-                                        throw new Exception($"Package ({pkg.Name}) with version ({pkg.Version}) already exists");
-                                    }
-                                }
-                            }
-                            foreach (Package pkg in items)
-                            {
-                                string potentialDir = Path.Combine(outDir, $"{pkg.Name}/{pkg.Version}");
-                                if (!Directory.Exists(potentialDir))
-                                {
-                                    Directory.CreateDirectory(potentialDir);
-                                }
-                                foreach (string file in pkg.Files)
-                                {
-                                    File.Copy(file, Path.Combine(potentialDir, Path.GetFileName(file)), force);
-                                }
-                            }
-                            return QualifiedObjectBuilder.BuildEmptyValue();
-                        }
+                        _PackageManager.PackageManager.Package(settingsPath, outDir, manifestOutput);
+                        return QualifiedObjectBuilder.BuildEmptyValue();
                     })
-                    .RegisterParameter<string>("filepath")
+                    .RegisterParameter<string>("settingsPath")
                     .RegisterParameter<string>("outDir")
+                    .RegisterParameter<string>("manifestOutput", QualifiedObjectBuilder.BuildString(string.Empty))
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
+            pmNamespace.Define("Use",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        string moduleName = args.Get<string>(0);
+                        string version = args.Get<string>(1);
+                        string manifestPath = args.Get<string>(2);
+                        _Storage.Environment env = args.Get<_Storage.Environment>(3);
+
+                        _PackageManager.PackageManager.Use(moduleName, version, manifestPath, env);
+
+                        return QualifiedObjectBuilder.BuildEmptyValue();
+                    })
+                    .RegisterParameter<string>("moduleName")
+                    .RegisterParameter<string>("version")
+                    .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                    .RegisterParameter<_Storage.Environment>("environment", QualifiedObjectBuilder.BuildNamespace(environment))
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
+
+            pmNamespace.Define("Fetch",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Action((Args args) =>
+                    {
+                        string moduleName = args.Get<string>(0);
+                        string version = args.Get<string>(1);
+                        string manifestPath = args.Get<string>(2);
+                        bool force = args.Get<bool>(3);
+
+                        _PackageManager.PackageManager.Fetch(moduleName, version, manifestPath, force);
+
+                        return QualifiedObjectBuilder.BuildEmptyValue();
+                    })
+                    .RegisterParameter<string>("moduleName")
+                    .RegisterParameter<string>("version")
+                    .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
                     .RegisterParameter<bool>("force", QualifiedObjectBuilder.BuildBoolean(false))
                     .ReturnsEmpty()
                     .Build()
                 ));
 
-            pmNamespace.Define("Fetch",
-              QualifiedObjectBuilder.BuildFunction(
-                  new NativeFunction()
-                  .Action((Args args) =>
-                  {
-                      string moduleName = args.Get<string>(0);
-                      string version = args.Get<string>(1);
-                      string manifestPath = args.Get<string>(2);
+            pmNamespace.Define("FetchAllLatest",
+               QualifiedObjectBuilder.BuildFunction(
+                   new NativeFunction()
+                   .Action((Args args) =>
+                   {
+                       string manifestPath = args.Get<string>(0);
+                       bool force = args.Get<bool>(1);
 
-                      using (StreamReader r = new StreamReader(manifestPath))
-                      {
-                          string json = r.ReadToEnd();
-                          List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
+                       _PackageManager.PackageManager.FetchAllLatest(manifestPath, force);
 
-                          Package pkg = items.Find(p => p.Name == moduleName && p.Version == version);
-                          if (pkg == null)
-                          {
-                              throw new Exception($"Unable to find package {moduleName} version {version} in manifest");
-                          }
-                          else
-                          {
-                              foreach (RemoteFile file in pkg.RemoteFiles)
-                              {
-                                  WebClient client = new WebClient();
-                                  client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{file.Local}");
-                              }
-                          }
-
-                          return QualifiedObjectBuilder.BuildEmptyValue();
-                      }
-                  })
-                  .RegisterParameter<string>("moduleName")
-                  .RegisterParameter<string>("version")
-                  .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
-                  .ReturnsEmpty()
-                  .Build()
-              ));
-
+                       return QualifiedObjectBuilder.BuildEmptyValue();
+                   })
+                   .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                   .RegisterParameter<bool>("force", QualifiedObjectBuilder.BuildBoolean(false))
+                   .ReturnsEmpty()
+                   .Build()
+               ));
             pmNamespace.Define("Remove",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
@@ -822,101 +828,22 @@ namespace Mochj.Builders
                       string moduleName = args.Get<string>(0);
                       string version = args.Get<string>(1);
                       string manifestPath = args.Get<string>(2);
+                      bool keepCached = args.Get<bool>(3);
 
-                      using (StreamReader r = new StreamReader(manifestPath))
-                      {
-                          string json = r.ReadToEnd();
-                          List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
+                      _PackageManager.PackageManager.Remove(moduleName, version, manifestPath);
 
-                          Package pkg = items.Find(p => p.Name == moduleName && p.Version == version);
-                          if (pkg == null)
-                          {
-                              throw new Exception($"Unable to find package {moduleName} version {version} in manifest");
-                          }
-                          else
-                          {
-                              foreach (RemoteFile file in pkg.RemoteFiles)
-                              {
-                                  File.Delete($"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{file.Local}");
-                              }
-                          }
+                      return QualifiedObjectBuilder.BuildEmptyValue();
 
-                          return QualifiedObjectBuilder.BuildEmptyValue();
-                      }
                   })
                   .RegisterParameter<string>("moduleName")
                   .RegisterParameter<string>("version")
                   .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                  .RegisterParameter<bool>("keepCached", QualifiedObjectBuilder.BuildBoolean(false))
                   .ReturnsEmpty()
                   .Build()
               ));
 
-            pmNamespace.Define("Fetch-All-Latest",
-              QualifiedObjectBuilder.BuildFunction(
-                  new NativeFunction()
-                  .Action((Args args) =>
-                  {
-                      string manifestPath = args.Get<string>(0);
-                      bool showStatus = args.Get<bool>(1);
-
-                      using (StreamReader r = new StreamReader(manifestPath))
-                      {
-                          string json = r.ReadToEnd();
-                          List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
-                          HashSet<string> completedPackages = new HashSet<string>();
-                          foreach (Package pkg in items)
-                          {
-                              if (completedPackages.Contains(pkg.Name))
-                              {
-                                  continue;
-                              }
-                              List<Package> versions = items.FindAll(p => p.Name == pkg.Name);
-                              versions.Sort((a, b) => a.Version.CompareTo(b.Version));
-                              Package latest = versions.First();
-                              if (showStatus)
-                              {
-                                  Console.WriteLine("==========================================");
-                                  Console.WriteLine($"Found package: {latest.Name}@{latest.Version} in manifest");
-                                  Console.ForegroundColor = ConsoleColor.DarkYellow;
-                                  Console.WriteLine("Installing package...");
-                                  Console.ResetColor();
-                              }
-                              var cursorLeft = Console.CursorLeft;
-                              var cursorTop = Console.CursorTop;
-                              int counter = 1;
-                              foreach (RemoteFile file in latest.RemoteFiles)
-                              {
-                                  if (showStatus)
-                                  {
-                                      Console.SetCursorPosition(cursorLeft, cursorTop);
-                                      Console.WriteLine($"Downloading files [{new string('#', counter).PadRight(latest.RemoteFiles.Count(), '.')}]");
-                                  }
-
-                                  WebClient client = new WebClient();
-                                  client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{file.Local}");
-                                  counter++;
-                              }
-                              if (showStatus)
-                              {
-                                  Console.SetCursorPosition(cursorLeft, cursorTop);
-                                  Console.Write($"Downloading files ");
-                                  Console.ForegroundColor = ConsoleColor.Green;
-                                  Console.WriteLine($"[{new string('#', counter).PadRight(latest.RemoteFiles.Count(), '.')}]");
-                                  Console.ResetColor();
-                                  Console.WriteLine($"Finished installing {latest.Name}@{latest.Version}");
-                              }
-
-                              completedPackages.Add(pkg.Name);
-                          }
-
-                          return QualifiedObjectBuilder.BuildEmptyValue();
-                      }
-                  })
-                  .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
-                  .RegisterParameter<bool>("showStatus", QualifiedObjectBuilder.BuildBoolean(true))
-                  .ReturnsEmpty()
-                  .Build()
-              ));
+          
 
             pmNamespace.Define("Update",
               QualifiedObjectBuilder.BuildFunction(
@@ -925,16 +852,8 @@ namespace Mochj.Builders
                   {
                       string remoteInfoPath = args.Get<string>(0);
 
-
-                      using (StreamReader r = new StreamReader(remoteInfoPath))
-                      {
-                          string json = r.ReadToEnd();
-                          RemoteFile file = JsonConvert.DeserializeObject<RemoteFile>(json);
-
-                          WebClient client = new WebClient();
-                          client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/{file.Local}");
-                          return QualifiedObjectBuilder.BuildEmptyValue();
-                      }
+                      _PackageManager.PackageManager.Update(remoteInfoPath);
+                      return QualifiedObjectBuilder.BuildEmptyValue();
                   })
                   .RegisterParameter<string>("remoteInfoPath", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "remote.json")))
                   .ReturnsEmpty()
@@ -948,107 +867,16 @@ namespace Mochj.Builders
                    {
                        string manifestPath = args.Get<string>(0);
 
-                       using (StreamReader r = new StreamReader(manifestPath))
-                       {
-                           string json = r.ReadToEnd();
-                           List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
-                           HashSet<string> completedPackages = new HashSet<string>();
-                           foreach (Package pkg in items)
-                           {
-                               if (completedPackages.Contains(pkg.Name))
-                               {
-                                   continue;
-                               }
-                               List<Package> versions = items.FindAll(p => p.Name == pkg.Name);
-                               versions.Sort((a, b) => a.Version.CompareTo(b.Version));
-                               foreach (Package v in versions)
-                               {
-                                   Console.WriteLine($"{v.Name}@{v.Version}");
-                               }
-                               completedPackages.Add(pkg.Name);
-                           }
+                       _PackageManager.PackageManager.GetAllPackageNamesAndVersions(manifestPath)
+                       .ForEach(str => Console.WriteLine(str));
 
-                           return QualifiedObjectBuilder.BuildEmptyValue();
-                       }
+                       return QualifiedObjectBuilder.BuildEmptyValue();
                    })
                    .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
                    .ReturnsEmpty()
                    .Build()
                ));
 
-            pmNamespace.Define("Install-From-Remote",
-              QualifiedObjectBuilder.BuildFunction(
-                  new NativeFunction()
-                  .Action((Args args) =>
-                  {
-                      string moduleName = args.Get<string>(0);
-                      string version = args.Get<string>(1);
-                      string manifestPath = args.Get<string>(3);
-
-                      using (StreamReader r = new StreamReader(manifestPath))
-                      {
-                          string json = r.ReadToEnd();
-                          List<Package> items = JsonConvert.DeserializeObject<List<Package>>(json);
-
-                          Package pkg = items.Find(p => p.Name == moduleName && p.Version == version);
-                          if (pkg == null)
-                          {
-                              throw new Exception($"Unable to find package {moduleName} version {version} in manifest");
-                          }
-                          else
-                          {
-                              string pkgName = args.Get<string>(2) == string.Empty ? $"{pkg.Name}@{pkg.Version}" : args.Get<string>(2);
-                              foreach (RemoteFile file in pkg.RemoteFiles)
-                              {
-                                  WebClient client = new WebClient();
-                                  client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{pkgName}/{file.Local}");
-                              }
-                          }
-
-                          return QualifiedObjectBuilder.BuildEmptyValue();
-                      }
-                  })
-                  .RegisterParameter<string>("moduleName")
-                  .RegisterParameter<string>("version")
-                  .RegisterParameter<string>("nameOverride", QualifiedObjectBuilder.BuildString(string.Empty))
-                  .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
-                  .ReturnsEmpty()
-                  .Build()
-              ));
-
-            pmNamespace.Define("Install-From-Local",
-              QualifiedObjectBuilder.BuildFunction(
-                  new NativeFunction()
-                  .Action((Args args) =>
-                  {
-                      string manifestPath = args.Get<string>(0);
-
-                      using (StreamReader r = new StreamReader(manifestPath))
-                      {
-                          string json = r.ReadToEnd();
-                          Package pkg = JsonConvert.DeserializeObject<Package>(json);
-
-                          if (pkg == null)
-                          {
-                              throw new Exception($"Package not found in manifest");
-                          }
-                          else
-                          {
-                              string pkgName = args.Get<string>(1) == string.Empty ? $"{pkg.Name}@{pkg.Version}" : args.Get<string>(1);
-                              foreach (string file in pkg.Files)
-                              {
-                                  File.Copy(file, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/{pkgName}/{Path.GetFileName(file)}");
-                              }
-                          }
-
-                          return QualifiedObjectBuilder.BuildEmptyValue();
-                      }
-                  })
-                  .RegisterParameter<string>("manifestPath")
-                  .RegisterParameter<string>("nameOverride", QualifiedObjectBuilder.BuildString(string.Empty))
-                  .ReturnsEmpty()
-                  .Build()
-              ));
 
             #endregion
 

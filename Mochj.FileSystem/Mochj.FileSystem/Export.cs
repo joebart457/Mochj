@@ -1,5 +1,6 @@
 ﻿using Microsoft.WindowsAPICodePack.Shell;
 using Mochj.Builders;
+using Mochj.Models;
 using Mochj.Models.Fn;
 using System;
 using System.Collections.Generic;
@@ -138,10 +139,10 @@ namespace ExportItems
 
                       string[] tags = (string[])shellFile.Properties.System.Keywords.ValueAsObject ?? new string[0];
 
-                      return QualifiedObjectBuilder.BuildList(tags.Select(value => QualifiedObjectBuilder.BuildString(value)));
+                      return QualifiedObjectBuilder.BuildNativeList(tags.Select(value => QualifiedObjectBuilder.BuildString(value)).ToList());
                   })
                   .RegisterParameter<string>("path")
-                  .Returns<Function>()
+                  .Returns<NativeList>()
                   .Build()
               ));
 
@@ -265,10 +266,10 @@ namespace ExportItems
                       string path = args.Get<string>("path");
 
                       string[] lines = File.ReadAllLines(path);
-                      return QualifiedObjectBuilder.BuildList(lines.Select(value => QualifiedObjectBuilder.BuildString(value)));
+                      return QualifiedObjectBuilder.BuildNativeList(lines.Select(value => QualifiedObjectBuilder.BuildString(value)).ToList());
                   })
                   .RegisterParameter<string>("path")
-                  .Returns<Function>()
+                  .Returns<NativeList>()
                   .Build()
               ));
 

@@ -36,8 +36,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mochj">
-      <HintPath>..\..\bin\Release\Mochj.dll</HintPath>
+    <Reference Include="Mochj, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Mochj\Mochj\bin\Package\Mochj.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

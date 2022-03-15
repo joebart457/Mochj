@@ -1,4 +1,6 @@
-﻿using Mochj.Builders;
+﻿using Mochj._PackageManager.Models;
+using Mochj._PackageManager.Models.Constants;
+using Mochj.Builders;
 using Mochj.Models.Constants;
 using System;
 using System.Collections.Generic;
@@ -15,7 +17,7 @@ namespace Mochj._Interpreter.Helpers
         public static string ExecutableDirectory()
         {
             string strExeFilePath = Assembly.GetCallingAssembly().Location;
-            return System.IO.Path.GetDirectoryName(strExeFilePath);
+            return Path.GetDirectoryName(strExeFilePath);
         }
         /// <summary>
         /// Takes a filepath, strips file name 
@@ -25,7 +27,7 @@ namespace Mochj._Interpreter.Helpers
         /// <returns></returns>
         public static string SwitchPathToExecutableHome(string path)
         {
-            string filename = System.IO.Path.GetFileName(path);
+            string filename = Path.GetFileName(path);
             if (string.IsNullOrEmpty(filename)) return null;
             return $"{ExecutableDirectory()}\\pkg\\{filename}";
         }
@@ -63,9 +65,25 @@ namespace Mochj._Interpreter.Helpers
             }
         }
 
-        public static void LoadPackage(_Storage.Environment environment, string packageName)
+        public static void LoadFile(_Storage.Environment environment, string path)
         {
-  
+            if (Path.GetExtension(path).ToLower() == ".dll")
+            {
+                LoadFromAssembly(environment, path);
+            } else
+            {
+                LoadFromRawCode(environment, path);
+            }
+        }
+
+        public static void LoadPackage(_Storage.Environment environment, string packageName, string version)
+        {
+            RemotePackage pkg = _PackageManager.PackageManager.FindPackage(packageName, version, DefaultPathConstants.ManifestPath);
+            string pkgDir = $"{PathConstants.PackagePath}{packageName}@{version}/";
+            foreach(string file in pkg.LoadFiles)
+            {
+                LoadFile(environment, Path.Combine(pkgDir, file));
+            }
         }
 
     }

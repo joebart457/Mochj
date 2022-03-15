@@ -55,10 +55,6 @@ namespace Mochj._Parser
             {
                 return parseLoad();
             }
-            if (match(TokenTypes.Use))
-            {
-                return parseUse();
-            }
             if (match(TokenTypes.Entry))
             {
                 return parseEntry();
@@ -89,14 +85,6 @@ namespace Mochj._Parser
             StmtLoad stmt = new StmtLoad(previous().Loc);
             stmt.Path = consume(TokenTypes.TTString, "expect filepath in 'load'").Lexeme;
             consume(TokenTypes.RParen, "expect enclosing ')' in 'load'");
-            return stmt;
-        }
-
-        private Statement parseUse()
-        {
-            StmtUse stmt = new StmtUse(previous().Loc);
-            stmt.Name = consume(TokenTypes.TTString, "expect package name in 'use'").Lexeme;
-            consume(TokenTypes.RParen, "expect enclosing ')' in 'use'");
             return stmt;
         }
 

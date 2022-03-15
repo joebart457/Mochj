@@ -3,11 +3,10 @@ C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\bin\Release\Mochj.Web.dll
 C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\bin\Release\Mochj.Web.pdb
 C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\bin\Release\Mochj.dll
 C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\bin\Release\Newtonsoft.Json.dll
+C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\bin\Release\Mochj.pdb
 C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\bin\Release\Mochj.dll.config
 C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\bin\Release\Newtonsoft.Json.xml
-C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\obj\Release\Mochj.Web.csproj.AssemblyReference.cache
 C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\obj\Release\Mochj.Web.csproj.CoreCompileInputs.cache
 C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\obj\Release\Mochj.Web.csproj.CopyComplete
 C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\obj\Release\Mochj.Web.dll
 C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\obj\Release\Mochj.Web.pdb
-C:\zzz_WIP\new-project-space\Mochj.Web\Mochj.Web\bin\Release\Mochj.pdb

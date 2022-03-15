@@ -20,4 +20,17 @@ namespace Mochj.Models
         public string[] Files { get; set; }
         public RemoteFile[] RemoteFiles { get; set; }
     }
+
+    class VersionedPackage
+    {
+        public string Name { get; set; }
+        public List<RemotePackage> Versions { get; set; } = new List<RemotePackage>();
+    }
+
+    class RemotePackage
+    {
+        public string VersionNumber { get; set; }
+        public string RemoteUrl { get; set; }
+        public List<string> LoadFiles { get; set; }
+    }
 }

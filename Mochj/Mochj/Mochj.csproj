@@ -5,7 +5,6 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{35E2ED7A-42E3-48DE-AA77-47F1E5EC231A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
     <RootNamespace>Mochj</RootNamespace>
     <AssemblyName>Mochj</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -24,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,9 +33,20 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Package|AnyCPU'">
+    <OutputPath>bin\Package\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -43,6 +54,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -78,6 +90,14 @@
     <Compile Include="_Interpreter\Helpers\SymbolResolverHelper.cs" />
     <Compile Include="_Interpreter\Helpers\TypeHelper.cs" />
     <Compile Include="_Interpreter\Interpreter.cs" />
+    <Compile Include="_PackageManager\Models\Constants\DefaultPathConstants.cs" />
+    <Compile Include="_PackageManager\Models\Constants\PathConstants.cs" />
+    <Compile Include="_PackageManager\Models\Constants\VersionConstants.cs" />
+    <Compile Include="_PackageManager\Models\PackageSettings.cs" />
+    <Compile Include="_PackageManager\Models\RemoteFile.cs" />
+    <Compile Include="_PackageManager\Models\RemotePackage.cs" />
+    <Compile Include="_PackageManager\Models\VersionedPackage.cs" />
+    <Compile Include="_PackageManager\PackageManager.cs" />
     <Compile Include="_Parser\Helpers\ParsingHelper.cs" />
     <Compile Include="_Parser\ItemizedParser.cs" />
     <Compile Include="_Parser\Models\Expressions\ExprArgument.cs" />
@@ -94,7 +114,6 @@
     <Compile Include="_Parser\Models\Statements\StmtNamespace.cs" />
     <Compile Include="_Parser\Models\Statements\StmtParameter.cs" />
     <Compile Include="_Parser\Models\Statements\StmtSet.cs" />
-    <Compile Include="_Parser\Models\Statements\StmtUse.cs" />
     <Compile Include="_Parser\Models\Symbol.cs" />
     <Compile Include="_Parser\Parser.cs" />
     <Compile Include="_Storage\Environment.cs" />

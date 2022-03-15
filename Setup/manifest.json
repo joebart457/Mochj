@@ -1,77 +1,142 @@
 [
-
 	{
-		"Version": "1.0", 
-      	"Name": "Mochj", 
-		"LoadFiles": [
-			
-		],
-      	"RemoteFiles": [
-			{ "local": "Mochj.dll",       "remote_url":"https://dl.dropboxusercontent.com/s/o8ajoljlomqgdaw/Mochj.dll?dl=0" },
-			{ "local": "Mochj.dll.config", "remote_url":"https://dl.dropboxusercontent.com/s/ps038rm96dgcmjd/Mochj.dll.config?dl=0" },
-		], 
+		"Name": "Mochj",
+		"Versions": [
+			{
+				"VersionNumber": "1.08",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/ogyx0gboneb7wx1/1.08.zip?dl=0",
+				"LoadFiles": []
+			},
+			{
+				"VersionNumber": "1.07",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/29h5bq4224ngm8u/1.07.zip?dl=0",
+				"LoadFiles": []
+			},
+			{
+				"VersionNumber": "1.09",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/5f9hx85ss42zpb9/1.09.zip?dl=0",
+				"LoadFiles": []
+			}
+		]
 	},
 	{
-		"Version": "1.0", 
-      	"Name": "Debug", 
-		"LoadFiles": [
-			"Mochj.Debug.dll"
-		],
-      	"RemoteFiles": [
-			{ "local": "Mochj.Debug.dll"       , "remote_url":"https://dl.dropboxusercontent.com/s/braefmxjag0o1mv/Mochj.Debug.dll?dl=0" },
-			{ "local": "Mochj.Debug.dll.config", "remote_url":"https://dl.dropboxusercontent.com/s/kbjtcwcfnic69r0/Mochj.Debug.dll.config?dl=0" },
-		], 
+		"Name": "Debug",
+		"Versions": [
+			{
+				"VersionNumber": "1.15",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/vtmmvo8vnv5r6cl/1.15.zip?dl=0",
+				"LoadFiles": [
+					"Mochj.Debug.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.14",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/h1ohel25xf03uiz/1.14.zip?dl=0",
+				"LoadFiles": [
+					"Mochj.Debug.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.16",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/nht57pbg2kmb76b/1.16.zip?dl=0",
+				"LoadFiles": ["Mochj.Debug.dll"]
+			}
+		]
 	},
 	{
-		"Version": "1.0", 
-      	"Name": "FileSystem",
-		"LoadFiles": [
-			"Mochj.FileSystem.dll"
-		],
-      	"RemoteFiles": [
-			{ "local": "Mochj.FileSystem.dll"                              , "remote_url":"https://dl.dropboxusercontent.com/s/k0rp2tzqce6ehbq/Mochj.FileSystem.dll?dl=0" },
-			{ "local": "Mochj.FileSystem.dll.config"                       , "remote_url":"https://dl.dropboxusercontent.com/s/j7mm50nu6jq3621/Mochj.FileSystem.dll.config?dl=0" },
-			{ "local": "Microsoft.WindowsAPICodePack.dll"                  , "remote_url":"https://dl.dropboxusercontent.com/s/0zcacuswdj4p904/Microsoft.WindowsAPICodePack.dll?dl=0" },
-			{ "local": "Microsoft.WindowsAPICodePack.Shell.dll"            , "remote_url":"https://dl.dropboxusercontent.com/s/6vwfzzgy35hxe9b/Microsoft.WindowsAPICodePack.Shell.dll?dl=0" },
-			{ "local": "Microsoft.WindowsAPICodePack.Shell.xml"            , "remote_url":"https://dl.dropboxusercontent.com/s/f8zrdtkd8ti2qd7/Microsoft.WindowsAPICodePack.Shell.xml?dl=0" },
-			{ "local": "Microsoft.WindowsAPICodePack.ShellExtensions.dll"  , "remote_url":"https://dl.dropboxusercontent.com/s/azm54li390iy43v/Microsoft.WindowsAPICodePack.ShellExtensions.dll?dl=0" },
-			{ "local": "Microsoft.WindowsAPICodePack.ShellExtensions.xml"  , "remote_url":"https://dl.dropboxusercontent.com/s/h663jdwl7suw200/Microsoft.WindowsAPICodePack.ShellExtensions.xml?dl=0" },
-			{ "local": "Microsoft.WindowsAPICodePack.xml"                  , "remote_url":"https://dl.dropboxusercontent.com/s/j16vlf51vpw6kqn/Microsoft.WindowsAPICodePack.xml?dl=0" },
-		], 
+		"Name": "FileSystem",
+		"Versions": [
+			{
+				"VersionNumber": "1.15",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/6sbn8an9ymdrs8n/1.15.zip?dl=0",
+				"LoadFiles": [
+					"Mochj.FileSystem.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.14",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/kiup1nklkvkwqf0/1.14.zip?dl=0",
+				"LoadFiles": [
+					"Mochj.FileSystem.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.16",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/jws194nulsgm1j9/1.16.zip?dl=0",
+				"LoadFiles": ["Mochj.FileSystem.dll"]
+			}
+		]
 	},
 	{
-		"Version": "1.0", 
-      	"Name": "String", 
-		"LoadFiles": [
-			"Mochj.String.dll"
-		],
-      	"RemoteFiles": [
-			{ "local": "Mochj.String.dll"      , "remote_url":"https://dl.dropboxusercontent.com/s/6xbl8vzhjmopftq/Mochj.String.dll?dl=0" },
-			{ "local": "Mochj.String.dll.config", "remote_url":"https://dl.dropboxusercontent.com/s/282sbsmv1bq0142/Mochj.String.dll.config?dl=0" },
-		], 
+		"Name": "String",
+		"Versions": [
+			{
+				"VersionNumber": "1.15",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/kidnj0w3vh792jm/1.15.zip?dl=0",
+				"LoadFiles": [
+					"Mochj.String.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.14",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/37jbg481upri8bh/1.14.zip?dl=0",
+				"LoadFiles": [
+					"Mochj.String.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.16",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/nfdjcrja9pf2ka6/1.16.zip?dl=0",
+				"LoadFiles": ["Mochj.String.dll"]
+			}
+		]
 	},
 	{
-		"Version": "1.0", 
-      	"Name": "Web", 
-		"LoadFiles": [
-			"Mochj.Web.dll"
-		],
-      	"RemoteFiles": [
-			{ "local": "Mochj.Web.dll",       "remote_url": "https://dl.dropboxusercontent.com/s/j37l6ufhgkic87i/Mochj.Web.dll?dl=0"},
-			{ "local": "Mochj.Web.dll.config","remote_url": "https://dl.dropboxusercontent.com/s/74i03f8kjaotteb/Mochj.Web.dll.config?dl=0"},
-			{ "local": "Newtonsoft.Json.dll", "remote_url": "https://dl.dropboxusercontent.com/s/3r5hhj5artkcg3c/Newtonsoft.Json.dll?dl=0"},
-			{ "local": "Newtonsoft.Json.xml", "remote_url": "https://dl.dropboxusercontent.com/s/pbq37mehiqjubcx/Newtonsoft.Json.xml?dl=0"},
-		], 
+		"Name": "Web",
+		"Versions": [
+			{
+				"VersionNumber": "1.15",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/sp4v8nqdyy6768y/1.15.zip?dl=0",
+				"LoadFiles": [
+					"Mochj.Web.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.14",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/7k6krjgh2tqwf03/1.14.zip?dl=0",
+				"LoadFiles": [
+					"Mochj.Web.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.16",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/nf8um7xcviylakg/1.16.zip?dl=0",
+				"LoadFiles": ["Mochj.Web.dll"]
+			}
+		]
 	},
 	{
-		"Version": "1.0", 
-      	"Name": "Console",
-		"LoadFiles": [
-			"Mochj.Console.dll"
-		],		
-      	"RemoteFiles": [
-			{ "local": "Mochj.Console.dll"       , "remote_url":"https://dl.dropboxusercontent.com/s/dmt9ihblh2peb2d/Mochj.Console.dll?dl=0" },
-			{ "local": "Mochj.Console.dll.config", "remote_url":"https://dl.dropboxusercontent.com/s/qawqgyv32bq9j66/Mochj.Console.dll.config?dl=0" },
-		], 
-	},
-] 
+		"Name": "Console",
+		"Versions": [
+			{
+				"VersionNumber": "1.15",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/xaqjs3034bwq5pj/1.15.zip?dl=0",
+				"LoadFiles": [
+					"Mochj.Console.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.14",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/649p3uffqpudujr/1.14.zip?dl=0",
+				"LoadFiles": [
+					"Mochj.Console.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.16",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/7el5ql4gpw8zmxc/1.16.zip?dl=0",
+				"LoadFiles": ["Mochj.Console.dll"]
+			}
+		]
+	}
+]

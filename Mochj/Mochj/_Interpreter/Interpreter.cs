@@ -77,19 +77,7 @@ namespace Mochj._Interpreter
                     throw new Exception($"unable to open {stmtLoad.Path}");
                 }
             }
-            if (Path.GetExtension(stmtLoad.Path).ToLower() == DefaultExtensions.DllExtension)
-            {
-                LoadFileHelper.LoadFromAssembly(_environment.Top(), path);
-            }
-            else
-            {
-                LoadFileHelper.LoadFromRawCode(_environment.Top(), path);
-            }
-        }
-
-        internal void Accept(StmtUse stmtUse)
-        {        
-            LoadFileHelper.LoadPackage(_environment.Top(), stmtUse.Name);      
+            LoadFileHelper.LoadFile(_environment.Top(), path);
         }
 
         internal void Accept(StmtEntry stmtEntry)
