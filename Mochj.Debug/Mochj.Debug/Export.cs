@@ -12,12 +12,13 @@ namespace ExportItems
     {
         public int Setup(Mochj._Storage.Environment environment)
         {
-            Mochj._Storage.Environment debugNamespace = new Mochj._Storage.Environment(null);
+            Mochj._Storage.Environment debugNamespace = new Mochj._Storage.Environment(null).WithAlias("Debug");
 
 
             debugNamespace.Define("Show",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Show")
                   .Action((Args args) =>
                   {
 
@@ -33,6 +34,7 @@ namespace ExportItems
             debugNamespace.Define("Top",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Top")
                   .Action((Args args) =>
                   {
 
@@ -47,6 +49,7 @@ namespace ExportItems
             debugNamespace.Define("Help",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Help")
                   .Action((Args args) =>
                   {
 
@@ -62,6 +65,7 @@ namespace ExportItems
             debugNamespace.Define("Exists",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Exists")
                   .Action((Args args) =>
                   {
                       string variable = args.Get<string>(0);

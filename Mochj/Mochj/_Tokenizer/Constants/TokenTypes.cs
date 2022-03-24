@@ -39,6 +39,7 @@ namespace Mochj._Tokenizer.Constants
         public const string Fn = "Fn";
         public const string Empty = "Empty";
         public const string Any = "Any";
+        public const string TypeInfo = "TypeInfo";
 
         // Custom types - single character symbols
         public const string SemiColon = "SemiColon";
@@ -71,8 +72,6 @@ namespace Mochj._Tokenizer.Constants
         public const string LessEqual = "LessEqual";
         public const string GreaterEqual = "GreaterEqual";
 
-        public const string DoubleLCarat = "DoubleLCarat";
-        public const string DoubleRCarat = "DoubleRCarat";
         public const string DoubleDash = "DoubleDash";
     }
 }

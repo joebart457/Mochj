@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,9 +37,50 @@ namespace Mochj._PackageManager
                 string json = r.ReadToEnd();
                 RemoteFile file = JsonConvert.DeserializeObject<RemoteFile>(json);
 
+                Log($"Downloading remote file...");
                 WebClient client = new WebClient();
                 client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/{file.Local}");
+                Log("Finished");
             }
+        }
+
+        public static void Validate(string manifestPath)
+        {
+            var packages = ListPackages(manifestPath);
+            Log("Validation process started, this may take some time.\n");
+            packages.ForEach(pkg =>
+            {
+                pkg.Versions.ForEach(version =>
+                {
+                    Log($"\nVerifying package {pkg.Name}@{version.VersionNumber}");
+
+                    string stageDestination = $"{PathConstants.StagePath}{pkg.Name}@{version.VersionNumber}.zip";
+                    
+                    if (!File.Exists(stageDestination)) {
+                        Log($"unable to verify package integrity; package not staged");
+                    } else
+                    {
+                        if (string.IsNullOrEmpty(version.Hash))
+                        {
+                            Log($"unable to verify package integrity; package has no defined hash");
+                        } else
+                        {
+                            string hash = GenerateMD5Hash(stageDestination);
+                            Log($"Package hash: {hash}");
+                            if (hash == version.Hash)
+                            {
+                                Log($"Package {pkg.Name}@{version.VersionNumber} verification SUCCESS.");
+                            } else
+                            {
+                                Log($"Package {pkg.Name}@{version.VersionNumber} verification FAIL. Hashes differ. Please redownload and reinstall the package.");
+                            }
+                        }
+                    }
+
+                });
+
+            });
+            Log("\nValidation completed.");
         }
 
         public static void Use(string moduleName, string version, string manifestPath, _Storage.Environment environment)
@@ -49,6 +91,9 @@ namespace Mochj._PackageManager
             {
                 Log($"Package {moduleName}@{pkg.VersionNumber} is not installed. Attempting to fetch...");
                 Fetch(moduleName, version, manifestPath);
+            } else
+            {
+                Log($"Package found at {pkgDir}");
             }
             foreach (string file in pkg.LoadFiles)
             {
@@ -63,6 +108,12 @@ namespace Mochj._PackageManager
             string downloadDestination = $"{PathConstants.StagePath}{moduleName}@{remotePackage.VersionNumber}.zip";
             string unzipDestination = $"{PathConstants.PackagePath}{moduleName}@{remotePackage.VersionNumber}";
 
+            if (!Directory.Exists(PathConstants.StagePath))
+            {
+                Log($"Directory {PathConstants.StagePath} not found. Creating...");
+                Directory.CreateDirectory(PathConstants.StagePath);
+            }
+
             if (!force)
             {
                 // Check to see if it's already been installed
@@ -76,26 +127,83 @@ namespace Mochj._PackageManager
                 // and try to unzip it if it has
                 if (File.Exists(downloadDestination))
                 {
-                    Log($"Package already downloaded to {downloadDestination}, attempting to unzip...");
+                    Log($"Package already downloaded to {downloadDestination}. Attempting to unzip...");
                     ZipFile.ExtractToDirectory(downloadDestination, unzipDestination);
+                    return;
+                }
+
+                // Otherwise, see if it is available locally 
+                // and try to unzip it from there
+                if (File.Exists(remotePackage.LocalPath))
+                {
+                    Log($"Package found at local path: {remotePackage.LocalPath}. Attempting to unzip...");
+                    ZipFile.ExtractToDirectory(remotePackage.LocalPath, unzipDestination);
                     return;
                 }
             }
             // If we get here it means we need to download and install
+            Log($"Downloading from remote url: {remotePackage.RemoteUrl} to {downloadDestination}...");
             WebClient client = new WebClient();
             client.DownloadFile(remotePackage.RemoteUrl, downloadDestination);
             ZipFile.ExtractToDirectory(downloadDestination, unzipDestination);
         }
 
-        public static void Remove(string moduleName, string version, string manifestPath, bool keepCached = false)
+        public static void Uninstall(string moduleName, string version, string manifestPath, bool keepCached = false)
         {
             RemotePackage remotePackage = FindPackage(moduleName, version, manifestPath);
 
             string downloadDestination = $"{PathConstants.StagePath}{moduleName}@{version}.zip";
             string unzipDestination = $"{PathConstants.PackagePath}{moduleName}@{version}";
 
-            if (!keepCached) File.Delete(downloadDestination);
-            Directory.Delete(unzipDestination, true);
+            if (Directory.Exists(unzipDestination))
+            {
+                Log($"Deleting {moduleName}@{version} from {unzipDestination}...");
+                Directory.Delete(unzipDestination, true);
+            } else
+            {
+                Log($"Package {moduleName}@{version} not installed, skipping...");
+            }
+            
+            if (!keepCached)
+            {
+                Log($"Attempting to delete {moduleName}@{version} from cache at {downloadDestination}");
+                if (File.Exists(downloadDestination)) File.Delete(downloadDestination);
+            }
+        }
+
+        public static void UninstallAll(string manifestPath)
+        {
+            List<VersionedPackage> packages = new List<VersionedPackage>();
+            using (StreamReader r = new StreamReader(manifestPath))
+            {
+                string json = r.ReadToEnd();
+                List<VersionedPackage> items = JsonConvert.DeserializeObject<List<VersionedPackage>>(json);
+
+                items.ForEach(vpkg =>
+                {
+                    vpkg.Versions.ForEach(pkg =>
+                    {
+                        string installPath = $"{PathConstants.PackagePath}{vpkg.Name}@{pkg.VersionNumber}";
+                        if (Directory.Exists(installPath))
+                        {
+                            Log($"Deleting {vpkg.Name}@{pkg.VersionNumber} from {installPath}...");
+                            Directory.Delete(installPath, true);
+                            return;
+                        }
+                        Log($"Package {vpkg.Name}@{pkg.VersionNumber} not installed, skipping...");
+                    });
+                });
+            }        
+        }
+
+        public static void CleanCache()
+        {
+            Log($"Cleaning cache ({PathConstants.StagePath})");
+            foreach(string path in Directory.EnumerateFileSystemEntries(PathConstants.StagePath))
+            {
+                File.Delete(path);
+            }
+            Log("Success");
         }
 
 
@@ -123,13 +231,7 @@ namespace Mochj._PackageManager
             using (StreamReader r = new StreamReader(manifestPath))
             {
                 string json = r.ReadToEnd();
-                List<VersionedPackage> items = JsonConvert.DeserializeObject<List<VersionedPackage>>(json);
-
-                items.ForEach(vPkg =>
-                {
-                    vPkg.Versions.Sort((a, b) => a.VersionNumber.CompareTo(b.VersionNumber));
-                    vPkg.Versions.Reverse();
-                });
+                List<VersionedPackage> items = ListPackages(manifestPath);
                 items.ForEach(vPkg => vPkg.Versions.ForEach(pkg => pkgNamesAndVersions.Add($"{vPkg.Name}@{pkg.VersionNumber}")));
                 return pkgNamesAndVersions;
             }
@@ -142,10 +244,11 @@ namespace Mochj._PackageManager
             {
                 string json = r.ReadToEnd();
                 List<VersionedPackage> items = JsonConvert.DeserializeObject<List<VersionedPackage>>(json);
+                items.Sort((a, b) => a.Name.CompareTo(b.Name));
+
                 items.ForEach(vPkg =>
                 {
-                    vPkg.Versions.Sort((a, b) => a.VersionNumber.CompareTo(b.VersionNumber));
-                    vPkg.Versions.Reverse();
+                    vPkg.Versions.Sort((a, b) => b.VersionNumber.CompareTo(a.VersionNumber));
                 });
                 return items;
             }
@@ -171,46 +274,72 @@ namespace Mochj._PackageManager
             }
         }
 
-        public static void Package(string settingsPath, string outputDirectory, string manifestOutput = "")
+        public static void Package(string settingsPath, bool publishLocally = false)
         {
             List<VersionedPackage> packages = new List<VersionedPackage>();
             using (StreamReader r = new StreamReader(settingsPath))
             {
                 string json = r.ReadToEnd();
-                List<PackageSettings> items = JsonConvert.DeserializeObject<List<PackageSettings>>(json);
+                PackageSettings settings = JsonConvert.DeserializeObject<PackageSettings>(json);
 
-                items.ForEach(pkg =>
+                settings.PackageInfo.ForEach(pkg =>
                 {
-                    packages.Add(CreatePackage(pkg, outputDirectory));
+                    Log("==============================================");
+                    var packageToAdd = CreatePackage(pkg, settings.OutputDirectory, settings.PublishToLocal || publishLocally);
+                    if (packageToAdd != null)
+                    {
+                        packages.Add(packageToAdd);
+                    }
                 });
-            }
-            List<VersionedPackage> finalPackages = new List<VersionedPackage>();
 
-            if (File.Exists(manifestOutput))
-            {
-                finalPackages = ListPackages(manifestOutput);
-            }
+                List<VersionedPackage> finalPackages = new List<VersionedPackage>();
 
-            packages.ForEach(vPkg =>
-            {
-                var existingPkg = finalPackages.Find(x => x.Name == vPkg.Name);
-                if (existingPkg == null)
+                if (File.Exists(settings.ManifestPath))
                 {
-                    finalPackages.Add(vPkg);
+                    finalPackages = ListPackages(settings.ManifestPath);
                 }
-                else
+
+                packages.ForEach(vPkg =>
                 {
-                    existingPkg.Versions.AddRange(vPkg.Versions);
+                    var existingPkg = finalPackages.Find(x => x.Name == vPkg.Name);
+                    if (existingPkg == null)
+                    {
+                        finalPackages.Add(vPkg);
+                    }
+                    else
+                    {
+                        if (settings.UsePreviousLoadFiles)
+                        {
+                            if (existingPkg.Versions.Any())
+                            {
+                                var loadFiles = existingPkg.Versions.ElementAt(existingPkg.Versions.Count() - 1).LoadFiles;
+                                vPkg.Versions.ForEach(rpkg => rpkg.LoadFiles = loadFiles);
+                            }
+                        }
+                        
+                        existingPkg.Versions.AddRange(vPkg.Versions);
+                        existingPkg.Versions.Sort((a, b) => b.VersionNumber.CompareTo(a.VersionNumber));
+                    }
+                });
+                if (settings.ManifestPath != string.Empty)
+                {
+                    File.WriteAllText(settings.ManifestPath, JsonConvert.SerializeObject(finalPackages));
                 }
-            });
-            if (manifestOutput != string.Empty)
-            {
-                File.WriteAllText(manifestOutput, JsonConvert.SerializeObject(finalPackages));
             }
         }
 
-
-        private static VersionedPackage CreatePackage(PackageSettings settings, string outputDirectory, bool bumpMajorVersion = false)
+        private static string GenerateMD5Hash(string filename)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(filename))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                }
+            }
+        }
+        private static VersionedPackage CreatePackage(PackageInfo settings, string outputDirectory, bool publishLocally = false)
         {
             string pkgDir = Path.Combine(outputDirectory, settings.PackageName);
             Directory.CreateDirectory(pkgDir);
@@ -221,8 +350,8 @@ namespace Mochj._PackageManager
             }
 
             double versionNo = double.Parse(File.ReadAllText(settings.VersionRecordPath));
-            versionNo = bumpMajorVersion ? versionNo + 1 : versionNo + 0.01;
-            string versionDir = $"{Path.Combine(pkgDir, versionNo.ToString())}/";
+            double bumpedVersionNo = settings.BumpMajorVersion ? versionNo + 1 : versionNo + 0.01;
+            string versionDir = $"{Path.Combine(pkgDir, bumpedVersionNo.ToString())}/";
             Directory.CreateDirectory(versionDir);
             foreach(string file in settings.IncludedFiles)
             {
@@ -234,15 +363,43 @@ namespace Mochj._PackageManager
                     File.Copy(file, Path.Combine(versionDir, Path.GetFileName(file)));
                 }
             }
-            ZipFile.CreateFromDirectory(versionDir, $"{Path.Combine(pkgDir, versionNo.ToString())}.zip");
+            string zipDestination = $"{Path.Combine(pkgDir, bumpedVersionNo.ToString())}.zip";
+            ZipFile.CreateFromDirectory(versionDir, zipDestination);
             Directory.Delete(versionDir, true);
-            File.WriteAllText(settings.VersionRecordPath, versionNo.ToString());
+
+            string hash = GenerateMD5Hash(zipDestination);
+            Log($"Package created at {zipDestination}. Hash: {hash}");
+
+            string previousZipDestination = $"{Path.Combine(pkgDir, versionNo.ToString())}.zip";
+
+            if (File.Exists(previousZipDestination))
+            {
+                Log($"Found previous version at: {previousZipDestination}. Comparing hashes...");
+                if (GenerateMD5Hash(previousZipDestination) == hash)
+                {
+                    Log($"Hash of previous version equaled that of new version, rolling back...");
+                    File.Delete(zipDestination);
+                    return null;
+                } else
+                {
+                    Log($"Hashes not equal, continuing with new package creation");
+                }
+            }
+
+            File.WriteAllText(settings.VersionRecordPath, bumpedVersionNo.ToString());
+            Log($"Bumped version to {bumpedVersionNo}");
             return new VersionedPackage()
             {
                 Name = settings.PackageName,
                 Versions = new List<RemotePackage>
                 {
-                    new RemotePackage{VersionNumber = versionNo.ToString(), RemoteUrl = ""}
+                    new RemotePackage
+                    {
+                        VersionNumber = bumpedVersionNo.ToString(),
+                        RemoteUrl = "",
+                        Hash = hash,
+                        LocalPath = publishLocally? $"{Path.Combine(pkgDir, bumpedVersionNo.ToString())}.zip" : "",
+                    }
                 }
             };
         }

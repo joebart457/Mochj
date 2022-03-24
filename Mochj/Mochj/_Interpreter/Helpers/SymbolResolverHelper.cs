@@ -59,7 +59,7 @@ namespace Mochj._Interpreter.Helpers
                     throw new Exception($"unable to resolve {name} in {symbol} to namespace");
                 } else
                 {
-                    _Storage.Environment newNamespace = new _Storage.Environment(current);
+                    _Storage.Environment newNamespace = new _Storage.Environment(current).WithAlias(name);
                     current.Define(name, QualifiedObjectBuilder.BuildNamespace(newNamespace));
                     current = newNamespace;
                 }

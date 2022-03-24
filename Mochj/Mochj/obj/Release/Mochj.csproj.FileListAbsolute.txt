@@ -1,6 +1,9 @@
 C:\zzz_WIP\new-project-space\Release\Mochj.pdb
 C:\zzz_WIP\new-project-space\Release\Mochj.exe.config
 C:\zzz_WIP\new-project-space\Release\Mochj.exe
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\license.txt
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\install.bat
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\remote.json
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Mochj.exe.config
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Mochj.exe
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Mochj.pdb

@@ -1,4 +1,5 @@
-﻿using Mochj.Builders;
+﻿using Mochj._Interpreter.Helpers;
+using Mochj.Builders;
 using Mochj.Models;
 using Mochj.Services;
 using System;
@@ -11,6 +12,13 @@ namespace Mochj._Storage
 {
     public class Environment
     {
+        public class EnvironmentSettings
+        {
+            public bool UseStrictTypes { get; set; } = true;
+            public bool FillFunctionSymbols { get; set; } = true;
+        }
+
+        private EnvironmentSettings Settings = new EnvironmentSettings();
 
         private IDictionary<string, QualifiedObject> _lookup = new Dictionary<string, QualifiedObject>();
 
@@ -19,14 +27,27 @@ namespace Mochj._Storage
         private Environment _enclosing;
         public Environment Enclosing { get { return _enclosing; } }
 
+        private string _alias = null;
+        public string Alias { get; }
         public Environment(Environment enclosing = null)
         {
             _enclosing = enclosing;
         }
+
+        public Environment WithAlias(string alias)
+        {
+            if (_alias == null)
+            {
+                _alias = alias; 
+            }
+            return this;
+        }
+
         public bool Define(string key, QualifiedObject value, bool bOverwrite = true)
         {
             if (bOverwrite)
             {
+                AttachSymbol(value);
                 _lookup[key] = value;
                 return true;
             }
@@ -34,6 +55,7 @@ namespace Mochj._Storage
             {
                 if (!ExistsLocal(key))
                 {
+                    AttachSymbol(value);
                     _lookup.Add(key, value);
                     return true;
                 }
@@ -45,7 +67,14 @@ namespace Mochj._Storage
         {
             if (ExistsLocal(key))
             {
-                _lookup[key] = value;
+                AttachSymbol(value);
+                if (Settings.UseStrictTypes)
+                {
+                    _lookup[key] = TypeHelper.CheckType(value, _lookup[key].Type);
+                } else
+                {
+                    _lookup[key] = value;
+                }
                 return true;
             }
             else if (Enclosing != null)
@@ -135,6 +164,30 @@ namespace Mochj._Storage
                 sb.Append($"{new string(' ', spaces)}{kv.Key} := {valueString}\n");
             }
             return sb.ToString();
+        }
+
+        private void AttachSymbol(QualifiedObject obj)
+        {
+            if (Settings.FillFunctionSymbols && obj.Type.Is(Enums.DataTypeEnum.Fn))
+            {
+                var envPath = GetFullPath();
+                var fn = TypeMediatorService.ToNativeType<Models.Fn.Function>(obj);
+                if (fn.Symbol != null) return;
+                envPath.Add(fn.Name);
+                fn.Symbol = new _Parser.Models.Symbol { Names = envPath };
+            }
+        }
+
+        private List<string> GetFullPath()
+        {
+            List<string> aliases = new List<string>();
+            if (_enclosing != null)
+            {
+                aliases.AddRange(_enclosing.GetFullPath());
+            }
+            if (!string.IsNullOrEmpty(_alias)) aliases.Add(_alias);
+
+            return aliases;
         }
     }
 }

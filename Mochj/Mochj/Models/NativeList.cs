@@ -1,4 +1,5 @@
 ﻿using Mochj.Builders;
+using Mochj.Models.Fn;
 using Mochj.Services;
 using System;
 using System.Collections.Generic;
@@ -44,11 +45,26 @@ namespace Mochj.Models
             return _ls.Select(x => TypeMediatorService.ToNativeType<Ty>(x)).ToList();
         }
 
-        public void ForEach(Fn.Function fn)
+        public void ForEach(Function fn)
         {
             foreach (var item in _ls)
             {
                 fn.Call(fn.ResolveArguments(item));
+            }
+        }
+
+        public void ForEachWithIndex(Function fn)
+        {
+            int index = 0;
+            foreach (var item in _ls)
+            {
+                List<Argument> args = new List<Argument>
+                {
+                    new Argument{ Alias = "data", Value = item },
+                    new Argument{ Alias = "index", Value = QualifiedObjectBuilder.BuildNumber(index) }
+                };
+                fn.Call(fn.ResolveArguments(args));
+                index++;
             }
         }
 
@@ -74,11 +90,21 @@ namespace Mochj.Models
 
         public void Add(QualifiedObject item)
         {
-            _ls.Add(item);
+            _ls.Add(_Interpreter.Helpers.TypeHelper.CheckType(item, Type.ContainedType));
         }
         public void AddRange(List<QualifiedObject> items)
         {
-            _ls.AddRange(items);
+            items.ForEach(item => Add(item));
+        }
+
+        public int Count(Fn.Function fn)
+        {
+            if (fn == null) return _ls.Count();
+            if (!fn.ReturnType.Is(Enums.DataTypeEnum.Boolean))
+            {
+                throw new Exception($"expect comparer to have return type {Enums.DataTypeEnum.Boolean} but got {fn.ReturnType}");
+            }
+            return _ls.Count(x => TypeMediatorService.ToNativeType<bool>(fn.Call(fn.ResolveArguments(x))));
         }
 
         public QualifiedObject Find(Fn.Function fn)

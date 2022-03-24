@@ -1,4 +1,5 @@
-﻿using Mochj.Models;
+﻿using Mochj._PackageManager.Models.Constants;
+using Mochj.Models;
 using Mochj.Models.ControlFlow;
 using Mochj.Models.Fn;
 using Mochj.Services;
@@ -26,17 +27,18 @@ namespace Mochj.Builders
             _Storage.Environment environment = new _Storage.Environment(null);
             _default = environment;
 
-            _Storage.Environment convertNamespace = new _Storage.Environment(null);
-            _Storage.Environment fnNamespace = new _Storage.Environment(null);
-            _Storage.Environment pmNamespace = new _Storage.Environment(null);
-            _Storage.Environment processNamespace = new _Storage.Environment(null);
-            _Storage.Environment nativeListNamespace = new _Storage.Environment(null);
+            _Storage.Environment convertNamespace = new _Storage.Environment(null).WithAlias("Convert");
+            _Storage.Environment fnNamespace = new _Storage.Environment(null).WithAlias("Fn");
+            _Storage.Environment pmNamespace = new _Storage.Environment(null).WithAlias("PackageManager");
+            _Storage.Environment processNamespace = new _Storage.Environment(null).WithAlias("Process");
+            _Storage.Environment nativeListNamespace = new _Storage.Environment(null).WithAlias("NativeList");
 
-            environment.Define("version", QualifiedObjectBuilder.BuildString("2.00"));
+            environment.Define("version", QualifiedObjectBuilder.BuildString("2.20"));
 
             environment.Define("typeof",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("typeof")
                     .Action((Args args) =>
                     {
                         QualifiedObject obj = args.Get(0);
@@ -48,11 +50,69 @@ namespace Mochj.Builders
                     .Build()
                 ));
 
+            environment.Define("nameof",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("nameof")
+                    .Action((Args args) =>
+                    {
+                        QualifiedObject obj = args.Get(0);
+                        if (obj.Type.Is(Enums.DataTypeEnum.Fn))
+                        {
+                            return QualifiedObjectBuilder.BuildString(TypeMediatorService.ToNativeType<Function>(obj).Name);
+                        }
+
+                        return QualifiedObjectBuilder.BuildString(string.Empty);
+                    })
+                    .RegisterParameter<object>("any")
+                    .Returns<string>()
+                    .Build()
+                ));
+
+            environment.Define("symbol",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("symbol")
+                    .Action((Args args) =>
+                    {
+                        QualifiedObject obj = args.Get(0);
+                        if (obj.Type.Is(Enums.DataTypeEnum.Fn))
+                        {
+                            var fn = TypeMediatorService.ToNativeType<Function>(obj);
+                            return QualifiedObjectBuilder.BuildString((fn.Symbol == null? "" : fn.Symbol.ToString()));
+                        }
+
+                        return QualifiedObjectBuilder.BuildString(string.Empty);
+                    })
+                    .RegisterParameter<object>("any")
+                    .Returns<string>()
+                    .Build()
+                ));
+
             environment.Define("println",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("println")
                     .Action((Args args) => { Console.WriteLine(args.Get<object>(0)); return QualifiedObjectBuilder.BuildEmptyValue(); })
                     .RegisterParameter<object>("a")
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
+            environment.Define("_unsafe_assign",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("_unsafe_assign")
+                    .Action((Args args) => 
+                    {
+                        QualifiedObject assignable = args.Get(0);
+                        QualifiedObject value = args.Get(1);
+                        assignable.Object = value.Object;
+                        assignable.Type = value.Type;
+                        return QualifiedObjectBuilder.BuildEmptyValue(); 
+                    })
+                    .RegisterParameter<object>("assignable")
+                    .RegisterParameter<object>("value")
                     .ReturnsEmpty()
                     .Build()
                 ));
@@ -62,7 +122,8 @@ namespace Mochj.Builders
             convertNamespace.Define("ToString",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => { return QualifiedObjectBuilder.BuildString(args.Get<object>(0).ToString()); })
+                    .Named("ToString")
+                    .Action((Args args) => { return QualifiedObjectBuilder.BuildString($"{args.Get(0).Object}"); })
                     .RegisterParameter<object>("obj")
                     .Returns<string>()
                     .Build()
@@ -77,6 +138,7 @@ namespace Mochj.Builders
             environment.Define("Number",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("Number")
                     .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0)); })
                     .RegisterParameter<object>("convertibleObject")
                     .Returns<double>()
@@ -86,6 +148,7 @@ namespace Mochj.Builders
             environment.Define("String",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("String")
                     .Action((Args args) =>
                     {
                         if (QualifiedObjectBuilder.BuildEmptyValue().Equals(args.Get(0)))
@@ -103,6 +166,7 @@ namespace Mochj.Builders
             environment.Define("Boolean",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("Boolean")
                     .Action((Args args) => { return QualifiedObjectBuilder.BuildBoolean(args.Get<bool>(0)); })
                     .RegisterParameter<object>("convertibleObject")
                     .Returns<bool>()
@@ -116,6 +180,7 @@ namespace Mochj.Builders
             environment.Define("add-number",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("add-number")
                     .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) + args.Get<double>(1)); })
                     .RegisterParameter<double>("a")
                     .RegisterParameter<double>("b")
@@ -125,6 +190,7 @@ namespace Mochj.Builders
             environment.Define("addn",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("addn")
                     .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) + args.Get<double>(1)); })
                     .RegisterParameter<double>("a")
                     .RegisterParameter<double>("b")
@@ -135,6 +201,7 @@ namespace Mochj.Builders
             environment.Define("sub-number",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("sub-number")
                     .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) - args.Get<double>(1)); })
                     .RegisterParameter<double>("a")
                     .RegisterParameter<double>("b")
@@ -144,6 +211,7 @@ namespace Mochj.Builders
             environment.Define("subn",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("subn")
                     .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) - args.Get<double>(1)); })
                     .RegisterParameter<double>("a")
                     .RegisterParameter<double>("b")
@@ -154,7 +222,8 @@ namespace Mochj.Builders
             environment.Define("mul-number",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) + args.Get<double>(1)); })
+                    .Named("mul-number")
+                    .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) * args.Get<double>(1)); })
                     .RegisterParameter<double>("a")
                     .RegisterParameter<double>("b")
                     .Returns<double>()
@@ -163,7 +232,8 @@ namespace Mochj.Builders
             environment.Define("muln",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) + args.Get<double>(1)); })
+                    .Named("muln")
+                    .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) * args.Get<double>(1)); })
                     .RegisterParameter<double>("a")
                     .RegisterParameter<double>("b")
                     .Returns<double>()
@@ -174,7 +244,12 @@ namespace Mochj.Builders
             environment.Define("div-number",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) / args.Get<double>(1)); })
+                    .Named("div-number")
+                    .Action((Args args) => {
+                        double denominator = args.Get<double>(1);
+                        if (denominator == 0) throw new Exception("Cannot divide by zero");
+                        return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) / denominator); 
+                    })
                     .RegisterParameter<double>("a")
                     .RegisterParameter<double>("b")
                     .Returns<double>()
@@ -183,7 +258,12 @@ namespace Mochj.Builders
             environment.Define("divn",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
-                    .Action((Args args) => { return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) / args.Get<double>(1)); })
+                    .Named("divn")
+                    .Action((Args args) => {
+                        double denominator = args.Get<double>(1);
+                        if (denominator == 0) throw new Exception("Cannot divide by zero");
+                        return QualifiedObjectBuilder.BuildNumber(args.Get<double>(0) / denominator);
+                    })
                     .RegisterParameter<double>("a")
                     .RegisterParameter<double>("b")
                     .Returns<double>()
@@ -194,6 +274,7 @@ namespace Mochj.Builders
             environment.Define("add-string",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("add-string")
                     .Action((Args args) =>
                     {
                         StringBuilder result = new StringBuilder(args.Get<string>(0));
@@ -215,6 +296,7 @@ namespace Mochj.Builders
             environment.Define("adds",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("adds")
                     .Action((Args args) =>
                     {
                         StringBuilder result = new StringBuilder(args.Get<string>(0));
@@ -240,6 +322,7 @@ namespace Mochj.Builders
             fnNamespace.Define("Return",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("Return")
                     .Action((Args args) => { 
                         if (args.Get(1) == QualifiedObjectBuilder.EmptyFunction())
                         {
@@ -247,7 +330,7 @@ namespace Mochj.Builders
                         }
                         throw new ReturnException(args.Get(0), args.Get<Function>(1)); 
                     })
-                    .RegisterParameter<object>("obj")
+                    .RegisterParameter<object>("obj", QualifiedObjectBuilder.BuildEmptyValue())
                     .RegisterParameter<Function>("toFn", QualifiedObjectBuilder.EmptyFunction())
                     .Returns<object>()
                     .Build()
@@ -256,11 +339,14 @@ namespace Mochj.Builders
             fnNamespace.Define("Bind",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("Bind")
                     .Action((Args args) =>
                     {
                         Function fn = args.Get<Function>(0);
                         Function boundFn = new BoundFn
                         {
+                            Name = fn.Name,
+                            Symbol = fn.Symbol,
                             hFunc = fn,
                             BoundArguments = new Args(fn.Params.PatchArguments(args.ToList(0))),
                         };
@@ -275,6 +361,7 @@ namespace Mochj.Builders
             fnNamespace.Define("GetArgument",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("GetArgument")
                     .Action((Args args) =>
                     {
                         BoundFn fn = args.Get<BoundFn>(0);
@@ -289,6 +376,7 @@ namespace Mochj.Builders
             fnNamespace.Define("ReplaceArgument",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("ReplaceArgument")
                     .Action((Args args) =>
                     {
                         BoundFn fn = args.Get<BoundFn>(0);
@@ -305,6 +393,7 @@ namespace Mochj.Builders
             fnNamespace.Define("Success",
                 QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("Success")
                    .Action((Args args) =>
                    {
                        if (args.Get(0) == QualifiedObjectBuilder.EmptyFunction()) return QualifiedObjectBuilder.BuildBoolean(false);
@@ -328,6 +417,7 @@ namespace Mochj.Builders
             fnNamespace.Define("Call",
                  QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("Call")
                     .Action((Args args) =>
                     {
                         Function fn = args.Get<Function>(0);
@@ -347,6 +437,7 @@ namespace Mochj.Builders
             environment.Define("if",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("if")
                    .Action((Args args) =>
                    {
                        bool condition = args.Get<bool>(0);
@@ -364,7 +455,7 @@ namespace Mochj.Builders
                    })
                    .RegisterParameter<bool>("condition")
                    .RegisterParameter<Function>("doThis")
-                   .RegisterParameter<Function>("elseDo")
+                   .RegisterParameter<Function>("elseDo", QualifiedObjectBuilder.EmptyFunction())
                    .Returns<object>()
                    .Build()
                ));
@@ -372,6 +463,7 @@ namespace Mochj.Builders
             environment.Define("while",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("while")
                    .Action((Args args) =>
                    {
                        Function condition = args.Get<Function>(0);
@@ -403,6 +495,7 @@ namespace Mochj.Builders
             environment.Define("break",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("break")
                    .Action((Args args) =>
                    {
                        throw new BreakException();
@@ -414,6 +507,7 @@ namespace Mochj.Builders
             environment.Define("continue",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("continue")
                    .Action((Args args) =>
                    {
                        throw new ContinueException();
@@ -425,6 +519,7 @@ namespace Mochj.Builders
             environment.Define("try",
                  QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("try")
                     .Action((Args args) =>
                     {
                         if (args.Get(0) == QualifiedObjectBuilder.EmptyFunction()) return QualifiedObjectBuilder.BuildBoolean(false);
@@ -445,6 +540,19 @@ namespace Mochj.Builders
                     .Build()
             ));
 
+            environment.Define("throw",
+                 QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("throw")
+                    .Action((Args args) =>
+                    {
+                        throw new Exception(args.Get<string>(0));
+                    })
+                    .RegisterParameter<string>("message")
+                    .ReturnsEmpty()
+                    .Build()
+            ));
+
             #endregion
 
             #region Comparators
@@ -452,6 +560,7 @@ namespace Mochj.Builders
             environment.Define("equal",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("equal")
                    .Action((Args args) =>
                    {
                        return QualifiedObjectBuilder.BuildBoolean(args.Get(0).Equals(args.Get(1)));
@@ -465,6 +574,7 @@ namespace Mochj.Builders
             environment.Define("equals",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("equals")
                    .Action((Args args) =>
                    {
                        return QualifiedObjectBuilder.BuildBoolean(args.Get(0).Equals(args.Get(1)));
@@ -479,6 +589,7 @@ namespace Mochj.Builders
             environment.Define("not-equal",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("not-equal")
                    .Action((Args args) =>
                    {
                        return QualifiedObjectBuilder.BuildBoolean(!args.Get(0).Equals(args.Get(1)));
@@ -492,6 +603,7 @@ namespace Mochj.Builders
             environment.Define("not-equals",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("not-equals")
                    .Action((Args args) =>
                    {
                        return QualifiedObjectBuilder.BuildBoolean(!args.Get(0).Equals(args.Get(1)));
@@ -505,6 +617,7 @@ namespace Mochj.Builders
             environment.Define("gt",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("gt")
                    .Action((Args args) =>
                    {
                        double a = args.Get<double>(0);
@@ -521,6 +634,7 @@ namespace Mochj.Builders
             environment.Define("gte",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("gte")
                    .Action((Args args) =>
                    {
                        double a = args.Get<double>(0);
@@ -537,6 +651,7 @@ namespace Mochj.Builders
             environment.Define("lt",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("lt")
                    .Action((Args args) =>
                    {
                        double a = args.Get<double>(0);
@@ -553,6 +668,7 @@ namespace Mochj.Builders
             environment.Define("lte",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("lte")
                    .Action((Args args) =>
                    {
                        double a = args.Get<double>(0);
@@ -569,6 +685,7 @@ namespace Mochj.Builders
             environment.Define("greater-than",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("greater-than")
                    .Action((Args args) =>
                    {
                        double a = args.Get<double>(0);
@@ -585,6 +702,7 @@ namespace Mochj.Builders
             environment.Define("greater-than-equal",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("greater-than-equal")
                    .Action((Args args) =>
                    {
                        double a = args.Get<double>(0);
@@ -601,6 +719,7 @@ namespace Mochj.Builders
             environment.Define("less-than",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("less-than")
                    .Action((Args args) =>
                    {
                        double a = args.Get<double>(0);
@@ -617,6 +736,7 @@ namespace Mochj.Builders
             environment.Define("less-than-equal",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("less-than-equal")
                    .Action((Args args) =>
                    {
                        double a = args.Get<double>(0);
@@ -634,10 +754,10 @@ namespace Mochj.Builders
 
             #region LogicOps
 
-
             environment.Define("not",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("not")
                    .Action((Args args) =>
                    {
                        return QualifiedObjectBuilder.BuildBoolean(!args.Get<bool>(0));
@@ -650,6 +770,7 @@ namespace Mochj.Builders
             environment.Define("and",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("and")
                    .Action((Args args) =>
                    {
                        return QualifiedObjectBuilder.BuildBoolean(args.Get<bool>(0) && args.Get<bool>(1));
@@ -664,6 +785,7 @@ namespace Mochj.Builders
             environment.Define("or",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("or")
                    .Action((Args args) =>
                    {
                        return QualifiedObjectBuilder.BuildBoolean(args.Get<bool>(0) || args.Get<bool>(1));
@@ -681,6 +803,7 @@ namespace Mochj.Builders
             processNamespace.Define("Create",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("Create")
                     .Action((Args args) =>
                     {
                         Process cmd = new Process();
@@ -711,6 +834,7 @@ namespace Mochj.Builders
             processNamespace.Define("Exit",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("Exit")
                     .Action((Args args) =>
                     {
                         throw new ExitException(args.Get<int>(0));
@@ -727,6 +851,7 @@ namespace Mochj.Builders
             pmNamespace.Define("ShowOutput",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("ShowOutput")
                     .Action((Args args) =>
                     {
                         bool showFlag = args.Get<bool>(0);
@@ -742,18 +867,32 @@ namespace Mochj.Builders
             pmNamespace.Define("Package",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("Package")
                     .Action((Args args) =>
                     {
                         string settingsPath = args.Get<string>(0);
-                        string outDir = args.Get<string>(1);
-                        string manifestOutput = args.Get<string>(2);
+                        bool publishLocal = args.Get<bool>(1);
 
-                        _PackageManager.PackageManager.Package(settingsPath, outDir, manifestOutput);
+                        _PackageManager.PackageManager.Package(settingsPath, publishLocal);
                         return QualifiedObjectBuilder.BuildEmptyValue();
                     })
                     .RegisterParameter<string>("settingsPath")
-                    .RegisterParameter<string>("outDir")
-                    .RegisterParameter<string>("manifestOutput", QualifiedObjectBuilder.BuildString(string.Empty))
+                    .RegisterParameter<bool>("publishLocal", QualifiedObjectBuilder.BuildBoolean(false))
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
+            pmNamespace.Define("Validate",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("Validate")
+                    .Action((Args args) =>
+                    {
+                        string manifestPath = args.Get<string>(0);
+                        _PackageManager.PackageManager.Validate(manifestPath);
+                        return QualifiedObjectBuilder.BuildEmptyValue();
+                    })
+                    .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
                     .ReturnsEmpty()
                     .Build()
                 ));
@@ -761,6 +900,7 @@ namespace Mochj.Builders
             pmNamespace.Define("Use",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("Use")
                     .Action((Args args) =>
                     {
                         string moduleName = args.Get<string>(0);
@@ -774,7 +914,7 @@ namespace Mochj.Builders
                     })
                     .RegisterParameter<string>("moduleName")
                     .RegisterParameter<string>("version")
-                    .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                    .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
                     .RegisterParameter<_Storage.Environment>("environment", QualifiedObjectBuilder.BuildNamespace(environment))
                     .ReturnsEmpty()
                     .Build()
@@ -784,6 +924,7 @@ namespace Mochj.Builders
             pmNamespace.Define("Fetch",
                 QualifiedObjectBuilder.BuildFunction(
                     new NativeFunction()
+                    .Named("Fetch")
                     .Action((Args args) =>
                     {
                         string moduleName = args.Get<string>(0);
@@ -797,7 +938,7 @@ namespace Mochj.Builders
                     })
                     .RegisterParameter<string>("moduleName")
                     .RegisterParameter<string>("version")
-                    .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                    .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
                     .RegisterParameter<bool>("force", QualifiedObjectBuilder.BuildBoolean(false))
                     .ReturnsEmpty()
                     .Build()
@@ -806,6 +947,7 @@ namespace Mochj.Builders
             pmNamespace.Define("FetchAllLatest",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("FetchAllLatest")
                    .Action((Args args) =>
                    {
                        string manifestPath = args.Get<string>(0);
@@ -815,14 +957,16 @@ namespace Mochj.Builders
 
                        return QualifiedObjectBuilder.BuildEmptyValue();
                    })
-                   .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                   .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
                    .RegisterParameter<bool>("force", QualifiedObjectBuilder.BuildBoolean(false))
                    .ReturnsEmpty()
                    .Build()
                ));
-            pmNamespace.Define("Remove",
+
+            pmNamespace.Define("Uninstall",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Uninstall")
                   .Action((Args args) =>
                   {
                       string moduleName = args.Get<string>(0);
@@ -830,24 +974,41 @@ namespace Mochj.Builders
                       string manifestPath = args.Get<string>(2);
                       bool keepCached = args.Get<bool>(3);
 
-                      _PackageManager.PackageManager.Remove(moduleName, version, manifestPath);
+                      _PackageManager.PackageManager.Uninstall(moduleName, version, manifestPath, keepCached);
 
                       return QualifiedObjectBuilder.BuildEmptyValue();
 
                   })
                   .RegisterParameter<string>("moduleName")
                   .RegisterParameter<string>("version")
-                  .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                  .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
                   .RegisterParameter<bool>("keepCached", QualifiedObjectBuilder.BuildBoolean(false))
                   .ReturnsEmpty()
                   .Build()
               ));
 
-          
+            pmNamespace.Define("UninstallAll",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("UninstallAll")
+                  .Action((Args args) =>
+                  {
+                      string manifestPath = args.Get<string>(0);
+
+                      _PackageManager.PackageManager.UninstallAll(manifestPath);
+
+                      return QualifiedObjectBuilder.BuildEmptyValue();
+
+                  })
+                  .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
+                  .ReturnsEmpty()
+                  .Build()
+              ));
 
             pmNamespace.Define("Update",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Update")
                   .Action((Args args) =>
                   {
                       string remoteInfoPath = args.Get<string>(0);
@@ -855,7 +1016,7 @@ namespace Mochj.Builders
                       _PackageManager.PackageManager.Update(remoteInfoPath);
                       return QualifiedObjectBuilder.BuildEmptyValue();
                   })
-                  .RegisterParameter<string>("remoteInfoPath", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "remote.json")))
+                  .RegisterParameter<string>("remoteInfoPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.RemoteInfoPath))
                   .ReturnsEmpty()
                   .Build()
               ));
@@ -863,6 +1024,7 @@ namespace Mochj.Builders
             pmNamespace.Define("List",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("List")
                    .Action((Args args) =>
                    {
                        string manifestPath = args.Get<string>(0);
@@ -872,7 +1034,7 @@ namespace Mochj.Builders
 
                        return QualifiedObjectBuilder.BuildEmptyValue();
                    })
-                   .RegisterParameter<string>("manifestHome", QualifiedObjectBuilder.BuildString(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "manifest.json")))
+                   .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
                    .ReturnsEmpty()
                    .Build()
                ));
@@ -885,6 +1047,7 @@ namespace Mochj.Builders
             nativeListNamespace.Define("Create",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Create")
                   .Action((Args args) =>
                   {
                       return QualifiedObjectBuilder.BuildNativeList(args.ToList().Select(x => x.Value).ToList());
@@ -898,6 +1061,7 @@ namespace Mochj.Builders
             nativeListNamespace.Define("CreateEmpty",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("CreateEmpty")
                   .Action((Args args) =>
                   {
                       return QualifiedObjectBuilder.BuildNativeList(new NativeList(args.Get<DataType>(0)));
@@ -907,9 +1071,26 @@ namespace Mochj.Builders
                   .Build()
               ));
 
+            nativeListNamespace.Define("At",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("At")
+                  .Action((Args args) =>
+                  {
+                      var ls = args.Get<NativeList>(0);
+
+                      return ls.At(args.Get<int>(1));
+                  })
+                  .RegisterParameter<NativeList>("ls")
+                  .RegisterParameter<int>("index")
+                  .Returns<object>()
+                  .Build()
+              ));
+
             nativeListNamespace.Define("IsEmpty",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("IsEmpty")
                   .Action((Args args) =>
                   {
                       var ls = args.Get<NativeList>(0);
@@ -924,6 +1105,7 @@ namespace Mochj.Builders
             nativeListNamespace.Define("Add",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Add")
                   .Action((Args args) =>
                   {
                       var ls = args.Get<NativeList>(0);
@@ -940,6 +1122,7 @@ namespace Mochj.Builders
             nativeListNamespace.Define("RemoveAt",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("RemoveAt")
                   .Action((Args args) =>
                   {
                       var ls = args.Get<NativeList>(0);
@@ -955,6 +1138,7 @@ namespace Mochj.Builders
             nativeListNamespace.Define("Remove",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Remove")
                   .Action((Args args) =>
                   {
                       var ls = args.Get<NativeList>(0);
@@ -970,6 +1154,7 @@ namespace Mochj.Builders
             nativeListNamespace.Define("Find",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Find")
                   .Action((Args args) =>
                   {
                       var ls = args.Get<NativeList>(0);
@@ -984,6 +1169,7 @@ namespace Mochj.Builders
             nativeListNamespace.Define("ForEach",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("ForEach")
                   .Action((Args args) =>
                   {
                       var ls = args.Get<NativeList>(0);
@@ -996,7 +1182,43 @@ namespace Mochj.Builders
                   .Build()
               ));
 
+            nativeListNamespace.Define("ForEachWithIndex",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("ForEach")
+                  .Action((Args args) =>
+                  {
+                      var ls = args.Get<NativeList>(0);
+                      ls.ForEachWithIndex(args.Get<Function>(1));
+                      return QualifiedObjectBuilder.BuildEmptyValue();
+                  })
+                  .RegisterParameter<NativeList>("ls")
+                  .RegisterParameter<Function>("predicate")
+                  .Returns<object>()
+                  .Build()
+              ));
+
+            nativeListNamespace.Define("Count",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("Count")
+                  .Action((Args args) =>
+                  {
+                      var ls = args.Get<NativeList>(0);
+                      if (args.Get(1).Equals(QualifiedObjectBuilder.EmptyFunction()))
+                      {
+                          return QualifiedObjectBuilder.BuildNumber(ls.Count(null));
+                      }
+                      return QualifiedObjectBuilder.BuildNumber(ls.Count(args.Get<Function>(1)));
+                  })
+                  .RegisterParameter<NativeList>("ls")
+                  .RegisterParameter<Function>("predicate", QualifiedObjectBuilder.EmptyFunction())
+                  .Returns<int>()
+                  .Build()
+              ));
+
             #endregion
+
 
             environment.Define("Convert", QualifiedObjectBuilder.BuildNamespace(convertNamespace));
             environment.Define("Fn", QualifiedObjectBuilder.BuildNamespace(fnNamespace));

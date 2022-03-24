@@ -13,7 +13,9 @@ namespace Mochj._Tokenizer
 	{
 		public string StringCatalystExcluded { get; set; } = " \t\n\r";
 		public string StringCatalystEscapable { get; set; } = "";
-	
+		public string WordIncluded { get; set; } = "";
+		public string CatchAllType { get; set; } = "";
+		public bool SkipWhiteSpace { get; set; } = true;
 		public static TokenizerSettings Default { get { return new TokenizerSettings(); } }
 	}
 
@@ -73,7 +75,7 @@ namespace Mochj._Tokenizer
 				{
 					advance();
 				}
-				if (Char.IsWhiteSpace(_cCurrent))
+				if (_settings.SkipWhiteSpace && Char.IsWhiteSpace(_cCurrent))
 				{
 					advance();
 					continue;
@@ -120,6 +122,11 @@ namespace Mochj._Tokenizer
 							break;
 						}
 
+						if (rule.IsEnclosed)
+						{
+							return enclosed(rule.Type, rule.Enclosing);
+						}
+
 						return new Token(rule, _nRow, _nColumn);
 					}
 				}
@@ -149,7 +156,7 @@ namespace Mochj._Tokenizer
 				}
 
 
-				Token result = new Token(_cCurrent.ToString(), _cCurrent.ToString(), _nRow, _nColumn);
+				Token result = new Token(string.IsNullOrWhiteSpace(_settings.CatchAllType)? _cCurrent.ToString() : _settings.CatchAllType, _cCurrent.ToString(), _nRow, _nColumn);
 				advance();
 				return result;
 
@@ -202,9 +209,13 @@ namespace Mochj._Tokenizer
 
 		private void count()
 		{
-			if (_cCurrent == '\r' || _cCurrent == '\n')
+			if (_cCurrent == '\n')
 			{
 				_nRow++;
+				_nColumn = 0;
+			}
+			else if (_cCurrent == '\r')
+			{
 				_nColumn = 0;
 			}
 			else if (_cCurrent == '\t')
@@ -328,12 +339,29 @@ namespace Mochj._Tokenizer
 			}
 			return new Token(TokenTypes.TTString, result.ToString(), _nRow, _nColumn);
 		}
+
+		private Token enclosed(string tokenType, string enclosing)
+		{
+			StringBuilder result = new StringBuilder();
+			while (!_bAtEnd && lookAhead(Convert.ToUInt32(enclosing.Length)) != enclosing)
+			{
+				result.Append(_cCurrent);
+				advance();
+			}
+
+			if (!_bAtEnd)
+			{
+				advance(enclosing.Length);
+			}
+			return new Token(tokenType, result.ToString(), _nRow, _nColumn);
+		}
+
 		private Token word()
 		{
 			StringBuilder result = new StringBuilder();
 
 			string type = TokenTypes.TTWord;
-			while (!_bAtEnd && (_cCurrent == '_' || Char.IsLetterOrDigit(_cCurrent) || _cCurrent == '\0' || _cCurrent == '-'))
+			while (!_bAtEnd && (_cCurrent == '_' || Char.IsLetterOrDigit(_cCurrent) || _cCurrent == '\0' || _settings.WordIncluded.Contains(_cCurrent)))
 			{
 				if (_cCurrent != '\0')
 				{

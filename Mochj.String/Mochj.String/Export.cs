@@ -13,12 +13,30 @@ namespace ExportItems
     {
         public int Setup(Mochj._Storage.Environment environment)
         {
-            Mochj._Storage.Environment stringNamespace = new Mochj._Storage.Environment(null);
+            Mochj._Storage.Environment stringNamespace = new Mochj._Storage.Environment(null).WithAlias("String");
+
+
+            stringNamespace.Define("FromChar",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("FromChar")
+                  .Action((Args args) =>
+                  {
+                      string source = args.Get<string>(0);
+                      int width = args.Get<int>(1);
+                      return QualifiedObjectBuilder.BuildString(new string(source.FirstOrDefault(), width));
+                  })
+                  .RegisterParameter<string>("source")
+                  .RegisterParameter<int>("width")
+                  .Returns<string>()
+                  .Build()
+              ));
 
 
             stringNamespace.Define("Replace",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Replace")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
@@ -36,6 +54,7 @@ namespace ExportItems
             stringNamespace.Define("Contains",
                QualifiedObjectBuilder.BuildFunction(
                    new NativeFunction()
+                   .Named("Contains")
                    .Action((Args args) =>
                    {
                        string source = args.Get<string>(0);
@@ -51,6 +70,7 @@ namespace ExportItems
             stringNamespace.Define("Length",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Length")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
@@ -64,6 +84,7 @@ namespace ExportItems
             stringNamespace.Define("Substring",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Substring")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
@@ -81,6 +102,7 @@ namespace ExportItems
             stringNamespace.Define("Remove",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Remove")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
@@ -98,6 +120,7 @@ namespace ExportItems
             stringNamespace.Define("At",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("At")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
@@ -113,6 +136,7 @@ namespace ExportItems
             stringNamespace.Define("Trim",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Trim")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
@@ -127,6 +151,7 @@ namespace ExportItems
             stringNamespace.Define("ToLower",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("ToLower")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
@@ -141,6 +166,7 @@ namespace ExportItems
             stringNamespace.Define("ToUpper",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("ToUpper")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
@@ -155,6 +181,7 @@ namespace ExportItems
             stringNamespace.Define("Split",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Split")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
@@ -174,6 +201,7 @@ namespace ExportItems
             stringNamespace.Define("StartsWith",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("StartsWith")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
@@ -184,6 +212,44 @@ namespace ExportItems
                   .RegisterParameter<string>("source")
                   .RegisterParameter<string>("testFor")
                   .Returns<bool>()
+                  .Build()
+              ));
+
+            stringNamespace.Define("PadLeft",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("PadLeft")
+                  .Action((Args args) =>
+                  {
+                      string source = args.Get<string>(0);
+                      int totalWidth = args.Get<int>(1);
+                      string padChar = args.Get<string>(2);
+
+                      return QualifiedObjectBuilder.BuildString(source.PadLeft(totalWidth, padChar.FirstOrDefault()));
+                  })
+                  .RegisterParameter<string>("source")
+                  .RegisterParameter<int>("totalWidth")
+                  .RegisterParameter<string>("padChar")
+                  .Returns<string>()
+                  .Build()
+              ));
+
+            stringNamespace.Define("PadRight",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("PadRight")
+                  .Action((Args args) =>
+                  {
+                      string source = args.Get<string>(0);
+                      int totalWidth = args.Get<int>(1);
+                      string padChar = args.Get<string>(2);
+
+                      return QualifiedObjectBuilder.BuildString(source.PadRight(totalWidth, padChar.FirstOrDefault()));
+                  })
+                  .RegisterParameter<string>("source")
+                  .RegisterParameter<int>("totalWidth")
+                  .RegisterParameter<string>("padChar")
+                  .Returns<string>()
                   .Build()
               ));
 

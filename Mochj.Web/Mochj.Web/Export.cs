@@ -16,11 +16,12 @@ namespace ExportItems
     {
         public int Setup(Mochj._Storage.Environment environment)
         {
-            Mochj._Storage.Environment webNamespace = new Mochj._Storage.Environment(null);
+            Mochj._Storage.Environment webNamespace = new Mochj._Storage.Environment(null).WithAlias("Web");
 
             webNamespace.Define("Download",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Download")
                   .Action((Args args) =>
                   {
 

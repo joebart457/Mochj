@@ -13,7 +13,8 @@ namespace Mochj.Models
 
         public bool Equals(QualifiedObject obj)
         {
-            if (obj == null) return false;
+            if (obj == null) return Object == null;
+            if (Object == null) return false;
             return Type.Equals(obj.Type) && ( (Object == null && obj.Object == null) || Object.Equals(obj.Object));
         }
 

@@ -51,6 +51,7 @@ namespace Mochj.Builders
                 return emptyFunction;
             }
             var empty = new NativeFunction()
+                    .Named("Empty")
                    .Action((Args args) => {
                        return BuildEmptyValue();
                    })
@@ -85,6 +86,12 @@ namespace Mochj.Builders
         public static QualifiedObject BuildTypeInfo(DataType value)
         {
             return new QualifiedObject { Object = value, Type = new DataType { TypeId = Enums.DataTypeEnum.TypeInfo } };
+        }
+
+        public static QualifiedObject BuildTypeInfo<Ty>()
+        {
+            DataType dt = TypeMediatorService.DataType<Ty>();
+            return new QualifiedObject { Object = dt, Type = new DataType { TypeId = Enums.DataTypeEnum.TypeInfo } };
         }
     }
 }

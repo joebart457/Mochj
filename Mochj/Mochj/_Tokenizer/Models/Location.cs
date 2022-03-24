@@ -18,7 +18,7 @@ namespace Mochj._Tokenizer.Models
         }
         public override string ToString()
         {
-            return $"{X},{Y}";
+            return $"Line {Y}:{X}";
         }
     }
 }

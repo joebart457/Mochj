@@ -17,7 +17,10 @@ namespace Mochj.Builders
             TokenizerSettings settings = new TokenizerSettings
             {
                 StringCatalystExcluded = ") ",
-                StringCatalystEscapable = ") \\"
+                StringCatalystEscapable = ") \\",
+                WordIncluded = "-",
+                CatchAllType = "",
+                SkipWhiteSpace = true,
             };
 
             List<TokenizerRule> rules = new List<TokenizerRule>();
@@ -37,6 +40,7 @@ namespace Mochj.Builders
             rules.Add(new TokenizerRule(TokenTypes.NativeList, "list"));
             rules.Add(new TokenizerRule(TokenTypes.Empty, "empty"));
             rules.Add(new TokenizerRule(TokenTypes.Any, "any"));
+            rules.Add(new TokenizerRule(TokenTypes.TypeInfo, "typeinfo"));
 
             rules.Add(new TokenizerRule(TokenTypes.Set, "set"));
             rules.Add(new TokenizerRule(TokenTypes.Defn, "defn"));
@@ -75,8 +79,6 @@ namespace Mochj.Builders
             rules.Add(new TokenizerRule(TokenTypes.NotEqual, "!="));
             rules.Add(new TokenizerRule(TokenTypes.LessEqual, "<="));
             rules.Add(new TokenizerRule(TokenTypes.GreaterEqual, ">="));
-            rules.Add(new TokenizerRule(TokenTypes.DoubleLCarat, "<<"));
-            rules.Add(new TokenizerRule(TokenTypes.DoubleRCarat, ">>"));
             rules.Add(new TokenizerRule(TokenTypes.DoubleDash, "--"));
 
             return new Tokenizer(rules, settings);

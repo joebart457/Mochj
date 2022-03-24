@@ -45,7 +45,7 @@ namespace Mochj.Services
             }
             if (typeof(Ty) == typeof(NativeList))
             {
-                return new DataType { TypeId = Enums.DataTypeEnum.NativeList };
+                return new DataType { TypeId = Enums.DataTypeEnum.NativeList, ContainedType = new DataType { TypeId = Enums.DataTypeEnum.Any } };
             }
             if (typeof(Ty) == typeof(DataType))
             {
@@ -94,7 +94,7 @@ namespace Mochj.Services
             }
             if (ty == typeof(NativeList))
             {
-                return new DataType { TypeId = Enums.DataTypeEnum.NativeList };
+                return new DataType { TypeId = Enums.DataTypeEnum.NativeList, ContainedType = new DataType { TypeId = Enums.DataTypeEnum.Any } };
             }
             if (ty == typeof(DataType))
             {

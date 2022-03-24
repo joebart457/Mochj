@@ -3,6 +3,7 @@ using Mochj._Interpreter.Helpers;
 using Mochj._Parser.Models;
 using Mochj._Parser.Models.Expressions;
 using Mochj._Parser.Models.Statements;
+using Mochj._Tokenizer.Models;
 using Mochj.Builders;
 using Mochj.Services;
 using System;
@@ -240,7 +241,7 @@ namespace Mochj.Models.Fn
     public class UserDefinedFunction : Function
     {
         private IList<Statement> _statements;
-
+        private Location _location;
         public UserDefinedFunction(_Storage.Environment enclosing, StmtFnDeclaration stmtFnDeclaration, IList<Parameter> parameters)
         {
             Params = new Params(parameters);
@@ -248,6 +249,7 @@ namespace Mochj.Models.Fn
             Enclosing = enclosing;
             ReturnType = stmtFnDeclaration.ReturnType;
             _statements = stmtFnDeclaration.Statements;
+            _location = stmtFnDeclaration.Loc;
         }
 
         public UserDefinedFunction(_Storage.Environment enclosing, ExprFnDeclaration exprFnDeclaration, IList<Parameter> parameters)
@@ -257,6 +259,7 @@ namespace Mochj.Models.Fn
             Enclosing = enclosing;
             ReturnType = exprFnDeclaration.ReturnType;
             _statements = exprFnDeclaration.Statements;
+            _location = exprFnDeclaration.Loc;
         }
         public override QualifiedObject Call(Args args)
         {
@@ -277,7 +280,7 @@ namespace Mochj.Models.Fn
             } 
             catch (Exception e)
             {
-                throw new Exception($"in call {Name}: {e.Message}");
+                throw new Exception($"Error During Call [symbol:{(Symbol == null? Name : Symbol.ToString())}] location: {_location} \n\t{e.Message}");
             }
             
         }
@@ -309,6 +312,12 @@ namespace Mochj.Models.Fn
                 }
                 return TypeHelper.CheckType(_hFunc(args), ReturnType);
             }
+        }
+
+        public NativeFunction Named(string name)
+        {
+            Name = name;
+            return this;
         }
 
         public NativeFunction Action(Func<Args, QualifiedObject> hFunc)

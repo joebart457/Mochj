@@ -5,14 +5,15 @@ using Mochj.Models.Fn;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace Mochj.Services
 {
     static class ProgramStartupService
     {
-       
         private static void ShowHelp()
         {
             Console.WriteLine("usage: mochj.exe [run_file] [args...]");
@@ -24,6 +25,7 @@ namespace Mochj.Services
             Console.WriteLine("                  | positional (ie. <value1> <value2> ...) ");
             Console.WriteLine("                  | or verbose(ie.  --argname <value> ) ");
         }
+
 
         public static int Startup(string[] args)
         {
@@ -55,7 +57,7 @@ namespace Mochj.Services
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return -1;
             }
         }
@@ -91,13 +93,13 @@ namespace Mochj.Services
                 }
                 catch(ExitException ee)
                 {
-                    Console.WriteLine(ee);
+                    Console.WriteLine(ee.Message);
                     Environment.ExitCode = ee.Value;
                     break;
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Console.WriteLine(e.Message);
                 }
             }
         }

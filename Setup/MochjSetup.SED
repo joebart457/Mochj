@@ -22,7 +22,7 @@ UserQuietInstCmd=%UserQuietInstCmd%
 SourceFiles=SourceFiles
 [Strings]
 InstallPrompt=Would you like to install Mochj?
-DisplayLicense=C:\zzz_WIP\new-project-space\Setup\ReleaseArtifacts\license.txt
+DisplayLicense=C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\license.txt
 FinishMessage=Installation complete. Enjoy!
 TargetName=C:\zzz_WIP\new-project-space\Setup\MochjSetup.EXE
 FriendlyName=Mochj Setup
@@ -32,20 +32,18 @@ AdminQuietInstCmd=
 UserQuietInstCmd=
 FILE0="install.bat"
 FILE1="license.txt"
-FILE2="remote.json"
-FILE3="Mochj.exe"
-FILE4="Mochj.exe.config"
-FILE5="Mochj.pdb"
-FILE6="Newtonsoft.Json.dll"
-FILE7="Newtonsoft.Json.xml"
+FILE2="Mochj.exe"
+FILE3="Mochj.exe.config"
+FILE4="Mochj.pdb"
+FILE5="Newtonsoft.Json.dll"
+FILE6="Newtonsoft.Json.xml"
+FILE7="remote.json"
 [SourceFiles]
-SourceFiles0=C:\zzz_WIP\new-project-space\Setup\ReleaseArtifacts\
-SourceFiles1=C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\
+SourceFiles0=C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\
 [SourceFiles0]
 %FILE0%=
 %FILE1%=
 %FILE2%=
-[SourceFiles1]
 %FILE3%=
 %FILE4%=
 %FILE5%=

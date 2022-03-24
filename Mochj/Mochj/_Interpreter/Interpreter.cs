@@ -5,6 +5,7 @@ using Mochj._Parser.Models.Statements;
 using Mochj.Builders;
 using Mochj.Models;
 using Mochj.Models.Constants;
+using Mochj.Models.ControlFlow;
 using Mochj.Models.Fn;
 using Mochj.Services;
 using System;
@@ -26,7 +27,7 @@ namespace Mochj._Interpreter
             if (environment == null)
             {
                 _environment = new _Storage.Environment(null);
-            }else
+            } else
             {
                 _environment = environment;
             }
@@ -74,7 +75,7 @@ namespace Mochj._Interpreter
                 path = LoadFileHelper.SwitchPathToExecutableHome(path);
                 if (!File.Exists(path))
                 {
-                    throw new Exception($"unable to open {stmtLoad.Path}");
+                    throw new Exception($"unable to open {stmtLoad.Path} location: {stmtLoad.Loc}");
                 }
             }
             LoadFileHelper.LoadFile(_environment.Top(), path);
@@ -134,7 +135,7 @@ namespace Mochj._Interpreter
             QualifiedObject callable = SymbolResolverHelper.Resolve(_environment, exprCall.Symbol);
             if (!callable.Type.Is(Enums.DataTypeEnum.Fn))
             {
-                throw new Exception($"[symbol:{exprCall.Symbol}] expected object of type '{Enums.DataTypeEnum.Fn}' but got '{callable.Type}'");
+                throw new Exception($"[symbol:{exprCall.Symbol}] expected object of type '{Enums.DataTypeEnum.Fn}' but got '{callable.Type}' location: {exprCall.Loc}");
             }
             if (callable.Object is Models.Fn.Function fn)
             {
@@ -143,10 +144,29 @@ namespace Mochj._Interpreter
                 {
                     arguments.Add(ResolveArgument(exprArgument));
                 }
-                return fn.Call(fn.ResolveArguments(arguments));
+                try
+                {
+                    return fn.Call(fn.ResolveArguments(arguments));
+                }
+                catch(ReturnException ret)
+                {
+                    throw ret;
+                }
+                catch (BreakException brk)
+                {
+                    throw brk;
+                }
+                catch (ContinueException cont)
+                {
+                    throw cont;
+                }
+                catch(Exception e)
+                {
+                    throw new Exception($"Error in Call [symbol:{exprCall.Symbol}] location: {exprCall.Loc}\n\t{e.Message}");
+                }
             } else
             {
-                throw new Exception($"error converting object {callable} to native callable type");
+                throw new Exception($"error converting object {callable} to native callable type. location: {exprCall.Loc}");
             }
         }
 

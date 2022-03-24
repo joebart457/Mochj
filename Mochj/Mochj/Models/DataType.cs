@@ -16,6 +16,23 @@ namespace Mochj.Models
         {
             return TypeId == dte;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            return Equals((DataType)obj);
+
+        }
+
         public bool Equals(DataType rhs)
         {
             if (rhs == null) return false;
@@ -35,6 +52,10 @@ namespace Mochj.Models
             return false;
         }
 
+        public override int GetHashCode()
+        {
+            return TypeId.GetHashCode();
+        }
         public override string ToString()
         {
             if (TypeId != DataTypeEnum.NativeList)

@@ -10,6 +10,8 @@ namespace Mochj._PackageManager.Models
     {
         public string VersionNumber { get; set; }
         public string RemoteUrl { get; set; }
+        public string LocalPath { get; set; }
+        public string Hash { get; set; }
         public List<string> LoadFiles { get; set; } = new List<string>();
     }
 }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,9 +17,9 @@ namespace ExportItems
     {
         public int Setup(Mochj._Storage.Environment environment)
         {
-            Mochj._Storage.Environment fsNamespace = new Mochj._Storage.Environment(null);
-            Mochj._Storage.Environment fileNamespace = new Mochj._Storage.Environment(null);
-            Mochj._Storage.Environment dirNamespace = new Mochj._Storage.Environment(null);
+            Mochj._Storage.Environment fsNamespace = new Mochj._Storage.Environment(null).WithAlias("FileSystem");
+            Mochj._Storage.Environment fileNamespace = new Mochj._Storage.Environment(null).WithAlias("File");
+            Mochj._Storage.Environment dirNamespace = new Mochj._Storage.Environment(null).WithAlias("Directory");
 
             fsNamespace.Define("File", QualifiedObjectBuilder.BuildNamespace(fileNamespace));
             fsNamespace.Define("Directory", QualifiedObjectBuilder.BuildNamespace(dirNamespace));
@@ -26,6 +27,7 @@ namespace ExportItems
             dirNamespace.Define("ForEach",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("ForEach")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -53,6 +55,7 @@ namespace ExportItems
             dirNamespace.Define("Exists",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Exists")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -67,6 +70,7 @@ namespace ExportItems
             dirNamespace.Define("Create",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Create")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -82,6 +86,7 @@ namespace ExportItems
             dirNamespace.Define("Delete",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Delete")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -100,6 +105,7 @@ namespace ExportItems
             fileNamespace.Define("ForEachTag",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("ForEachTag")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -131,6 +137,7 @@ namespace ExportItems
             fileNamespace.Define("GetTags",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("GetTags")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -149,6 +156,7 @@ namespace ExportItems
             fileNamespace.Define("Exists",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Exists")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -163,6 +171,7 @@ namespace ExportItems
             fileNamespace.Define("Create",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Create")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -178,6 +187,7 @@ namespace ExportItems
             fileNamespace.Define("Move",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Move")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>("source");
@@ -195,6 +205,7 @@ namespace ExportItems
             fileNamespace.Define("Copy",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Copy")
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>("source");
@@ -214,6 +225,7 @@ namespace ExportItems
             fileNamespace.Define("Delete",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Delete")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -229,6 +241,7 @@ namespace ExportItems
             fileNamespace.Define("Write",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Write")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -247,6 +260,7 @@ namespace ExportItems
             fileNamespace.Define("Read",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("Read")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -261,6 +275,7 @@ namespace ExportItems
             fileNamespace.Define("ReadLines",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("ReadLines")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -276,6 +291,7 @@ namespace ExportItems
             fileNamespace.Define("ForEachLine",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("ForEachLine")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -296,9 +312,10 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("GetFilename",
+            fileNamespace.Define("GetFileName",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("GetFileName")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -312,6 +329,7 @@ namespace ExportItems
             fileNamespace.Define("GetDirectory",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("GetDirectory")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -325,6 +343,7 @@ namespace ExportItems
             fileNamespace.Define("GetExtension",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("GetExtension")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -338,6 +357,7 @@ namespace ExportItems
             fileNamespace.Define("GetFileNameWithoutExtension",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("GetFileNameWithoutExtension")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -351,6 +371,7 @@ namespace ExportItems
             fileNamespace.Define("GetFullPath",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("GetFullPath")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -361,9 +382,32 @@ namespace ExportItems
                   .Build()
               ));
 
+            fileNamespace.Define("GenerateHash",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("GenerateHash")
+                  .Action((Args args) =>
+                  {
+                      string path = args.Get<string>(0);
+                      using (var md5 = MD5.Create())
+                      {
+                          using (var stream = File.OpenRead(path))
+                          {
+                              var hash = md5.ComputeHash(stream);
+                              return QualifiedObjectBuilder.BuildString(BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant());
+                          }
+                      }
+                      
+                  })
+                  .RegisterParameter<string>("path")
+                  .Returns<string>()
+                  .Build()
+              ));
+
             fsNamespace.Define("GetExeHome",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("GetExeHome")
                   .Action((Args args) =>
                   {
                       string strExeFilePath = System.Reflection.Assembly.GetCallingAssembly().Location;
@@ -376,6 +420,7 @@ namespace ExportItems
             fsNamespace.Define("GetExePath",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
+                  .Named("GetExePath")
                   .Action((Args args) =>
                   {
                       string strExeFilePath = System.Reflection.Assembly.GetCallingAssembly().Location;

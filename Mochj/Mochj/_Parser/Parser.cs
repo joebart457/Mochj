@@ -6,6 +6,7 @@ using Mochj._Tokenizer.Constants;
 using Mochj._Tokenizer.Models;
 using Mochj.Builders;
 using Mochj.Models;
+using Mochj.Models.Fn;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -174,6 +175,14 @@ namespace Mochj._Parser
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.Any };
             }
+            if (match(TokenTypes.Any))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.Any };
+            }
+            if (match(TokenTypes.TypeInfo))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.TypeInfo };
+            }
             if (match(TokenTypes.NativeList))
             {
                 DataType dt = new DataType { TypeId = Enums.DataTypeEnum.NativeList };
@@ -212,7 +221,7 @@ namespace Mochj._Parser
         private Expression parseLiteralFunctionDeclaration()
         {
             ExprFnDeclaration exprFnDeclaration = new ExprFnDeclaration(previous().Loc);
-            if (!match(current(), TokenTypes.LBracket))
+            if (match(current(), TokenTypes.TTWord))
             {
                 StmtParameter fnNameRetType = parseParameter(0, false);
                 exprFnDeclaration.Name = fnNameRetType.Alias;
@@ -348,6 +357,50 @@ namespace Mochj._Parser
                 ExprIdentifier exprIdentifier = new ExprIdentifier(previous().Loc);
                 exprIdentifier.Symbol = parseSymbol();
                 return exprIdentifier;
+            }
+            if (match(TokenTypes.Number))
+            {
+                exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo<double>();
+                return exprLiteral;
+            }
+            if (match(TokenTypes.Boolean))
+            {
+                exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo<bool>();
+                return exprLiteral;
+            }
+            if (match(TokenTypes.Fn))
+            {
+                exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo<Function>();
+                return exprLiteral;
+            }
+            if (match(TokenTypes.String))
+            {
+                exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo<string>();
+                return exprLiteral;
+            }
+            if (match(TokenTypes.TypeInfo))
+            {
+                exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo<DataType>();
+                return exprLiteral;
+            }
+            if (match(TokenTypes.Empty))
+            {
+                exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo(new DataType { TypeId = Enums.DataTypeEnum.Empty });
+                return exprLiteral;
+            }
+            if (match(TokenTypes.Any))
+            {
+                exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo<object>();
+                return exprLiteral;
+            }
+            if (match(TokenTypes.NativeList))
+            {
+                DataType dt = new DataType { TypeId = Enums.DataTypeEnum.NativeList };
+                consume(TokenTypes.LCarat, "expect List<contained-typename> ");
+                dt.ContainedType = parseDataType();
+                consume(TokenTypes.RCarat, "expect enclosing '>'");
+                exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo(dt);
+                return exprLiteral;
             }
             throw new Exception($"unexpected token in primary {current()}");
         }
