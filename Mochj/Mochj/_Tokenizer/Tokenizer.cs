@@ -16,6 +16,11 @@ namespace Mochj._Tokenizer
 		public string WordIncluded { get; set; } = "";
 		public string CatchAllType { get; set; } = "";
 		public bool SkipWhiteSpace { get; set; } = true;
+
+		/// <summary>
+		/// When <value>true</value>, counts tabs and newlines as one char column and does not add to the row counter
+		/// </summary>
+		public bool AllOneLine { get; set; }
 		public static TokenizerSettings Default { get { return new TokenizerSettings(); } }
 	}
 
@@ -107,7 +112,7 @@ namespace Mochj._Tokenizer
 						}
 						if (rule.Type == TokenTypes.StringCatalyst)
                         {
-							return strcatalyst();
+							return strcatalyst(rule.Value);
                         }
 
 						if (rule.Type == TokenTypes.EOLComment)
@@ -209,6 +214,11 @@ namespace Mochj._Tokenizer
 
 		private void count()
 		{
+			if (_settings.AllOneLine)
+            {
+				_nColumn++;
+				return;
+            }
 			if (_cCurrent == '\n')
 			{
 				_nRow++;
@@ -337,7 +347,7 @@ namespace Mochj._Tokenizer
 			{
 				advance(enclosing.Length);
 			}
-			return new Token(TokenTypes.TTString, result.ToString(), _nRow, _nColumn);
+			return new Token(TokenTypes.TTString, result.ToString(), _nRow, _nColumn, enclosing, enclosing);
 		}
 
 		private Token enclosed(string tokenType, string enclosing)
@@ -353,7 +363,7 @@ namespace Mochj._Tokenizer
 			{
 				advance(enclosing.Length);
 			}
-			return new Token(tokenType, result.ToString(), _nRow, _nColumn);
+			return new Token(tokenType, result.ToString(), _nRow, _nColumn, enclosing, enclosing);
 		}
 
 		private Token word()
@@ -385,7 +395,7 @@ namespace Mochj._Tokenizer
 			return new Token(type, result.ToString(), _nRow, _nColumn);
 		}
 
-		private Token strcatalyst()
+		private Token strcatalyst(string precursor)
 		{
 			StringBuilder result = new StringBuilder();
 			bool bSlash = false;
@@ -423,7 +433,7 @@ namespace Mochj._Tokenizer
 			}
 
 
-			return new Token(TokenTypes.TTString, result.ToString(), _nRow, _nColumn);
+			return new Token(TokenTypes.TTString, result.ToString(), _nRow, _nColumn, precursor);
 		}
 
 		private Token number()

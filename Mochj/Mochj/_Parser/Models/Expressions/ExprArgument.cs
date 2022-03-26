@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Parser.Models.Expressions
 {
-    class ExprArgument
+    public class ExprArgument
     {
         public int Position { get; set; }
         public string ParameterAlias { get; set; }

@@ -49,7 +49,7 @@ namespace Mochj._Interpreter
             }
         }
 
-        public void Accept(IEnumerable<Statement> statements)
+        public virtual void Accept(IEnumerable<Statement> statements)
         {
             foreach(Statement statement in statements)
             {
@@ -57,17 +57,17 @@ namespace Mochj._Interpreter
             }
         }
 
-        internal void Accept(Statement statement)
+        public virtual void Accept(Statement statement)
         {
             statement.Visit(this);
         }
 
-        internal void Accept(StmtNamespace stmtNamespace)
+        public virtual void Accept(StmtNamespace stmtNamespace)
         {
             _environment = SymbolResolverHelper.ResolveToNamespace(_environment.Top(), stmtNamespace.Symbol);
         }
 
-        internal void Accept(StmtLoad stmtLoad)
+        public virtual void Accept(StmtLoad stmtLoad)
         {
             string path = stmtLoad.Path;
             if (!File.Exists(path))
@@ -81,12 +81,12 @@ namespace Mochj._Interpreter
             LoadFileHelper.LoadFile(_environment.Top(), path);
         }
 
-        internal void Accept(StmtEntry stmtEntry)
+        public virtual void Accept(StmtEntry stmtEntry)
         {
             _entryPoint = stmtEntry.Symbol;
         }
 
-        internal void Accept(StmtSet stmtSet)
+        public virtual void Accept(StmtSet stmtSet)
         {
             if (SymbolResolverHelper.Resolvable(_environment, stmtSet.Identifier))
             {
@@ -97,7 +97,7 @@ namespace Mochj._Interpreter
             }
         }
 
-        internal void Accept(StmtFnDeclaration stmtFnDeclaration)
+        public virtual void Accept(StmtFnDeclaration stmtFnDeclaration)
         {
             IList<Parameter> resolvedParameters = new List<Parameter>();
             foreach (StmtParameter stmtParameter in stmtFnDeclaration.Parameters)
@@ -108,7 +108,7 @@ namespace Mochj._Interpreter
             StorageHelper.Define(_environment, fn.Name, QualifiedObjectBuilder.BuildFunction(fn));
         }
 
-        private Parameter ResolveParameter(StmtParameter stmtParameter)
+        public virtual Parameter ResolveParameter(StmtParameter stmtParameter)
         {
             Parameter parameter = new Parameter();
             parameter.Alias = stmtParameter.Alias;
@@ -121,16 +121,16 @@ namespace Mochj._Interpreter
             return parameter;
         }
 
-        internal void Accept(StmtExpression stmtExpression)
+        public virtual void Accept(StmtExpression stmtExpression)
         {
             Accept(stmtExpression.Expression);
         }
 
-        internal QualifiedObject Accept(Expression expression)
+        public virtual QualifiedObject Accept(Expression expression)
         {
             return expression.Visit(this);
         }
-        internal QualifiedObject Accept(ExprCall exprCall)
+        public virtual QualifiedObject Accept(ExprCall exprCall)
         {
             QualifiedObject callable = SymbolResolverHelper.Resolve(_environment, exprCall.Symbol);
             if (!callable.Type.Is(Enums.DataTypeEnum.Fn))
@@ -160,7 +160,11 @@ namespace Mochj._Interpreter
                 {
                     throw cont;
                 }
-                catch(Exception e)
+                catch (ExitException ee)
+                {
+                    throw ee;
+                }
+                catch (Exception e)
                 {
                     throw new Exception($"Error in Call [symbol:{exprCall.Symbol}] location: {exprCall.Loc}\n\t{e.Message}");
                 }
@@ -179,7 +183,7 @@ namespace Mochj._Interpreter
             return argument;
         }
 
-        internal QualifiedObject Accept(ExprFnDeclaration exprFnDeclaration)
+        public virtual QualifiedObject Accept(ExprFnDeclaration exprFnDeclaration)
         {
             IList<Parameter> resolvedParameters = new List<Parameter>();
             foreach (StmtParameter stmtParameter in exprFnDeclaration.Parameters)
@@ -190,12 +194,12 @@ namespace Mochj._Interpreter
             return  QualifiedObjectBuilder.BuildFunction(fn);
         }
 
-        internal QualifiedObject Accept(ExprIdentifier exprIdentifier)
+        public virtual QualifiedObject Accept(ExprIdentifier exprIdentifier)
         {
             return SymbolResolverHelper.Resolve(_environment, exprIdentifier.Symbol);
         }
 
-        internal QualifiedObject Accept(ExprLiteral exprLiteral)
+        public virtual QualifiedObject Accept(ExprLiteral exprLiteral)
         {
             return exprLiteral.Value;
         }

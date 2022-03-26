@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Parser.Models.Statements
 {
-    class StmtExpression: Statement
+    public class StmtExpression: Statement
     {
         public Expression Expression { get; set; }
         public StmtExpression(Location loc)

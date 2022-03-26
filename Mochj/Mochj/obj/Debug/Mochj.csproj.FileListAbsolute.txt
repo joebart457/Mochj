@@ -1,6 +1,8 @@
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\license.txt
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\install.bat
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\remote.json
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\RunTests.bat
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\Test.mochj
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\Mochj.exe.config
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\Mochj.exe
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\Mochj.pdb

@@ -18,5 +18,6 @@ namespace Mochj.Enums
         Any = 8,
         NativeList = 9,
         TypeInfo = 10,
+        Unknown = 11,
     }
 }

@@ -10,9 +10,9 @@ namespace Mochj
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            ProgramStartupService.Startup(args);
+            return ProgramStartupService.Startup(args);
         }
     }
 }

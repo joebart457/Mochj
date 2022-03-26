@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Parser.Models.Statements
 {
-    class StmtEntry : Statement
+    public class StmtEntry : Statement
     {
         public Symbol Symbol { get; set; }
         public StmtEntry(Location loc)

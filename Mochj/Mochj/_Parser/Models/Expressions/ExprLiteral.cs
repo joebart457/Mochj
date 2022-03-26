@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Parser.Models.Expressions
 {
-    class ExprLiteral: Expression
+    public class ExprLiteral : Expression
     {
         public QualifiedObject Value { get; set; }
         public ExprLiteral(Location loc)

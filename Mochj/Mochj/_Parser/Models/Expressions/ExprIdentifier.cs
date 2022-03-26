@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Parser.Models.Expressions
 {
-    class ExprIdentifier: Expression
+    public class ExprIdentifier : Expression
     {
         public Symbol Symbol { get; set; }
         public ExprIdentifier(Location loc)

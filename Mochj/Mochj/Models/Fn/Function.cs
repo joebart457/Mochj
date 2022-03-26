@@ -278,6 +278,10 @@ namespace Mochj.Models.Fn
                 }
                 throw re;
             } 
+            catch (ExitException ee)
+            {
+                throw ee;
+            }
             catch (Exception e)
             {
                 throw new Exception($"Error During Call [symbol:{(Symbol == null? Name : Symbol.ToString())}] location: {_location} \n\t{e.Message}");

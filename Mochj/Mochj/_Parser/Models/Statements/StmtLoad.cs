@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Parser.Models.Statements
 {
-    class StmtLoad : Statement
+    public class StmtLoad : Statement
     {
         public string Path { get; set; }
         public StmtLoad(Location loc)

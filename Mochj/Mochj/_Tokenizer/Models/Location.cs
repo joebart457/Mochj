@@ -8,10 +8,10 @@ namespace Mochj._Tokenizer.Models
 {
     public class Location
     {
-        public ulong X { get; set; }
-        public ulong Y { get; set; }
+        public uint X { get; set; }
+        public uint Y { get; set; }
 
-        public Location(ulong x, ulong y)
+        public Location(uint x, uint y)
         {
             X = x;
             Y = y;

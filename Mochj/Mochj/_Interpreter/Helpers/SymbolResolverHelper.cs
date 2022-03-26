@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Interpreter.Helpers
 {
-    static class SymbolResolverHelper
+    public static class SymbolResolverHelper
     {
 
         public static QualifiedObject Resolve(_Storage.Environment environment, Symbol symbol)

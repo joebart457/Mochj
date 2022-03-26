@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Tokenizer.Constants
 {
-    static class TokenTypes
+    public static class TokenTypes
     {
         // Tokenizer required types
         public const string StringEnclosing = "StringEnclosing";

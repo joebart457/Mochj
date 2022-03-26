@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Interpreter.Helpers
 {
-    static class TypeHelper
+    public static class TypeHelper
     {
         /// <summary>
         /// 

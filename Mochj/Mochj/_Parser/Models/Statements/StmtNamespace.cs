@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Parser.Models.Statements
 {
-    class StmtNamespace: Statement
+    public class StmtNamespace : Statement
     {
         public Symbol Symbol { get; set; }
         public StmtNamespace(Location loc)

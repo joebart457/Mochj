@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Parser.Models.Expressions
 {
-    class ExprCall: Expression
+    public class ExprCall : Expression
     {
         public Symbol Symbol { get; set; }
         public IList<ExprArgument> Arguments { get; set; }

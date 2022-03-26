@@ -21,9 +21,9 @@ namespace Mochj.Builders
     {
         private static _Storage.Environment _default = null;
         public static _Storage.Environment Default { get { return _default == null ? Build() : _default; } }
-        public static _Storage.Environment Build()
+        public static _Storage.Environment Build(bool _force = false)
         {
-            if (_default != null) return _default;
+            if (!_force && _default != null) return _default;
             _Storage.Environment environment = new _Storage.Environment(null);
             _default = environment;
 

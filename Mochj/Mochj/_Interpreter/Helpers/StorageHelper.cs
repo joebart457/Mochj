@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Mochj._Interpreter.Helpers
 {
-    static class StorageHelper
+    public static class StorageHelper
     {
         public static void AssignStrict(_Storage.Environment environment, string alias, QualifiedObject value)
         {
