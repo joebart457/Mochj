@@ -7,6 +7,7 @@ using Mochj.Builders;
 using Mochj.Models;
 using Mochj.Services;
 using MochjLanguage._Interpreter;
+using MochjLanguage.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,10 @@ namespace MochjLanguage.Service
 {
     public static class MochjScriptingService
     {
-
+        public static List<Token> FnTokens { get; set; } = new List<Token>();
+        public static List<Token> IdentifierTokens { get; set; } = new List<Token>();
+        public static List<Token> ParameterTokens { get; set; } = new List<Token>();
+        public static List<Token> InvalidTokens { get; set; }
         public static Environment Env { get; set; }
 
         /// <summary>
@@ -69,13 +73,11 @@ namespace MochjLanguage.Service
                 var env = DefaultEnvironmentBuilder.Build(true);
                 var interpreter = new MochjScriptInterpreter(env);
                 var stmts = ParseTokens(TokenizeText(rawText), out var invalidToken);
-                foreach(Statement stmt in stmts)
+                interpreter.Accept(stmts);
+                foreach ((Mochj._Storage.Environment e, List<Statement> stmt) in interpreter.ReInterpret)
                 {
-                    if (stmt is StmtExpression expr) { }
-                    else if (stmt != null)
-                    {
-                        stmt.Visit(interpreter);
-                    }
+                    new MochjScriptInterpreter(e).Accept(stmt);
+
                 }
                 Env = env;
                 return true;
@@ -84,6 +86,9 @@ namespace MochjLanguage.Service
                 return false;
             }
         }
+
+       
+
         public static IEnumerable<Statement> ParseTokens(IEnumerable<Token> tokens, out Token invalidToken)
         {
             var parser = new ResilientParser();
@@ -92,7 +97,7 @@ namespace MochjLanguage.Service
 
         public static IEnumerable<Token> TokenizeText(string rawText)
         {
-            return DefaultTokenizerBuilder.Build().Tokenize(rawText);
+            return MochjScriptTokenizerBuilder.Build().Tokenize(rawText);
         }
     }
 }

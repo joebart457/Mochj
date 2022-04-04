@@ -272,8 +272,9 @@ namespace Mochj._Parser
 
         private Expression parseCall()
         {
+            Symbol sym = parseSymbol();
             ExprCall exprCall = new ExprCall(previous().Loc);
-            exprCall.Symbol = parseSymbol();
+            exprCall.Symbol = sym;
             exprCall.Arguments = new List<ExprArgument>();
             bool requireExplicitTypes = false;
             int argCount = 0;

@@ -66,5 +66,29 @@ namespace Mochj._Interpreter.Helpers
             }
             return current;
         }
+
+        public static _Storage.Environment ResolveToNamespaceOrNull(_Storage.Environment environment, Symbol symbol)
+        {
+            if (symbol == null || symbol.Names == null || !symbol.Names.Any()) return environment;
+            _Storage.Environment current = environment;
+            foreach (string name in symbol.Names)
+            {
+                if (current.ExistsLocal(name))
+                {
+                    QualifiedObject result;
+                    if (current.TryGet(name, out result) && result.Type.Is(Enums.DataTypeEnum.Namespace))
+                    {
+                        current = TypeMediatorService.ToNativeType<_Storage.Environment>(result);
+                        continue;
+                    }
+                    return null;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return current;
+        }
     }
 }

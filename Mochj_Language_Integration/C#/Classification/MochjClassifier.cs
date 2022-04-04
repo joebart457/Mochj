@@ -82,7 +82,8 @@ namespace MochjLanguage
             _mochjTokenTypes[MochjTokenTypes.String_1] = typeService.GetClassificationType("String_1");
             _mochjTokenTypes[MochjTokenTypes.Interpreted_Fn] = typeService.GetClassificationType("Interpreted_Fn");
             _mochjTokenTypes[MochjTokenTypes.Interpreted_Ns] = typeService.GetClassificationType("Interpreted_Ns");
-
+            _mochjTokenTypes[MochjTokenTypes.Interpreted_Id] = typeService.GetClassificationType("Interpreted_Id");
+            _mochjTokenTypes[MochjTokenTypes.Interpreted_Param] = typeService.GetClassificationType("Interpreted_Param");
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged
@@ -98,8 +99,12 @@ namespace MochjLanguage
         {
             foreach (var tagSpan in _aggregator.GetTags(spans))
             {
-                var tagSpans = tagSpan.Span.GetSpans(spans[0].Snapshot);
-                yield return new TagSpan<ClassificationTag>(tagSpans[0], new ClassificationTag(_mochjTokenTypes[tagSpan.Tag.type]));
+                foreach (var s in spans)
+                {
+                    var tagSpans = tagSpan.Span.GetSpans(s.Snapshot);
+                    foreach (var t in tagSpans) yield return new TagSpan<ClassificationTag>(t, new ClassificationTag(_mochjTokenTypes[tagSpan.Tag.type]));
+                }
+               
             }
         }
     }

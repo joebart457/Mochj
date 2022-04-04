@@ -89,16 +89,21 @@ namespace MochjLanguage
             _supportedTypes[TokenTypes.TTUnsignedInteger] = MochjTokenTypes.Literal_2;
 
             _supportedTypes[TokenTypes.TTString] = MochjTokenTypes.String_1;
+
         }
 
-        public event EventHandler<SnapshotSpanEventArgs> TagsChanged
+        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
+
+        private void Update(object sender, TextViewLayoutChangedEventArgs args)
         {
-            add { }
-            remove { }
+            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(args.NewSnapshot, 0, args.NewSnapshot.Length)));
         }
 
         public IEnumerable<ITagSpan<MochjTokenTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
+            MochjScriptingService.RunScriptInBackground(spans[0].Snapshot.GetText());
+            var fnTokens = MochjScriptingService.FnTokens.Select(x => new Token(x.Type, x.Lexeme, x.Loc.Y, x.Loc.X)).ToList();
+
             StringBuilder sb = new StringBuilder();
 
             if (spans.Count > 0)
@@ -120,28 +125,18 @@ namespace MochjLanguage
                         {
                             yield return new TagSpan<MochjTokenTag>(tokenSpan, new MochjTokenTag(_supportedTypes[token.Type]));
                         }
-                    } else if (token.Type == TokenTypes.TTWord)
+                    } else if (token.Type == TokenTypes.TTWord && fnTokens != null)
                     {
-                        var dt = MochjLanguageService.GetDataTypeForToken(token, tokens);
-                        if (dt != null)
+                        var test = MochjScriptingService.FnTokens.Count(x => x.Loc.X == token.Loc.X && x.Loc.Y == token.Loc.Y) > 0;
+                        if (test)
                         {
-                            if (dt.Is(Mochj.Enums.DataTypeEnum.Fn))
+                            var tokenSpan = new SnapshotSpan(curSpan.Snapshot, GetSpanForToken(token));
+                            if (tokenSpan.IntersectsWith(curSpan))
                             {
-                                var tokenSpan = new SnapshotSpan(curSpan.Snapshot, GetSpanForToken(token));
-                                if (tokenSpan.IntersectsWith(curSpan))
-                                {
-                                    yield return new TagSpan<MochjTokenTag>(tokenSpan, new MochjTokenTag(MochjTokenTypes.Interpreted_Fn));
-                                }
-                            }
-                            else if (dt.Is(Mochj.Enums.DataTypeEnum.Namespace))
-                            {
-                                var tokenSpan = new SnapshotSpan(curSpan.Snapshot, GetSpanForToken(token));
-                                if (tokenSpan.IntersectsWith(curSpan))
-                                {
-                                    yield return new TagSpan<MochjTokenTag>(tokenSpan, new MochjTokenTag(MochjTokenTypes.Interpreted_Ns));
-                                }
+                                yield return new TagSpan<MochjTokenTag>(tokenSpan, new MochjTokenTag(MochjTokenTypes.Interpreted_Fn));
                             }
                         }
+                        
                     }
                 }
 

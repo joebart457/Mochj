@@ -2,11 +2,13 @@
 using Mochj._Parser.Models;
 using Mochj._Parser.Models.Expressions;
 using Mochj._Parser.Models.Statements;
+using Mochj._Tokenizer.Models;
 using Mochj.Builders;
 using Mochj.Models;
 using Mochj.Models.Fn;
 using Mochj.Services;
 using MochjLanguage._Interpreter.Helpers;
+using MochjLanguage.Service;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,6 +22,11 @@ namespace MochjLanguage._Interpreter
     {
         private Mochj._Storage.Environment _environment;
         private Symbol _entryPoint;
+
+        private List<string> _currentFnParameterSymbols = new List<string>();
+
+        public List<(Mochj._Storage.Environment, List<Statement>)> ReInterpret { get; set; } = new List<(Mochj._Storage.Environment, List<Statement>)>();
+
         public MochjScriptInterpreter(Mochj._Storage.Environment environment)
             :base(environment)
         {
@@ -31,11 +38,14 @@ namespace MochjLanguage._Interpreter
             {
                 _environment = environment;
             }
+            MochjScriptingService.FnTokens = new List<Token>();
+            MochjScriptingService.IdentifierTokens = new List<Token>();
         }
 
 
         public override void Accept(IEnumerable<Statement> statements)
         {
+            ReInterpret = new List<(Mochj._Storage.Environment, List<Statement>)>();
             foreach (Statement statement in statements)
             {
                 Accept(statement);
@@ -47,9 +57,9 @@ namespace MochjLanguage._Interpreter
             try
             {
                 statement.Visit(this);
-            } catch (Exception)
+            } catch (Exception e)
             {
-
+                var x = e;
             }
         }
 
@@ -82,7 +92,7 @@ namespace MochjLanguage._Interpreter
         {
             if (SymbolResolverHelper.Resolvable(_environment, stmtSet.Identifier))
             {
-                StorageHelper.AssignStrict(_environment, stmtSet.Identifier, Accept(stmtSet.Value));
+                StorageHelper.Define(_environment, stmtSet.Identifier, Accept(stmtSet.Value));
             }
             else
             {
@@ -93,13 +103,33 @@ namespace MochjLanguage._Interpreter
         public override void Accept(StmtFnDeclaration stmtFnDeclaration)
         {
             IList<Parameter> resolvedParameters = new List<Parameter>();
+            _currentFnParameterSymbols = new List<string>();
             foreach (StmtParameter stmtParameter in stmtFnDeclaration.Parameters)
             {
-                resolvedParameters.Add(ResolveParameter(stmtParameter));
+                var param = ResolveParameter(stmtParameter);
+                resolvedParameters.Add(param);
+                _currentFnParameterSymbols.Add(param.Alias);
             }
             Function fn = new UserDefinedFunction(_environment, stmtFnDeclaration, resolvedParameters);
             StorageHelper.Define(_environment, fn.Name, QualifiedObjectBuilder.BuildFunction(fn));
+            var previous = _environment;
+            _environment = new Mochj._Storage.Environment(previous);
+            try
+            {
+                foreach(var param in resolvedParameters)
+                {
+                    var obj = DefaultObjectBuilder.BuildDefault(param.Type);
+                    obj.Object = "<param>";
+                    _environment.Define(param.Alias, obj);
+                }
+                ReInterpret.Add((_environment, stmtFnDeclaration.Statements.ToList()));
+            } catch(Exception e)
+            {
+
+            }
+            _environment = previous;
         }
+
 
         public override Parameter ResolveParameter(StmtParameter stmtParameter)
         {
@@ -129,9 +159,18 @@ namespace MochjLanguage._Interpreter
             {
                 QualifiedObject callable = SymbolResolverHelper.Resolve(_environment, exprCall.Symbol);
                 Function fn = TypeMediatorService.ToNativeType<Function>(callable);
+
+                MochjScriptingService.FnTokens.Add(new Token("_Interpreted_Fn", exprCall.Symbol.Names.Last(), exprCall.Loc.Y, exprCall.Loc.X));
+
+                foreach(var arg in exprCall.Arguments)
+                {
+                    Accept(arg.Value);
+                }
+
+
                 return DefaultObjectBuilder.BuildDefault(fn.ReturnType);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return DefaultObjectBuilder.BuildUnknown();
             }
@@ -139,7 +178,34 @@ namespace MochjLanguage._Interpreter
 
         public override QualifiedObject Accept(ExprFnDeclaration exprFnDeclaration)
         {
-            return DefaultObjectBuilder.BuildFn();
+            IList<Parameter> resolvedParameters = new List<Parameter>();
+            _currentFnParameterSymbols = new List<string>();
+            foreach (StmtParameter stmtParameter in exprFnDeclaration.Parameters)
+            {
+                var param = ResolveParameter(stmtParameter);
+                resolvedParameters.Add(param);
+                _currentFnParameterSymbols.Add(param.Alias);
+            }
+            Function fn = new UserDefinedFunction(_environment, exprFnDeclaration, resolvedParameters);
+            var previous = _environment;
+            _environment = new Mochj._Storage.Environment(previous);
+            try
+            {
+                foreach (var param in resolvedParameters)
+                {
+                    var obj = DefaultObjectBuilder.BuildDefault(param.Type);
+                    obj.Object = "<param>";
+                    _environment.Define(param.Alias, obj);
+                }
+                ReInterpret.Add((_environment, exprFnDeclaration.Statements.ToList()));
+
+            }
+            catch (Exception e)
+            {
+                
+            }
+            _environment = previous;
+            return QualifiedObjectBuilder.BuildFunction(fn);
         }
 
         public override QualifiedObject Accept(ExprIdentifier exprIdentifier)
@@ -147,8 +213,17 @@ namespace MochjLanguage._Interpreter
             try
             {
                 var obj = SymbolResolverHelper.Resolve(_environment, exprIdentifier.Symbol);
+
+                string type = "_Interpreted_Id";
+                if (obj.Equals("<param>"))
+                {
+                    type = "_Interpreted_Param";
+                }
+
+                MochjScriptingService.IdentifierTokens.Add(new Token(type, exprIdentifier.Symbol.Names.Last(), exprIdentifier.Loc.Y, exprIdentifier.Loc.X));
+
                 return DefaultObjectBuilder.BuildDefault(obj.Type);
-            } catch (Exception)
+            } catch (Exception e)
             {
                 return DefaultObjectBuilder.BuildUnknown();
             }

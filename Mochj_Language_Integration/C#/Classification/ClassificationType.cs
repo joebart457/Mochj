@@ -72,6 +72,14 @@ namespace OokLanguage
         [Name("Interpreted_Ns")]
         internal static ClassificationTypeDefinition InterpretedNs = null;
 
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Interpreted_Id")]
+        internal static ClassificationTypeDefinition InterpretedId = null;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Interpreted_Param")]
+        internal static ClassificationTypeDefinition InterpretedParam = null;
+
         #endregion
     }
 }

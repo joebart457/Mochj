@@ -186,7 +186,7 @@ namespace OokLanguage
     [ClassificationType(ClassificationTypeNames = "Interpreted_Fn")]
     [Name("Interpreted_Fn")]
     //this should be visible to the end user
-    [UserVisible(false)]
+    [UserVisible(true)]
     //set the priority to be after the default classifiers
     [Order(Before = Priority.Default)]
     internal sealed class InterpretedFn : ClassificationFormatDefinition
@@ -198,6 +198,7 @@ namespace OokLanguage
         {
             DisplayName = "Interpreted_Fn"; //human readable version of the name
             ForegroundColor = Colors.Navy;
+            IsBold = true;
         }
     }
 
@@ -205,7 +206,7 @@ namespace OokLanguage
     [ClassificationType(ClassificationTypeNames = "Interpreted_Ns")]
     [Name("Interpreted_Ns")]
     //this should be visible to the end user
-    [UserVisible(false)]
+    [UserVisible(true)]
     //set the priority to be after the default classifiers
     [Order(Before = Priority.Default)]
     internal sealed class InterpretedNs : ClassificationFormatDefinition
@@ -216,6 +217,44 @@ namespace OokLanguage
         public InterpretedNs()
         {
             DisplayName = "Interpreted_Ns"; //human readable version of the name
+            ForegroundColor = Colors.Gray;
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Interpreted_Id")]
+    [Name("Interpreted_Id")]
+    //this should be visible to the end user
+    [UserVisible(true)]
+    //set the priority to be after the default classifiers
+    [Order(Before = Priority.Default)]
+    internal sealed class InterpretedId : ClassificationFormatDefinition
+    {
+        /// <summary>
+        /// Defines the visual format for the "question" classification type
+        /// </summary>
+        public InterpretedId()
+        {
+            DisplayName = "Interpreted_Id"; //human readable version of the name
+            ForegroundColor = Colors.Black;
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Interpreted_Param")]
+    [Name("Interpreted_Param")]
+    //this should be visible to the end user
+    [UserVisible(true)]
+    //set the priority to be after the default classifiers
+    [Order(Before = Priority.Default)]
+    internal sealed class InterpretedParam : ClassificationFormatDefinition
+    {
+        /// <summary>
+        /// Defines the visual format for the "question" classification type
+        /// </summary>
+        public InterpretedParam()
+        {
+            DisplayName = "Interpreted_Param"; //human readable version of the name
             ForegroundColor = Colors.Gray;
         }
     }

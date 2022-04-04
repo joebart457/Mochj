@@ -32,5 +32,7 @@ namespace MochjLanguage
 
        Interpreted_Fn,
        Interpreted_Ns,
+       Interpreted_Id,
+       Interpreted_Param,
     }
 }
