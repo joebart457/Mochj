@@ -16,8 +16,8 @@ namespace Mochj.Builders
 
             TokenizerSettings settings = new TokenizerSettings
             {
-                StringCatalystExcluded = ") ",
-                StringCatalystEscapable = ") \\",
+                StringCatalystExcluded = ") ;",
+                StringCatalystEscapable = ") \\;",
                 WordIncluded = "-",
                 CatchAllType = "",
                 SkipWhiteSpace = true,
@@ -25,7 +25,7 @@ namespace Mochj.Builders
 
             List<TokenizerRule> rules = new List<TokenizerRule>();
             rules.Add(new TokenizerRule(TokenTypes.StringEnclosing, "\""));
-            rules.Add(new TokenizerRule(TokenTypes.StringEnclosing, "'"));
+            rules.Add(new TokenizerRule(TokenTypes.TTString, "'", null, true, "'"));
             rules.Add(new TokenizerRule(TokenTypes.StringCatalyst, "$"));
             rules.Add(new TokenizerRule(TokenTypes.EOLComment, "---"));
             rules.Add(new TokenizerRule(TokenTypes.EOLComment, "//"));
@@ -72,6 +72,7 @@ namespace Mochj.Builders
             rules.Add(new TokenizerRule(TokenTypes.LCarat, "<"));
             rules.Add(new TokenizerRule(TokenTypes.RCarat, ">"));
             rules.Add(new TokenizerRule(TokenTypes.UpCarat, "^"));
+            rules.Add(new TokenizerRule(TokenTypes.At, "@"));
 
             rules.Add(new TokenizerRule(TokenTypes.And, "&&"));
             rules.Add(new TokenizerRule(TokenTypes.Or, "||"));
@@ -79,7 +80,9 @@ namespace Mochj.Builders
             rules.Add(new TokenizerRule(TokenTypes.NotEqual, "!="));
             rules.Add(new TokenizerRule(TokenTypes.LessEqual, "<="));
             rules.Add(new TokenizerRule(TokenTypes.GreaterEqual, ">="));
+            rules.Add(new TokenizerRule(TokenTypes.DoubleQuestionMark, "??"));
             rules.Add(new TokenizerRule(TokenTypes.DoubleDash, "--"));
+            rules.Add(new TokenizerRule(TokenTypes.DoubleDot, ".."));
 
             return new Tokenizer(rules, settings);
         }

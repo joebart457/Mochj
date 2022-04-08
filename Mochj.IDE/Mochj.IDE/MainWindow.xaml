@@ -6,29 +6,85 @@
         xmlns:local="clr-namespace:Mochj.IDE"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <SolidColorBrush x:Key="MenuItem.Highlight.Background" Color="#3D26A0DA"/>
+        <SolidColorBrush x:Key="MenuItem.Highlight.Border" Color="#FF26A0DA"/>
+        <SolidColorBrush x:Key="Menu.Disabled.Foreground" Color="#FF707070"/>
+
+        <Style x:Key="MenuItemToggleStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+            <Style.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsChecked" Value="True"/>
+                        <Condition Property="IsCheckable" Value="True"/>
+                        <Condition Property="Role" Value="TopLevelItem"/>
+                    </MultiTrigger.Conditions>
+                    <MultiTrigger.Setters>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="MenuItem">
+                                    <Border x:Name="templateRoot" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+                                        <Grid VerticalAlignment="Center">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ContentPresenter x:Name="Icon" ContentSource="Icon" HorizontalAlignment="Center" Height="16" Margin="3" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" Width="16"/>
+                                            <ContentPresenter Grid.Column="1" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="Icon" Value="{x:Null}">
+                                            <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{StaticResource Menu.Disabled.Foreground}"/>
+                                            <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Border}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="True">
+                                            <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Background}"/>
+                                            <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Border}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </MultiTrigger.Setters>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <Button x:Name="Btn_HighlightCode"
-                Grid.Row="0"
-                Content="Highlight" Click="Btn_HighlightCode_Click"></Button>
-        <RichTextBox x:Name="RTB_CodeArea"
-                     Grid.Row="1"
-                     PreviewKeyDown="tb_PreviewKeyDown"/>
-        <Popup x:Name="Popup_CodeCompletion" 
-                AllowsTransparency="True"  
-                PlacementTarget="{Binding ElementName=ToggleButton}" 
-                IsOpen="{Binding ElementName=ToggleButton, Path=IsChecked}" 
-                Opened="Popup_OnOpened">
-            <StackPanel>
-                <ListBox x:Name="LB_CodeSuggestions" 
-                         Height="100"
-                         Width="120"
-                         SelectedIndex="{Binding CCSelectedIndex}">
-                </ListBox>
-            </StackPanel>
-        </Popup>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem x:Name="MenuItem_New" Header="_New" Click="MenuItem_New_Click"/>
+                <MenuItem x:Name="MenuItem_Open" Header="_Open" Click="MenuItem_Open_Click"/>
+                <MenuItem x:Name="MenuItem_Save" Header="_Save" Click="MenuItem_Save_Click"/>
+                <Separator />
+                <MenuItem x:Name="MenuItem_Exit" Header="_Exit" Click="MenuItem_Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Analysis">
+                <MenuItem x:Name="MenuItem_Rescan" Header="_Rescan" Click="MenuItem_Rescan_Click"/>
+                <MenuItem x:Name="MenuItem_ToggleCodeCompletion"  
+                          Style="{StaticResource MenuItemToggleStyle}" 
+                          Header="_Code Completion" IsCheckable="true" 
+                          StaysOpenOnClick="True" 
+                          Checked="MenuItem_ToggleCodeCompletion_Checked" 
+                          Unchecked="MenuItem_ToggleCodeCompletion_Checked"></MenuItem>
+                <MenuItem x:Name="MenuItem_ToggleIntellisense"  
+                          Style="{StaticResource MenuItemToggleStyle}" 
+                          Header="_Intellisense" IsCheckable="true" 
+                          StaysOpenOnClick="True" 
+                          Checked="MenuItem_ToggleIntellisense_Checked" 
+                          Unchecked="MenuItem_ToggleIntellisense_Checked"></MenuItem>
+                
+            </MenuItem>
+        </Menu>
+        <TabControl x:Name="TabControl_WorkingDocuments"
+                    Grid.Row="1"></TabControl>
     </Grid>
 </Window>

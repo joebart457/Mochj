@@ -194,6 +194,23 @@ namespace Mochj._Interpreter
             return  QualifiedObjectBuilder.BuildFunction(fn);
         }
 
+        public virtual QualifiedObject Accept(ExprNullableSwitch exprNullableSwitch)
+        {
+            QualifiedObject lhs = Accept(exprNullableSwitch.Lhs);
+            if (lhs.Type.Is(Enums.DataTypeEnum.Empty))
+            {
+                return Accept(exprNullableSwitch.Rhs);
+            }
+            return lhs;
+        }
+
+        public virtual QualifiedObject Accept(ExprGetArgument exprGetArgument)
+        {
+            QualifiedObject lhs = Accept(exprGetArgument.Lhs);
+            BoundFn fn = TypeMediatorService.ToNativeType<BoundFn>(lhs);
+            return fn.BoundArguments.Get(exprGetArgument.Identifier);
+        }
+
         public virtual QualifiedObject Accept(ExprIdentifier exprIdentifier)
         {
             return SymbolResolverHelper.Resolve(_environment, exprIdentifier.Symbol);

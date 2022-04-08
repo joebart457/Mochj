@@ -75,11 +75,12 @@ namespace Mochj.IDE._Parser
             catch (Exception e)
             {
                 // On error, skip to next statement
-                while (!atEnd() && !match(TokenTypes.EOF) && !peekMatch(0, TokenTypes.LParen))
-                {
-                    advance();
-                    Console.WriteLine(current());
-                }
+                //while (!atEnd() && !match(TokenTypes.EOF) && !peekMatch(0, TokenTypes.LParen))
+                //{
+                //    advance();
+                //    Console.WriteLine(current());
+                //}
+                if (!atEnd()) advance();
                 return null;
             }
         }
@@ -239,6 +240,8 @@ namespace Mochj.IDE._Parser
             StmtExpression stmtExpression = new StmtExpression(previous().Token.Loc);
             stmtExpression.Expression = parseCall();
             // Do not need to consume Rparen here since it is consumed in parseCall method
+            TextPointer stmtEnd = previous().TextRange.End;
+            stmtExpression.TextRange = new TextRange(stmtStart, stmtEnd);
             return stmtExpression;
         }
 
@@ -301,6 +304,8 @@ namespace Mochj.IDE._Parser
 
         private RangedExpression parseCall()
         {
+            TextPointer stmtStart = previous().TextRange.Start;
+
             Symbol sym = parseSymbol();
             ExprCall exprCall = new ExprCall(previous().Token.Loc);
             exprCall.Symbol = sym;
@@ -312,6 +317,8 @@ namespace Mochj.IDE._Parser
                 exprCall.Arguments.Add(parseArgument(argCount, ref requireExplicitTypes));
                 argCount++;
             }
+            TextPointer stmtEnd = previous().TextRange.End;
+            exprCall.TextRange = new TextRange(stmtStart, stmtEnd);
             return exprCall;
         }
 

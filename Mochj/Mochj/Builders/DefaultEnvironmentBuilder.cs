@@ -32,8 +32,9 @@ namespace Mochj.Builders
             _Storage.Environment pmNamespace = new _Storage.Environment(null).WithAlias("PackageManager");
             _Storage.Environment processNamespace = new _Storage.Environment(null).WithAlias("Process");
             _Storage.Environment nativeListNamespace = new _Storage.Environment(null).WithAlias("NativeList");
+            _Storage.Environment settingsNamespace = new _Storage.Environment(null).WithAlias("Settings");
 
-            environment.Define("version", QualifiedObjectBuilder.BuildString("2.20"));
+            environment.Define("version", QualifiedObjectBuilder.BuildString("e3.10"));
 
             environment.Define("typeof",
                 QualifiedObjectBuilder.BuildFunction(
@@ -116,6 +117,22 @@ namespace Mochj.Builders
                     .ReturnsEmpty()
                     .Build()
                 ));
+
+            environment.Define("help",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("help")
+                  .Action((Args args) =>
+                  {
+
+                      Console.WriteLine(args.Get<Function>(0).ToString());
+
+                      return QualifiedObjectBuilder.BuildEmptyValue();
+                  })
+                  .RegisterParameter<Function>("fn")
+                  .ReturnsEmpty()
+                  .Build()
+              ));
 
             #region Convert
 
@@ -1219,12 +1236,91 @@ namespace Mochj.Builders
 
             #endregion
 
+            #region Settings
+            settingsNamespace.Define("GetExeHome",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("GetExeHome")
+                    .Action((Args args) =>
+                    {
+                        string strExeFilePath = System.Reflection.Assembly.GetCallingAssembly().Location;
+                        return QualifiedObjectBuilder.BuildString(Path.GetDirectoryName(strExeFilePath));
+                    })
+                    .Returns<string>()
+                    .Build()
+                ));
+
+            settingsNamespace.Define("GetExePath",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("GetExePath")
+                  .Action((Args args) =>
+                  {
+                      string strExeFilePath = System.Reflection.Assembly.GetCallingAssembly().Location;
+                      return QualifiedObjectBuilder.BuildString(strExeFilePath);
+                  })
+                  .Returns<string>()
+                  .Build()
+              ));
+
+            settingsNamespace.Define("GetStagePath",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("GetStagePath")
+                  .Action((Args args) =>
+                  {
+                      return QualifiedObjectBuilder.BuildString(PathConstants.StagePath);
+                  })
+                  .Returns<string>()
+                  .Build()
+              ));
+
+            settingsNamespace.Define("GetPackagePath",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("GetPackagePath")
+                  .Action((Args args) =>
+                  {
+                      return QualifiedObjectBuilder.BuildString(PathConstants.PackagePath);
+
+                  })
+                  .Returns<string>()
+                  .Build()
+              ));
+
+            settingsNamespace.Define("GetManifestPath",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("GetManifestPath")
+                  .Action((Args args) =>
+                  {
+                      return QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath);
+
+                  })
+                  .Returns<string>()
+                  .Build()
+              ));
+
+            settingsNamespace.Define("GetRemoteInfoPath",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("GetRemoteInfoPath")
+                  .Action((Args args) =>
+                  {
+                      return QualifiedObjectBuilder.BuildString(DefaultPathConstants.RemoteInfoPath);
+
+                  })
+                  .Returns<string>()
+                  .Build()
+              ));
+            #endregion
 
             environment.Define("Convert", QualifiedObjectBuilder.BuildNamespace(convertNamespace));
             environment.Define("Fn", QualifiedObjectBuilder.BuildNamespace(fnNamespace));
             environment.Define("PackageManager", QualifiedObjectBuilder.BuildNamespace(pmNamespace));
             environment.Define("Process", QualifiedObjectBuilder.BuildNamespace(processNamespace));
             environment.Define("NativeList", QualifiedObjectBuilder.BuildNamespace(nativeListNamespace));
+            environment.Define("Settings", QualifiedObjectBuilder.BuildNamespace(settingsNamespace));
 
             return environment;
         }

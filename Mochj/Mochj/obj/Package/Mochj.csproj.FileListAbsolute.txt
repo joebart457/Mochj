@@ -1,5 +1,5 @@
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\license.txt
-C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\install.bat
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\install-global.bat
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\remote.json
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\RunTests.bat
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\Test.mochj
@@ -8,6 +8,7 @@ C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\Mochj.dll
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\Mochj.pdb
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\Newtonsoft.Json.dll
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Package\Newtonsoft.Json.xml
+C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Package\Mochj.csproj.AssemblyReference.cache
 C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Package\Mochj.csproj.CoreCompileInputs.cache
 C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Package\Mochj.csproj.CopyComplete
 C:\zzz_WIP\new-project-space\Mochj\Mochj\obj\Package\Mochj.dll

@@ -16,6 +16,7 @@ namespace Mochj._Tokenizer
 		public string WordIncluded { get; set; } = "";
 		public string CatchAllType { get; set; } = "";
 		public bool SkipWhiteSpace { get; set; } = true;
+		public bool CommentsAsTokens { get; set; } = false;
 
 		/// <summary>
 		/// When <value>true</value>, counts tabs and newlines as one char column and does not add to the row counter
@@ -80,10 +81,37 @@ namespace Mochj._Tokenizer
 				{
 					advance();
 				}
-				if (_settings.SkipWhiteSpace && Char.IsWhiteSpace(_cCurrent))
+				if (Char.IsWhiteSpace(_cCurrent))
 				{
-					advance();
-					continue;
+					if (_settings.SkipWhiteSpace)
+                    {
+						advance();
+						continue;
+                    }
+                    else
+                    {
+						if (_cCurrent == ' ')
+                        {
+							advance();
+							return new Token(TokenTypes.WhiteSpaceSpace, _cCurrent.ToString(), _nRow, _nColumn);
+                        }
+						if (_cCurrent == '\t')
+						{
+							advance();
+							return new Token(TokenTypes.WhiteSpaceTab, _cCurrent.ToString(), _nRow, _nColumn);
+						}
+						if (_cCurrent == '\r')
+						{
+							advance();
+							return new Token(TokenTypes.WhiteSpaceCR, _cCurrent.ToString(), _nRow, _nColumn);
+						}
+						if (_cCurrent == '\n')
+						{
+							advance();
+							return new Token(TokenTypes.WhiteSpaceLF, _cCurrent.ToString(), _nRow, _nColumn);
+						}
+					}
+
 				}
 
 				if (_cCurrent == '~')
@@ -103,6 +131,11 @@ namespace Mochj._Tokenizer
 
 					if (lookAhead(Convert.ToUInt32(rule.Length)) == rule.Value)
 					{
+						if (rule.Type == TokenTypes.EOLComment)
+						{
+							bEolCommentFlag = true;
+							break;
+						}
 
 						advance(rule.Length);
 
@@ -114,12 +147,6 @@ namespace Mochj._Tokenizer
                         {
 							return strcatalyst(rule.Value);
                         }
-
-						if (rule.Type == TokenTypes.EOLComment)
-						{
-							bEolCommentFlag = true;
-							break;
-						}
 
 						if (rule.Type == TokenTypes.MLCommentStart)
 						{
@@ -138,9 +165,16 @@ namespace Mochj._Tokenizer
 
 				if (bEolCommentFlag)
 				{
-					eolcomment();
-					bEolCommentFlag = false;
-					continue;
+					if (_settings.CommentsAsTokens)
+                    {
+						bEolCommentFlag = false;
+						return eolcomment(TokenTypes.EOLComment);
+					} else
+                    {
+						eolcomment(TokenTypes.EOLComment);
+						bEolCommentFlag = false;
+						continue;
+					}
 				}
 
 				if (bMlCommentFlag)
@@ -515,12 +549,15 @@ namespace Mochj._Tokenizer
 		}
 
 
-		private void eolcomment()
+		private Token eolcomment(string type)
 		{
+			StringBuilder result = new StringBuilder();
 			while (!_bAtEnd && _cCurrent != '\n' && _cCurrent != '\r')
 			{
+				result.Append(_cCurrent);
 				advance();
 			}
+			return new Token(type, result.ToString(), _nRow, _nColumn);
 		}
 
 		private void mlcomment()

@@ -72,7 +72,7 @@ namespace Mochj.IDE.Services
 
         public static ScriptExcecutionInfo Run(TextPointer pointer)
         {
-            var tokens = RangedTokenFactory.TagFromPosition(pointer);
+            var tokens = RangedTokenFactory.TokenizeFromPosition(pointer);
             var stmts = new InformativeParser().Parse(tokens, out _);
             var interpreter = new InformedInterpreter(DefaultEnvironmentBuilder.Build(true));
             var info = interpreter.Interpret(stmts.ToList());

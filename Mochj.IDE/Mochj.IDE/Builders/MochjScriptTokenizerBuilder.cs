@@ -19,14 +19,15 @@ namespace Mochj.IDE.Builders
                 StringCatalystExcluded = ") ",
                 StringCatalystEscapable = ") \\",
                 WordIncluded = "-",
-                CatchAllType = "",
-                SkipWhiteSpace = true,
+                CatchAllType = "WhiteSpace",
+                CommentsAsTokens = true,
+                SkipWhiteSpace = false,
                 AllOneLine = true, // edited
             };
 
             List<TokenizerRule> rules = new List<TokenizerRule>();
-            rules.Add(new TokenizerRule(TokenTypes.StringEnclosing, "\""));
-            rules.Add(new TokenizerRule(TokenTypes.StringEnclosing, "'"));
+            rules.Add(new TokenizerRule(TokenTypes.StringEnclosing,"\"", null, false, "\""));
+            rules.Add(new TokenizerRule(TokenTypes.StringEnclosing, "'", null, false, "'"));
             rules.Add(new TokenizerRule(TokenTypes.StringCatalyst, "$"));
             rules.Add(new TokenizerRule(TokenTypes.EOLComment, "---"));
             rules.Add(new TokenizerRule(TokenTypes.EOLComment, "//"));

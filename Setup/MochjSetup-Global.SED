@@ -1,0 +1,51 @@
+[Version]
+Class=IEXPRESS
+SEDVersion=3
+[Options]
+PackagePurpose=InstallApp
+ShowInstallProgramWindow=0
+HideExtractAnimation=0
+UseLongFileName=1
+InsideCompressed=0
+CAB_FixedSize=0
+CAB_ResvCodeSigning=0
+RebootMode=N
+InstallPrompt=%InstallPrompt%
+DisplayLicense=%DisplayLicense%
+FinishMessage=%FinishMessage%
+TargetName=%TargetName%
+FriendlyName=%FriendlyName%
+AppLaunched=%AppLaunched%
+PostInstallCmd=%PostInstallCmd%
+AdminQuietInstCmd=%AdminQuietInstCmd%
+UserQuietInstCmd=%UserQuietInstCmd%
+SourceFiles=SourceFiles
+[Strings]
+InstallPrompt=Would you like to install Mochj for all users?
+DisplayLicense=C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\license.txt
+FinishMessage=Installation complete. Enjoy!
+TargetName=C:\zzz_WIP\new-project-space\Setup\MochjSetup-global.EXE
+FriendlyName=Mochj Setup - Global
+AppLaunched=cmd /c install-global.bat
+PostInstallCmd=<None>
+AdminQuietInstCmd=
+UserQuietInstCmd=
+FILE0="license.txt"
+FILE1="Mochj.exe"
+FILE2="Mochj.exe.config"
+FILE3="Mochj.pdb"
+FILE4="Newtonsoft.Json.dll"
+FILE5="Newtonsoft.Json.xml"
+FILE6="remote.json"
+FILE7="install-global.bat"
+[SourceFiles]
+SourceFiles0=C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\
+[SourceFiles0]
+%FILE0%=
+%FILE1%=
+%FILE2%=
+%FILE3%=
+%FILE4%=
+%FILE5%=
+%FILE6%=
+%FILE7%=

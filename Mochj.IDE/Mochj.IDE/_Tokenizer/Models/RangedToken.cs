@@ -25,6 +25,21 @@ namespace Mochj.IDE._Tokenizer.Models
             return Token.ToString();
         }
 
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals (this, null)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is RangedToken other)
+                return Token.Equals(other.Token) && TextRange.Equals(other.TextRange) && Environment.Equals(other.Environment) && Classifier == other.Classifier && Message == other.Message;
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Classifier.GetHashCode() + (Message == null? 0: Message.GetHashCode()) + Token.GetHashCode();
+        }
+
         public void DoHighlight()
         {
             if (Classifier == TokenClassifierEnum.Identifier)
@@ -34,12 +49,37 @@ namespace Mochj.IDE._Tokenizer.Models
 
             if (Classifier == TokenClassifierEnum.Function)
             {
-                this.TextRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Green));
+                this.TextRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.DarkGoldenrod));
             }
 
             if (Classifier == TokenClassifierEnum.Namespace)
             {
-                this.TextRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.AliceBlue));
+                this.TextRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Color.FromRgb(43, 145, 175)));
+            }
+
+            if (Classifier == TokenClassifierEnum.String)
+            {
+                this.TextRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Maroon));
+            }
+
+            if (Classifier == TokenClassifierEnum.Keyword_1)
+            {
+                this.TextRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Blue));
+            }
+
+            if (Classifier == TokenClassifierEnum.Keyword_2)
+            {
+                this.TextRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Blue));
+            }
+
+            if (Classifier == TokenClassifierEnum.Keyword_3)
+            {
+                this.TextRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.MediumVioletRed));
+            }
+
+            if (Classifier == TokenClassifierEnum.Keyword_4)
+            {
+                this.TextRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.BlueViolet));
             }
 
             if (Classifier == TokenClassifierEnum.Error)
@@ -65,6 +105,51 @@ namespace Mochj.IDE._Tokenizer.Models
                 this.TextRange.ApplyPropertyValue(Inline.TextDecorationsProperty, new TextDecorationCollection(new List<TextDecoration> { squiggly }));
 
             }
+
+        }
+        public SolidColorBrush GetBrush()
+        {
+            if (Classifier == TokenClassifierEnum.Identifier)
+            {
+                return new SolidColorBrush(Colors.Blue);
+            }
+
+            if (Classifier == TokenClassifierEnum.Function)
+            {
+                return new SolidColorBrush(Colors.DarkGoldenrod);
+            }
+
+            if (Classifier == TokenClassifierEnum.Namespace)
+            {
+                return new SolidColorBrush(Color.FromRgb(43, 145, 175));
+            }
+
+            if (Classifier == TokenClassifierEnum.String)
+            {
+                return new SolidColorBrush(Colors.Maroon);
+            }
+
+            if (Classifier == TokenClassifierEnum.Keyword_1)
+            {
+                return new SolidColorBrush(Colors.Blue);
+            }
+
+            if (Classifier == TokenClassifierEnum.Keyword_2)
+            {
+                return new SolidColorBrush(Colors.Blue);
+            }
+
+            if (Classifier == TokenClassifierEnum.Keyword_3)
+            {
+                return new SolidColorBrush(Colors.MediumVioletRed);
+            }
+
+            if (Classifier == TokenClassifierEnum.Keyword_4)
+            {
+                return new SolidColorBrush(Colors.BlueViolet);
+            }
+
+            return new SolidColorBrush(Colors.Black);
         }
     }
 }

@@ -9,7 +9,21 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Components\MochjEditor\MochjScriptEditor.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Components\MochjEditor\MochjScriptEditor.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Components\MochjEditor\Styles\MenuItemStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\MochjEditorStyles.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

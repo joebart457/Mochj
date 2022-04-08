@@ -26,12 +26,7 @@ namespace Mochj._Parser
             IList<Statement> statements = new List<Statement>();
             while (!atEnd() && !match(TokenTypes.EOF))
             {
-                if (match(TokenTypes.LParen))
-                {
-                    statements.Add(parseStatement());
-                    continue;
-                }
-                throw new Exception($"expected statement but got token {current()}");
+                statements.Add(parseStatement());
             }
             return statements;
         }
@@ -39,27 +34,31 @@ namespace Mochj._Parser
 
         private Statement parseStatement()
         {
-
-            if (match(TokenTypes.Set))
+            if (match(TokenTypes.At))
             {
-                return parseSet();
+                if (match(TokenTypes.Set))
+                {
+                    return parseSet();
+                }
+                if (match(TokenTypes.Defn))
+                {
+                    return parseFunctionDeclaration();
+                }
+                if (match(TokenTypes.Namespace))
+                {
+                    return parseNamespace();
+                }
+                if (match(TokenTypes.Load))
+                {
+                    return parseLoad();
+                }
+                if (match(TokenTypes.Entry))
+                {
+                    return parseEntry();
+                }
+                throw new Exception($"unexpected token where statement expected: {current()}");
             }
-            if (match(TokenTypes.Defn))
-            {
-                return parseFunctionDeclaration();
-            }
-            if (match(TokenTypes.Namespace))
-            {
-                return parseNamespace();
-            }
-            if (match(TokenTypes.Load))
-            {
-                return parseLoad();
-            }
-            if (match(TokenTypes.Entry))
-            {
-                return parseEntry();
-            }
+            
 
             return parseExpressionStatement();
 
@@ -69,7 +68,7 @@ namespace Mochj._Parser
             StmtSet stmt = new StmtSet(previous().Loc);
             stmt.Identifier = consume(TokenTypes.TTWord, "expect identifier in 'set'").Lexeme;
             stmt.Value = parseExpression();
-            consume(TokenTypes.RParen, "expect enclosing ')' in 'set'");
+            consume(TokenTypes.SemiColon, "expect enclosing ';' in 'set'");
             return stmt;
         }
 
@@ -77,7 +76,7 @@ namespace Mochj._Parser
         {
             StmtNamespace stmt = new StmtNamespace(previous().Loc);
             stmt.Symbol = parseSymbol();
-            consume(TokenTypes.RParen, "expect enclosing ')' in 'namespace'");
+            consume(TokenTypes.SemiColon, "expect enclosing ';' in 'namespace'");
             return stmt;
         }
 
@@ -85,7 +84,7 @@ namespace Mochj._Parser
         {
             StmtLoad stmt = new StmtLoad(previous().Loc);
             stmt.Path = consume(TokenTypes.TTString, "expect filepath in 'load'").Lexeme;
-            consume(TokenTypes.RParen, "expect enclosing ')' in 'load'");
+            consume(TokenTypes.SemiColon, "expect enclosing ';' in 'load'");
             return stmt;
         }
 
@@ -93,9 +92,10 @@ namespace Mochj._Parser
         {
             StmtEntry stmt = new StmtEntry(previous().Loc);
             stmt.Symbol = parseSymbol();
-            consume(TokenTypes.RParen, "expect enclosing ')' in 'entry'");
+            consume(TokenTypes.SemiColon, "expect enclosing ';' in 'entry'");
             return stmt;
         }
+
 
         private Symbol parseSymbol()
         {
@@ -125,11 +125,10 @@ namespace Mochj._Parser
                 paramCount++;
             }
             stmtFnDeclaration.Statements = new List<Statement>();
-            while (match(TokenTypes.LParen))
+            while (!match(TokenTypes.SemiColon))
             {
                 stmtFnDeclaration.Statements.Add(parseStatement());
             }
-            consume(TokenTypes.RParen, "expect enclosing ')' in 'defn'");
             return stmtFnDeclaration;
         }
 
@@ -195,33 +194,36 @@ namespace Mochj._Parser
         }
         private Statement parseExpressionStatement()
         {
-            StmtExpression stmtExpression = new StmtExpression(previous().Loc);
-            stmtExpression.Expression = parseCall();
-            // Do not need to consume Rparen here since it is consumed in parseCall method
+            StmtExpression stmtExpression = new StmtExpression(current().Loc);
+            stmtExpression.Expression = parseExpression();
             return stmtExpression;
         }
 
         private Expression parseExpression()
         {
-            if (match(TokenTypes.LParen))
+            return parseBinary();
+        }
+
+        private Expression parseBinary()
+        {
+            Expression expr = parseCall();
+            if (match(TokenTypes.DoubleQuestionMark))
             {
-                Expression expr;
-                if (match(TokenTypes.Defn))
-                {
-                    expr = parseLiteralFunctionDeclaration();
-                } else
-                {
-                    expr = parseCall();
-                }
-                return expr;
+                expr = new ExprNullableSwitch(previous().Loc, expr, parseBinary());
             }
-            return parsePrimary();
+            else while (match(TokenTypes.DoubleDot))
+            {
+                var exprGetArg = new ExprGetArgument(previous().Loc, expr);
+                exprGetArg.Identifier = consume(TokenTypes.TTWord).Lexeme;
+                expr = exprGetArg;       
+            }
+            return expr;
         }
 
         private Expression parseLiteralFunctionDeclaration()
         {
             ExprFnDeclaration exprFnDeclaration = new ExprFnDeclaration(previous().Loc);
-            if (match(current(), TokenTypes.TTWord))
+            if (match(TokenTypes.TTWord))
             {
                 StmtParameter fnNameRetType = parseParameter(0, false);
                 exprFnDeclaration.Name = fnNameRetType.Alias;
@@ -242,30 +244,37 @@ namespace Mochj._Parser
                 paramCount++;
             }
             exprFnDeclaration.Statements = new List<Statement>();
-            while (match(TokenTypes.LParen))
+            while (!match(TokenTypes.RParen))
             {
                 exprFnDeclaration.Statements.Add(parseStatement());
             }
-            consume(TokenTypes.RParen, "expect enclosing ')' in 'defn'");
             return exprFnDeclaration;
         }
        
         
         private Expression parseCall()
         {
-            
-            Symbol sym = parseSymbol();
-            ExprCall exprCall = new ExprCall(previous().Loc);
-            exprCall.Symbol = sym;
-            exprCall.Arguments = new List<ExprArgument>();
-            bool requireExplicitTypes = false;
-            int argCount = 0;
-            while (!match(TokenTypes.RParen))
+            if (match(TokenTypes.LParen))
             {
-                exprCall.Arguments.Add(parseArgument(argCount, ref requireExplicitTypes));
-                argCount++;
+                if (match(TokenTypes.Defn))
+                {
+                    return parseLiteralFunctionDeclaration();
+                }
+                Symbol sym = parseSymbol();
+                ExprCall exprCall = new ExprCall(previous().Loc);
+                exprCall.Symbol = sym;
+                exprCall.Arguments = new List<ExprArgument>();
+
+                bool requireExplicitTypes = false;
+                int argCount = 0;
+                while (!match(TokenTypes.RParen))
+                {
+                    exprCall.Arguments.Add(parseArgument(argCount, ref requireExplicitTypes));
+                    argCount++;
+                }
+                return exprCall;
             }
-            return exprCall;
+            return parsePrimary();
         }
 
         private ExprArgument parseArgument(int argCount, ref bool wasExplicitlyNamed)
@@ -287,9 +296,10 @@ namespace Mochj._Parser
             exprArgument.Value = parseExpression();
             return exprArgument;
         }
+
         private Expression parsePrimary()
         {
-            ExprLiteral exprLiteral = new ExprLiteral(previous().Loc);
+            ExprLiteral exprLiteral = new ExprLiteral(current().Loc);
             if (match(TokenTypes.LiteralFalse))
             {
                 exprLiteral.Value = QualifiedObjectBuilder.BuildBoolean(false);

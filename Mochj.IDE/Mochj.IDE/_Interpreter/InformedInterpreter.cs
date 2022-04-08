@@ -30,7 +30,7 @@ namespace Mochj.IDE._Interpreter
 
         private Symbol _entry;
         private Environment _environment;
-        private const int PassLimit = 10;
+        private const int PassLimit = 5;
         private int _passIndex = 0;
         private List<PassData> _nextPassData { get; set; } = new List<PassData>();
         private List<PassData> _lastPassData { get; set; } = new List<PassData>();
@@ -165,15 +165,23 @@ namespace Mochj.IDE._Interpreter
 
         public void Accept(StmtSet stmtSet)
         {
-            if (SymbolResolverHelper.Resolvable(_environment, stmtSet.Identifier.Token.Lexeme))
+            try
             {
-                StorageHelper.Define(_environment, stmtSet.Identifier.Token.Lexeme, Accept(stmtSet.Value));
+                if (SymbolResolverHelper.Resolvable(_environment, stmtSet.Identifier.Token.Lexeme))
+                {
+                    StorageHelper.AssignStrict(_environment, stmtSet.Identifier.Token.Lexeme, Accept(stmtSet.Value));
+                }
+                else
+                {
+                    StorageHelper.Define(_environment, stmtSet.Identifier.Token.Lexeme, Accept(stmtSet.Value));
+                }
+                stmtSet.Identifier.Classifier = Enums.TokenClassifierEnum.Identifier;
             }
-            else
+            catch (Exception e)
             {
-                StorageHelper.Define(_environment, stmtSet.Identifier.Token.Lexeme, Accept(stmtSet.Value));
+                stmtSet.Identifier.Message = e.Message;
+                stmtSet.Identifier.Classifier = Enums.TokenClassifierEnum.Error;
             }
-            stmtSet.Identifier.Classifier = Enums.TokenClassifierEnum.Identifier;
         }
 
         public void Accept(StmtFnDeclaration stmtFnDeclaration)
@@ -335,7 +343,7 @@ namespace Mochj.IDE._Interpreter
             }
             catch (Exception e)
             {
-                exprIdentifier.Symbol.Names.Last().Classifier = Enums.TokenClassifierEnum.Unkown;
+                exprIdentifier.Symbol.Names.Last().Classifier = Enums.TokenClassifierEnum.Error;
                 exprIdentifier.Symbol.Names.Last().Message = "Identifier is undeclared";
                 return DefaultObjectBuilder.BuildUnknown();
             }

@@ -17,5 +17,11 @@ namespace Mochj.IDE.Enums
         Unkown,
         Error,
         Warning,
+
+        Keyword_1,
+        Keyword_2,
+        Keyword_3,
+        Keyword_4,
+        Comment,
     }
 }

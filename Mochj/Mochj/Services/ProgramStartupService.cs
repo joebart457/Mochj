@@ -86,7 +86,6 @@ namespace Mochj.Services
                     bDebug = !bDebug;
                     continue;
                 }
-
                 try
                 {
                     Interpreter.Accept(Parser.Parse(Tokenizer.Tokenize(input, bDebug)));

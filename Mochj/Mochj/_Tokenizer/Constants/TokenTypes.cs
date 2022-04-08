@@ -63,6 +63,8 @@ namespace Mochj._Tokenizer.Constants
         public const string RCarat = "RCarat";
         public const string UpCarat = "UpCarat";
         public const string Colon = "Colon";
+        public const string At = "At";
+
 
         // Custom types - multiple character symbols
         public const string And = "And";
@@ -71,7 +73,13 @@ namespace Mochj._Tokenizer.Constants
         public const string NotEqual = "NotEqual";
         public const string LessEqual = "LessEqual";
         public const string GreaterEqual = "GreaterEqual";
-
+        public const string DoubleQuestionMark = "DoubleQuestionMark";
         public const string DoubleDash = "DoubleDash";
+        public const string DoubleDot = "DoubleDot";
+
+        public const string WhiteSpaceSpace = "WhiteSpaceSpace";
+        public const string WhiteSpaceTab = "WhiteSpaceTab";
+        public const string WhiteSpaceCR = "WhiteSpaceCR";
+        public const string WhiteSpaceLF = "WhiteSpaceLF";
     }
 }

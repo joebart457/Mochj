@@ -12,7 +12,7 @@ namespace Mochj.IDE._Tokenizer
 {
     static class RangedTokenFactory
     {
-        public static List<RangedToken> TagFromPosition(TextPointer position)
+        public static List<RangedToken> TokenizeFromPosition(TextPointer position)
         {
             var tokenizer = MochjScriptTokenizerBuilder.Build();
             List<RangedToken> rangedTokens = new List<RangedToken>();
@@ -27,7 +27,9 @@ namespace Mochj.IDE._Tokenizer
                     var tokens = tokenizer.Tokenize(textRun).Where(t => t.Type != TokenTypes.EOF);
                     foreach (var token in tokens)
                     {
-                        TextRange range = new TextRange(position.GetPositionAtOffset((int)token.Loc.X - token.Lexeme.Length), position.GetPositionAtOffset((int)token.Loc.X));
+                        int enclosingFrontLength = token.EnclosingFront == null? 0 : token.EnclosingFront.Length;
+                        int enclosingBackLength = token.EnclosingBack == null ? 0 : token.EnclosingBack.Length;
+                        TextRange range = new TextRange(position.GetPositionAtOffset((int)token.Loc.X - token.Lexeme.Length - enclosingFrontLength - enclosingBackLength), position.GetPositionAtOffset((int)token.Loc.X));
                         rangedTokens.Add(new RangedToken { Token = token, TextRange = range });
                     }
                 }

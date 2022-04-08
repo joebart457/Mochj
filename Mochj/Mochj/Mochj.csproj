@@ -108,8 +108,10 @@
     <Compile Include="_Parser\Models\Expressions\ExprCall.cs" />
     <Compile Include="_Parser\Models\Expressions\ExprFnDeclaration.cs" />
     <Compile Include="_Parser\Models\Expressions\Expression.cs" />
+    <Compile Include="_Parser\Models\Expressions\ExprGetArgument.cs" />
     <Compile Include="_Parser\Models\Expressions\ExprIdentifier.cs" />
     <Compile Include="_Parser\Models\Expressions\ExprLiteral.cs" />
+    <Compile Include="_Parser\Models\Expressions\ExprNullableSwitch.cs" />
     <Compile Include="_Parser\Models\Statements\Statement.cs" />
     <Compile Include="_Parser\Models\Statements\StmtEntry.cs" />
     <Compile Include="_Parser\Models\Statements\StmtExpression.cs" />
@@ -120,7 +122,6 @@
     <Compile Include="_Parser\Models\Statements\StmtSet.cs" />
     <Compile Include="_Parser\Models\Symbol.cs" />
     <Compile Include="_Parser\Parser.cs" />
-    <Compile Include="_Parser\ResilientParser.cs" />
     <Compile Include="_Storage\Environment.cs" />
     <Compile Include="_Tokenizer\Constants\TokenTypes.cs" />
     <Compile Include="_Tokenizer\Models\Location.cs" />
@@ -130,9 +131,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="install.bat">
+    <None Include="install-global.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="install-user.bat" />
     <None Include="packages.config" />
     <None Include="remote.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -140,6 +142,7 @@
     <None Include="RunTests.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Test-Old.mochj" />
     <None Include="Test.mochj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
