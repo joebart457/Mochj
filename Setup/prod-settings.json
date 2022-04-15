@@ -7,6 +7,7 @@
 		{
 			"VersionRecordPath": "C:\\zzz_WIP\\new-project-space\\Mochj\\version",
 			"PackageName": "Mochj",
+			"BumpMajorVersion": false,
 			"IncludedFiles": [
 				"C:\\zzz_WIP\\new-project-space\\Mochj\\Mochj\\bin\\Package\\"
 			]

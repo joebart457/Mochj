@@ -164,13 +164,13 @@ namespace Mochj._PackageManager
             }
 
             List<VersionedPackage> items = ListPackages(manifestPath);      
-            CreateCleanPackageList(items, new List<VersionedPackage> { pkg });
+            items = CreateCleanPackageList(items, new List<VersionedPackage> { pkg });
 
             File.WriteAllText(manifestPath, JsonConvert.SerializeObject(items));
             Log($"Successfully added package {pkg.Name} to manifest at {manifestPath}");
         }
 
-        private static void CreateCleanPackageList(List<VersionedPackage> items, List<VersionedPackage> itemsToAdd)
+        private static List<VersionedPackage> CreateCleanPackageList(List<VersionedPackage> items, List<VersionedPackage> itemsToAdd, bool usePreviousLoadFiles = false)
         {
             itemsToAdd.ForEach(vPkg =>
             {
@@ -181,12 +181,16 @@ namespace Mochj._PackageManager
                 }
                 else
                 {
-                    foreach(var version in existing.Versions)
+                    foreach(var version in vPkg.Versions)
                     {
-                        var existingVersion = vPkg.Versions.Find(x => x.VersionNumber == version.VersionNumber);
+                        var existingVersion = existing.Versions.Find(x => x.VersionNumber == version.VersionNumber);
                         if (existingVersion == null)
                         {
-                            vPkg.Versions.Add(version);
+                            if (usePreviousLoadFiles && existing.Versions.Any())
+                            {
+                                version.LoadFiles = existing.Versions.First().LoadFiles;
+                            }
+                            existing.Versions.Add(version);
                         } else
                         {
                             Log($"Package {vPkg.Name} with version {version.VersionNumber} already exists.");
@@ -195,6 +199,7 @@ namespace Mochj._PackageManager
                     existing.Versions.Sort((a, b) => b.VersionNumber.CompareTo(a.VersionNumber));
                 }
             });
+            return items;
         }
 
         public static void AddAll(string manifestPath, string fromPath)
@@ -208,7 +213,7 @@ namespace Mochj._PackageManager
             List<VersionedPackage> items = ListPackages(manifestPath);
             List<VersionedPackage> itemsToAdd = ListPackages(fromPath);
 
-            CreateCleanPackageList(items, itemsToAdd);
+            items = CreateCleanPackageList(items, itemsToAdd);
             
             File.WriteAllText(manifestPath, JsonConvert.SerializeObject(items));
             Log($"Successfully added packages to manifest at {manifestPath}");
@@ -362,7 +367,7 @@ namespace Mochj._PackageManager
                     finalPackages = ListPackages(settings.ManifestPath);
                 }
 
-                CreateCleanPackageList(finalPackages, packages);
+                finalPackages = CreateCleanPackageList(finalPackages, packages, settings.UsePreviousLoadFiles);
                 
                 if (settings.ManifestPath != string.Empty)
                 {

@@ -3,26 +3,8 @@
 		"Name": "Console",
 		"Versions": [
 			{
-				"VersionNumber": "2.4",
-				"RemoteUrl": "",
-				"LocalPath": "",
-				"Hash": "582d958159011234702e890f4b66b3e6",
-				"LoadFiles": [
-					"Mochj.Console.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.34",
-				"RemoteUrl": "https://www.dropbox.com/s/jv3gg2shwubkr6c/2.34.zip?dl=0",
-				"LocalPath": "",
-				"Hash": "d0b9da852c7483e88536efb4edc66352",
-				"LoadFiles": [
-					"Mochj.Console.dll"
-				]
-			},
-			{
 				"VersionNumber": "2.17",
-				"RemoteUrl": "https://www.dropbox.com/s/s8ol7dfsqb7nd2c/2.17.zip?dl=0",
+				"RemoteUrl": "",
 				"LocalPath": "",
 				"Hash": "e608caf6b8e3ed402a9b926f704c1d28",
 				"LoadFiles": [
@@ -89,26 +71,8 @@
 		"Name": "Debug",
 		"Versions": [
 			{
-				"VersionNumber": "2.4",
-				"RemoteUrl": "",
-				"LocalPath": "",
-				"Hash": "039cd093816182bd0cce928369f90709",
-				"LoadFiles": [
-					"Mochj.Debug.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.34",
-				"RemoteUrl": "https://www.dropbox.com/s/aihqcbonyshmklr/2.34.zip?dl=0",
-				"LocalPath": "",
-				"Hash": "f1d120f38ea78c6cb3ac5775a4a4f180",
-				"LoadFiles": [
-					"Mochj.Debug.dll"
-				]
-			},
-			{
 				"VersionNumber": "2.17",
-				"RemoteUrl": "https://www.dropbox.com/s/al35gln2t4g3s59/2.17.zip?dl=0",
+				"RemoteUrl": "",
 				"LocalPath": "",
 				"Hash": "9efc7870ba60a4359b61aeb3c790a28e",
 				"LoadFiles": [
@@ -175,26 +139,8 @@
 		"Name": "FileSystem",
 		"Versions": [
 			{
-				"VersionNumber": "2.4",
-				"RemoteUrl": "",
-				"LocalPath": "",
-				"Hash": "e1c748c1735df0f16690ef1ac4982910",
-				"LoadFiles": [
-					"Mochj.FileSystem.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.34",
-				"RemoteUrl": "https://www.dropbox.com/s/efbgcqkrcz9f4vl/2.34.zip?dl=0",
-				"LocalPath": "",
-				"Hash": "3dcd1f7d9079bbb0cb0512a8e8724d62",
-				"LoadFiles": [
-					"Mochj.FileSystem.dll"
-				]
-			},
-			{
 				"VersionNumber": "2.17",
-				"RemoteUrl": "https://www.dropbox.com/s/3s20v3ho6np8hio/2.17.zip?dl=0",
+				"RemoteUrl": "",
 				"LocalPath": "",
 				"Hash": "ec6f0801bfcc893d1066b52c2068dd9c",
 				"LoadFiles": [
@@ -261,22 +207,8 @@
 		"Name": "Mochj",
 		"Versions": [
 			{
-				"VersionNumber": "4",
-				"RemoteUrl": "",
-				"LocalPath": "",
-				"Hash": "433a10be0df95d1bcc2c8f8076df40b1",
-				"LoadFiles": []
-			},
-			{
-				"VersionNumber": "3.39",
-				"RemoteUrl": "https://www.dropbox.com/s/1aar9ui60wlt19n/3.39.zip?dl=0",
-				"LocalPath": "",
-				"Hash": "1129ffb938fd29cd67f3eb34476e06a9",
-				"LoadFiles": []
-			},
-			{
 				"VersionNumber": "2.18",
-				"RemoteUrl": "https://www.dropbox.com/s/7jkozsa3qk2pgf2/2.18.zip?dl=0",
+				"RemoteUrl": "",
 				"LocalPath": "",
 				"Hash": "5b29c1acb5fb5b0fe9c0fadbdeba3ec0",
 				"LoadFiles": []
@@ -329,26 +261,8 @@
 		"Name": "String",
 		"Versions": [
 			{
-				"VersionNumber": "2.4",
-				"RemoteUrl": "",
-				"LocalPath": "",
-				"Hash": "af9c8d12394dbce30c00879e9d71775a",
-				"LoadFiles": [
-					"Mochj.String.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.34",
-				"RemoteUrl": "https://www.dropbox.com/s/ghe7uyvhzrrvcpu/2.34.zip?dl=0",
-				"LocalPath": "",
-				"Hash": "34287456ca64fc3cf9a609a87907fe57",
-				"LoadFiles": [
-					"Mochj.String.dll"
-				]
-			},
-			{
 				"VersionNumber": "2.17",
-				"RemoteUrl": "https://www.dropbox.com/s/sxxuvx1x6znxqu7/2.17.zip?dl=0",
+				"RemoteUrl": "",
 				"LocalPath": "",
 				"Hash": "a99a9a1f49dff2ed9ca1c950ba0439ab",
 				"LoadFiles": [
@@ -415,26 +329,8 @@
 		"Name": "Web",
 		"Versions": [
 			{
-				"VersionNumber": "2.4",
-				"RemoteUrl": "",
-				"LocalPath": "",
-				"Hash": "fa28159875a743766d4ad2214a5a838d",
-				"LoadFiles": [
-					"Mochj.Web.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.34",
-				"RemoteUrl": "https://www.dropbox.com/s/ybfhdqf3q0r6gqq/2.34.zip?dl=0",
-				"LocalPath": "",
-				"Hash": "0a971dfb1f00659fdb0fa3bfac07e054",
-				"LoadFiles": [
-					"Mochj.Web.dll"
-				]
-			},
-			{
 				"VersionNumber": "2.17",
-				"RemoteUrl": "https://www.dropbox.com/s/fyjb26garptfhu5/2.17.zip?dl=0",
+				"RemoteUrl": "",
 				"LocalPath": "",
 				"Hash": "c2daec0941dc7d5608963973f57bffe5",
 				"LoadFiles": [

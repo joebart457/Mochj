@@ -1,9 +1,9 @@
 
 
 
-@entry PackageLocal.Main;
+@entry PackageProd.Main;
 
-@namespace PackageLocal;
+@namespace PackageProd;
 
 @defn Main:empty
 	(PackageManager.ShowOutput)
