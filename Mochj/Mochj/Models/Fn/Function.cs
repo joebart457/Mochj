@@ -56,6 +56,10 @@ namespace Mochj.Models.Fn
                         finalArgs.Add(PatchArgument(_parametersByAlias[arg.Alias], arg));
                         unresolvedParameters.Remove(_parametersByAlias[arg.Alias]);
                         continue;
+                    } else if (IsVariadic && finalArgs.ToList().Count > VariadicAfter)
+                    {
+                        finalArgs.Add(PatchVariadicArgument(arg, finalArgs.ToList().Count));
+                        continue;
                     }
                     throw new Exception($"parameter '{arg.Alias}' does not exist");
                 }
@@ -106,6 +110,15 @@ namespace Mochj.Models.Fn
             return finalArgument;
         }
 
+        private Argument PatchVariadicArgument(Argument argument, int position)
+        {
+            Argument finalArgument = new Argument();
+            finalArgument.Alias = argument.Alias;
+            finalArgument.Position = position;
+            finalArgument.Value = TypeHelper.CheckType(argument.Value, VariadicType);
+            return finalArgument;
+        }
+
         private Argument CreateArgument(Parameter parameter)
         {
             Argument finalArgument = new Argument();
@@ -125,6 +138,11 @@ namespace Mochj.Models.Fn
                     if (_parametersByAlias.ContainsKey(arg.Alias))
                     {
                         finalArgs.Add(PatchArgument(_parametersByAlias[arg.Alias], arg));
+                        continue;
+                    }
+                    else if (IsVariadic && finalArgs.ToList().Count > VariadicAfter)
+                    {
+                        finalArgs.Add(PatchVariadicArgument(arg, finalArgs.ToList().Count));
                         continue;
                     }
                     throw new Exception($"unable to bind parameter '{arg.Alias}' does not exist");
@@ -369,6 +387,27 @@ namespace Mochj.Models.Fn
             Parameter parameter = new Parameter();
             parameter.Alias = alias;
             parameter.Type = TypeMediatorService.DataType<Ty>();
+            parameter.Position = _intermediateParameters.Count;
+            parameter.Default = defaultValue;
+            _intermediateParameters.Add(parameter);
+            return this;
+        }
+
+        public NativeFunction RegisterParameter(string alias, DataType dt)
+        {
+            Parameter parameter = new Parameter();
+            parameter.Alias = alias;
+            parameter.Type = dt;
+            parameter.Position = _intermediateParameters.Count;
+            _intermediateParameters.Add(parameter);
+            return this;
+        }
+
+        public NativeFunction RegisterParameter(string alias, DataType dt, QualifiedObject defaultValue)
+        {
+            Parameter parameter = new Parameter();
+            parameter.Alias = alias;
+            parameter.Type = dt;
             parameter.Position = _intermediateParameters.Count;
             parameter.Default = defaultValue;
             _intermediateParameters.Add(parameter);

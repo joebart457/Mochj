@@ -2,7 +2,7 @@
 	"PublishToLocal": true,
 	"UsePreviousLoadFiles": true,
 	"ManifestPath": "C:\\zzz_WIP\\new-project-space\\Setup\\local-manifest.json",
-	"OutputDirectory": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages",
+	"OutputDirectory": "C:\\zzz_WIP\\new-project-space\\Setup\\LocalPackages",
 	"PackageInfo": [
 		{
 			"VersionRecordPath": "C:\\zzz_WIP\\new-project-space\\Mochj\\version",
@@ -44,6 +44,13 @@
 			"PackageName": "Console",
 			"IncludedFiles": [
 				"C:\\zzz_WIP\\new-project-space\\Mochj.Console\\Mochj.Console\\bin\\Release\\"
+			]
+		},
+		{
+			"VersionRecordPath": "C:\\zzz_WIP\\new-project-space\\Setup\\LPM\\version",
+			"PackageName": "LPM",
+			"IncludedFiles": [
+				"C:\\zzz_WIP\\new-project-space\\Setup\\LPM\\lpm.mochj"
 			]
 		}
 	]

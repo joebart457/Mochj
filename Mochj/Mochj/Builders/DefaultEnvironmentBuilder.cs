@@ -1,4 +1,5 @@
-﻿using Mochj._PackageManager.Models.Constants;
+﻿using Mochj._PackageManager.Models;
+using Mochj._PackageManager.Models.Constants;
 using Mochj.Models;
 using Mochj.Models.ControlFlow;
 using Mochj.Models.Fn;
@@ -34,7 +35,7 @@ namespace Mochj.Builders
             _Storage.Environment nativeListNamespace = new _Storage.Environment(null).WithAlias("NativeList");
             _Storage.Environment settingsNamespace = new _Storage.Environment(null).WithAlias("Settings");
 
-            environment.Define("version", QualifiedObjectBuilder.BuildString("e3.10"));
+            environment.Define("version", QualifiedObjectBuilder.BuildString("s3.20"));
 
             environment.Define("typeof",
                 QualifiedObjectBuilder.BuildFunction(
@@ -930,7 +931,7 @@ namespace Mochj.Builders
                         return QualifiedObjectBuilder.BuildEmptyValue();
                     })
                     .RegisterParameter<string>("moduleName")
-                    .RegisterParameter<string>("version")
+                    .RegisterParameter<string>("version", QualifiedObjectBuilder.BuildString(VersionConstants.LatestVersion))
                     .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
                     .RegisterParameter<_Storage.Environment>("environment", QualifiedObjectBuilder.BuildNamespace(environment))
                     .ReturnsEmpty()
@@ -1029,11 +1030,13 @@ namespace Mochj.Builders
                   .Action((Args args) =>
                   {
                       string remoteInfoPath = args.Get<string>(0);
+                      string manifestPath = args.Get<string>(1);
 
-                      _PackageManager.PackageManager.Update(remoteInfoPath);
+                      _PackageManager.PackageManager.Update(remoteInfoPath, manifestPath);
                       return QualifiedObjectBuilder.BuildEmptyValue();
                   })
                   .RegisterParameter<string>("remoteInfoPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.RemoteInfoPath))
+                  .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
                   .ReturnsEmpty()
                   .Build()
               ));
@@ -1056,6 +1059,83 @@ namespace Mochj.Builders
                    .Build()
                ));
 
+            pmNamespace.Define("AddPackage",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("AddPackage")
+                    .Action((Args args) =>
+                    {
+                        string manifestPath = args.Get<string>(5);
+                        string name = args.Get<string>(0);
+                        var pkg = new RemotePackage
+                        {
+                            LocalPath = args.Get<string>(1),
+                            LoadFiles = args.Get<NativeList>(2).Get<string>(),
+                            RemoteUrl = args.Get<string>(3),
+                            VersionNumber = args.Get<string>(4),
+                        };
+
+                        var finalPkg = new VersionedPackage
+                        {
+                            Name = name,
+                            Versions = new List<RemotePackage> { pkg },
+                        };
+
+                        _PackageManager.PackageManager.Add(finalPkg, manifestPath);
+                        return QualifiedObjectBuilder.BuildEmptyValue();
+                    })
+                    .RegisterParameter<string>("name")
+                    .RegisterParameter<string>("localPath")
+                    .RegisterParameter<List<string>>("loadFiles", QualifiedObjectBuilder.BuildNativeList(new List<string>()))
+                    .RegisterParameter<string>("remoteUrl", QualifiedObjectBuilder.BuildString(string.Empty))
+                    .RegisterParameter<string>("versionNo", QualifiedObjectBuilder.BuildString("1.0"))
+                    .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
+            pmNamespace.Define("AddAllPackages",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("AddAllPackages")
+                    .Action((Args args) =>
+                    {
+                        string manifestPath = args.Get<string>(1);
+                        string fromPath = args.Get<string>(0);
+
+                        _PackageManager.PackageManager.AddAll(manifestPath, fromPath);
+                        return QualifiedObjectBuilder.BuildEmptyValue();
+                    })
+                    .RegisterParameter<string>("fromPath")
+                    .RegisterParameter<string>("manifestPath", QualifiedObjectBuilder.BuildString(DefaultPathConstants.ManifestPath))
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
+            pmNamespace.Define("GetUsedPackages",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("GetUsedPackages")
+                    .Action((Args args) =>
+                    { 
+                        return QualifiedObjectBuilder.BuildNativeList<string>(_PackageManager.PackageManager.GetUsedPackages());
+                    })
+                    .Returns<List<string>>()
+                    .Build()
+                ));
+
+            pmNamespace.Define("ShowUsedPackages",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("ShowUsedPackages")
+                    .Action((Args args) =>
+                    {
+                        _PackageManager.PackageManager.GetUsedPackages().ForEach(pkg => Console.WriteLine(pkg));
+                        return QualifiedObjectBuilder.BuildEmptyValue();
+                    })
+                    .ReturnsEmpty()
+                    .Build()
+                ));
 
             #endregion
 

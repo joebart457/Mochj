@@ -253,6 +253,53 @@ namespace ExportItems
                   .Build()
               ));
 
+            stringNamespace.Define("IsNullOrWhiteSpace",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("IsNullOrWhiteSpace")
+                    .Action((Args args) =>
+                    {
+                        string source = args.Get<string>(0);
+
+                        return QualifiedObjectBuilder.BuildBoolean(string.IsNullOrWhiteSpace(source));
+                    })
+                    .RegisterParameter<string>("source")
+                    .Returns<bool>()
+                    .Build()
+                ));
+
+            stringNamespace.Define("IsNullOrEmpty",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("IsNullOrEmpty")
+                    .Action((Args args) =>
+                    {
+                        string source = args.Get<string>(0);
+
+                        return QualifiedObjectBuilder.BuildBoolean(string.IsNullOrEmpty(source));
+                    })
+                    .RegisterParameter<string>("source")
+                    .Returns<bool>()
+                    .Build()
+                ));
+
+            stringNamespace.Define("Repeat",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("Repeat")
+                  .Action((Args args) =>
+                  {
+                      string source = args.Get<string>(0);
+                      int count = args.Get<int>(1);
+
+                      return QualifiedObjectBuilder.BuildString(string.Concat(Enumerable.Repeat(source, count)));
+                  })
+                  .RegisterParameter<string>("source")
+                  .RegisterParameter<int>("count")
+                  .Returns<string>()
+                  .Build()
+              ));
+
             environment.Define("String", QualifiedObjectBuilder.BuildNamespace(stringNamespace));
 
             return 0;

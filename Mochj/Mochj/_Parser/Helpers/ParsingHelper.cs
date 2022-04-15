@@ -63,6 +63,7 @@ namespace Mochj._Parser.Helpers
         }
         protected bool match(Token token, string type)
         {
+            if (token == null) return false;
             if (token.Type == type)
             {
                 return true;

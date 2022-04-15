@@ -47,7 +47,7 @@ namespace Mochj.Services
 
                 Interpreter.Accept(Parser.Parse(Tokenizer.TokenizeFile(runFile)));
                 Function entryFn = Interpreter.GetEntryPoint();
-                entryFn.Call(entryFn.ResolveArguments(arguments.ToList(0)));
+                if (entryFn != null) entryFn.Call(entryFn.ResolveArguments(arguments.ToList(0)));
                 return 0;
             }
             catch(ExitException ee)

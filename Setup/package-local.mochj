@@ -1,0 +1,21 @@
+
+
+
+@entry PackageLocal.Main;
+
+@namespace PackageLocal;
+
+@defn Main:empty
+	(PackageManager.ShowOutput)
+	// (PackageManager.Update)
+	(PackageManager.Package 'C:\zzz_WIP\new-project-space\Setup\local-settings.json')
+	
+	(PackageManager.AddPackage 
+		"LPM"
+		'C:\zzz_WIP\new-project-space\Setup\LocalPackages\LPM\1.01.zip'
+		(NativeList.Create 'C:\zzz_WIP\new-project-space\Setup\LPM\lpm.mochj')
+		""
+		"1.01"
+	)
+	
+;

@@ -257,6 +257,25 @@ namespace ExportItems
                   .Build()
               ));
 
+            fileNamespace.Define("Append",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("Append")
+                    .Action((Args args) =>
+                    {
+                        string path = args.Get<string>("path");
+                        string data = args.Get<string>("data");
+
+                        File.AppendAllText(path, data);
+
+                        return QualifiedObjectBuilder.BuildEmptyValue();
+                    })
+                    .RegisterParameter<string>("path")
+                    .RegisterParameter<string>("data")
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
             fileNamespace.Define("Read",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()

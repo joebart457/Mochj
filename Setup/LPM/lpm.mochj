@@ -1,0 +1,5 @@
+
+
+@namespace LPM;
+
+@set Use (Fn.Bind PackageManager.Use --manifestPath 'C:\zzz_WIP\new-project-space\Setup\local-manifest.json');

@@ -3,38 +3,10 @@
 		"Name": "Mochj",
 		"Versions": [
 			{
-				"VersionNumber": "2.17",
+				"VersionNumber": "2.31",
 				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Mochj\\2.17.zip",
-				"Hash": "ceb519dbfc0740b7f4d3b402f83f3d9f",
-				"LoadFiles": []
-			},
-			{
-				"VersionNumber": "2.16",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Mochj\\2.16.zip",
-				"Hash": "2d04bfc7519d9772e07424254fc6e1f6",
-				"LoadFiles": []
-			},
-			{
-				"VersionNumber": "2.14",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Mochj\\2.14.zip",
-				"Hash": null,
-				"LoadFiles": []
-			},
-			{
-				"VersionNumber": "2.13",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Mochj\\2.13.zip",
-				"Hash": null,
-				"LoadFiles": []
-			},
-			{
-				"VersionNumber": "2.12",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Mochj\\2.12.zip",
-				"Hash": null,
+				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\LocalPackages\\Mochj\\2.31.zip",
+				"Hash": "e9516609cb5f708fcf6438efff5d3b81",
 				"LoadFiles": []
 			}
 		]
@@ -43,40 +15,11 @@
 		"Name": "Debug",
 		"Versions": [
 			{
-				"VersionNumber": "2.16",
+				"VersionNumber": "2.24",
 				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Debug\\2.16.zip",
-				"Hash": "e1e9b10d5dfc7e4b07b5919b42cdf1e1",
-				"LoadFiles": [
-					"Mochj.Debug.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.14",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Debug\\2.14.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.Debug.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.13",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Debug\\2.13.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.Debug.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.12",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Debug\\2.12.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.Debug.dll"
-				]
+				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\LocalPackages\\Debug\\2.24.zip",
+				"Hash": "890bb4c26bca4dd8e8bade21bdb9bb42",
+				"LoadFiles": ["Mochj.Debug.dll"]
 			}
 		]
 	},
@@ -84,40 +27,11 @@
 		"Name": "FileSystem",
 		"Versions": [
 			{
-				"VersionNumber": "2.16",
+				"VersionNumber": "2.24",
 				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\FileSystem\\2.16.zip",
-				"Hash": "40b506f43b006284fef5ee5a37cde275",
-				"LoadFiles": [
-					"Mochj.FileSystem.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.14",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\FileSystem\\2.14.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.FileSystem.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.13",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\FileSystem\\2.13.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.FileSystem.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.12",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\FileSystem\\2.12.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.FileSystem.dll"
-				]
+				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\LocalPackages\\FileSystem\\2.24.zip",
+				"Hash": "59a058d8470d91164189e6d12df8585d",
+				"LoadFiles": ["Mochj.FileSystem.dll"]
 			}
 		]
 	},
@@ -125,40 +39,11 @@
 		"Name": "String",
 		"Versions": [
 			{
-				"VersionNumber": "2.16",
+				"VersionNumber": "2.24",
 				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\String\\2.16.zip",
-				"Hash": "569de0e99ebea5a3b419b3caac7f3f9f",
-				"LoadFiles": [
-					"Mochj.String.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.14",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\String\\2.14.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.String.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.13",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\String\\2.13.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.String.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.12",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\String\\2.12.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.String.dll"
-				]
+				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\LocalPackages\\String\\2.24.zip",
+				"Hash": "b29290da93c8f7d2e3f8c187c0657e09",
+				"LoadFiles": ["Mochj.String.dll"]
 			}
 		]
 	},
@@ -166,40 +51,11 @@
 		"Name": "Web",
 		"Versions": [
 			{
-				"VersionNumber": "2.16",
+				"VersionNumber": "2.24",
 				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Web\\2.16.zip",
-				"Hash": "44f38d056be42de3f568fab23ddfc1e5",
-				"LoadFiles": [
-					"Mochj.Web.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.14",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Web\\2.14.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.Web.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.13",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Web\\2.13.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.Web.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.12",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Web\\2.12.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.Web.dll"
-				]
+				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\LocalPackages\\Web\\2.24.zip",
+				"Hash": "ec50d3b10b2e8f9b9f66df5990c0f75c",
+				"LoadFiles": ["Mochj.Web.dll"]
 			}
 		]
 	},
@@ -207,40 +63,23 @@
 		"Name": "Console",
 		"Versions": [
 			{
-				"VersionNumber": "2.16",
+				"VersionNumber": "2.24",
 				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Console\\2.16.zip",
-				"Hash": "a89ab4602d5744bded1769f8ec138ae3",
-				"LoadFiles": [
-					"Mochj.Console.dll"
-				]
-			},
+				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\LocalPackages\\Console\\2.24.zip",
+				"Hash": "87108202464717a2972c6fdb16232315",
+				"LoadFiles": ["Mochj.Console.dll"]
+			}
+		]
+	},
+	{
+		"Name": "LPM",
+		"Versions": [
 			{
-				"VersionNumber": "2.14",
+				"VersionNumber": "1.03",
 				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Console\\2.14.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.Console.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.13",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Console\\2.13.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.Console.dll"
-				]
-			},
-			{
-				"VersionNumber": "2.12",
-				"RemoteUrl": "",
-				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\Packages\\Console\\2.12.zip",
-				"Hash": null,
-				"LoadFiles": [
-					"Mochj.Console.dll"
-				]
+				"LocalPath": "C:\\zzz_WIP\\new-project-space\\Setup\\LocalPackages\\LPM\\1.03.zip",
+				"Hash": "6814b4a990cd7b730918ef2e4f0a10d4",
+				"LoadFiles": ["lpm.mochj"]
 			}
 		]
 	}

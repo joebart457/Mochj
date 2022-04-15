@@ -1,0 +1,12 @@
+
+
+
+@entry PackageLocal.Main;
+
+@namespace PackageLocal;
+
+@defn Main:empty
+	(PackageManager.ShowOutput)
+	(PackageManager.Update)
+	(PackageManager.Package 'C:\zzz_WIP\new-project-space\Setup\prod-settings.json')
+;

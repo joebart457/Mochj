@@ -17,6 +17,7 @@ namespace Mochj._PackageManager
     {
         private static double _startVersion = 1.00; 
         private static bool _showOutput = false;
+        private static List<string> _usedPackages = new List<string>();
         private static void Log(string message)
         {
             if (_showOutput)
@@ -30,7 +31,7 @@ namespace Mochj._PackageManager
             _showOutput = showFlag;
         }
 
-        public static void Update(string remoteInfoPath)
+        public static void Update(string remoteInfoPath, string manifestPath)
         {
             using (StreamReader r = new StreamReader(remoteInfoPath))
             {
@@ -39,7 +40,7 @@ namespace Mochj._PackageManager
 
                 Log($"Downloading remote file...");
                 WebClient client = new WebClient();
-                client.DownloadFile(file.RemoteUrl, $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/{file.Local}");
+                client.DownloadFile(file.RemoteUrl, manifestPath);
                 Log("Finished");
             }
         }
@@ -83,6 +84,11 @@ namespace Mochj._PackageManager
             Log("\nValidation completed.");
         }
 
+        public static List<string> GetUsedPackages()
+        {
+            return _usedPackages;
+        }
+
         public static void Use(string moduleName, string version, string manifestPath, _Storage.Environment environment)
         {
             RemotePackage pkg = FindPackage(moduleName, version, manifestPath);
@@ -99,6 +105,7 @@ namespace Mochj._PackageManager
             {
                 _Interpreter.Helpers.LoadFileHelper.LoadFile(environment, Path.Combine(pkgDir, file));
             }
+            _usedPackages.Add($"{moduleName}@{pkg.VersionNumber}");
         }
 
         public static void Fetch(string moduleName, string version, string manifestPath, bool force = false)
@@ -146,6 +153,65 @@ namespace Mochj._PackageManager
             WebClient client = new WebClient();
             client.DownloadFile(remotePackage.RemoteUrl, downloadDestination);
             ZipFile.ExtractToDirectory(downloadDestination, unzipDestination);
+        }
+
+        public static void Add(VersionedPackage pkg, string manifestPath)
+        {
+            if (!File.Exists(manifestPath))
+            {
+                Log($"Manifest did not exist. Creating at {manifestPath}");
+                File.Create(manifestPath).Close();
+            }
+
+            List<VersionedPackage> items = ListPackages(manifestPath);      
+            CreateCleanPackageList(items, new List<VersionedPackage> { pkg });
+
+            File.WriteAllText(manifestPath, JsonConvert.SerializeObject(items));
+            Log($"Successfully added package {pkg.Name} to manifest at {manifestPath}");
+        }
+
+        private static void CreateCleanPackageList(List<VersionedPackage> items, List<VersionedPackage> itemsToAdd)
+        {
+            itemsToAdd.ForEach(vPkg =>
+            {
+                var existing = items.Find(x => x.Name == vPkg.Name);
+                if (existing == null)
+                {
+                    items.Add(vPkg);
+                }
+                else
+                {
+                    foreach(var version in existing.Versions)
+                    {
+                        var existingVersion = vPkg.Versions.Find(x => x.VersionNumber == version.VersionNumber);
+                        if (existingVersion == null)
+                        {
+                            vPkg.Versions.Add(version);
+                        } else
+                        {
+                            Log($"Package {vPkg.Name} with version {version.VersionNumber} already exists.");
+                        }
+                    }
+                    existing.Versions.Sort((a, b) => b.VersionNumber.CompareTo(a.VersionNumber));
+                }
+            });
+        }
+
+        public static void AddAll(string manifestPath, string fromPath)
+        {
+            if (!File.Exists(manifestPath))
+            {
+                Log($"Manifest did not exist. Creating at {manifestPath}");
+                File.Create(manifestPath).Close();
+            }
+
+            List<VersionedPackage> items = ListPackages(manifestPath);
+            List<VersionedPackage> itemsToAdd = ListPackages(fromPath);
+
+            CreateCleanPackageList(items, itemsToAdd);
+            
+            File.WriteAllText(manifestPath, JsonConvert.SerializeObject(items));
+            Log($"Successfully added packages to manifest at {manifestPath}");
         }
 
         public static void Uninstall(string moduleName, string version, string manifestPath, bool keepCached = false)
@@ -228,13 +294,9 @@ namespace Mochj._PackageManager
         public static List<string> GetAllPackageNamesAndVersions(string manifestPath)
         {
             List<string> pkgNamesAndVersions = new List<string>();
-            using (StreamReader r = new StreamReader(manifestPath))
-            {
-                string json = r.ReadToEnd();
-                List<VersionedPackage> items = ListPackages(manifestPath);
-                items.ForEach(vPkg => vPkg.Versions.ForEach(pkg => pkgNamesAndVersions.Add($"{vPkg.Name}@{pkg.VersionNumber}")));
-                return pkgNamesAndVersions;
-            }
+            List<VersionedPackage> items = ListPackages(manifestPath);
+            items.ForEach(vPkg => vPkg.Versions.ForEach(pkg => pkgNamesAndVersions.Add($"{vPkg.Name}@{pkg.VersionNumber}")));
+            return pkgNamesAndVersions;
         }
 
         public static List<VersionedPackage> ListPackages(string manifestPath)
@@ -244,6 +306,7 @@ namespace Mochj._PackageManager
             {
                 string json = r.ReadToEnd();
                 List<VersionedPackage> items = JsonConvert.DeserializeObject<List<VersionedPackage>>(json);
+                if (items == null) items = new List<VersionedPackage>();
                 items.Sort((a, b) => a.Name.CompareTo(b.Name));
 
                 items.ForEach(vPkg =>
@@ -299,28 +362,8 @@ namespace Mochj._PackageManager
                     finalPackages = ListPackages(settings.ManifestPath);
                 }
 
-                packages.ForEach(vPkg =>
-                {
-                    var existingPkg = finalPackages.Find(x => x.Name == vPkg.Name);
-                    if (existingPkg == null)
-                    {
-                        finalPackages.Add(vPkg);
-                    }
-                    else
-                    {
-                        if (settings.UsePreviousLoadFiles)
-                        {
-                            if (existingPkg.Versions.Any())
-                            {
-                                var loadFiles = existingPkg.Versions.ElementAt(existingPkg.Versions.Count() - 1).LoadFiles;
-                                vPkg.Versions.ForEach(rpkg => rpkg.LoadFiles = loadFiles);
-                            }
-                        }
-                        
-                        existingPkg.Versions.AddRange(vPkg.Versions);
-                        existingPkg.Versions.Sort((a, b) => b.VersionNumber.CompareTo(a.VersionNumber));
-                    }
-                });
+                CreateCleanPackageList(finalPackages, packages);
+                
                 if (settings.ManifestPath != string.Empty)
                 {
                     File.WriteAllText(settings.ManifestPath, JsonConvert.SerializeObject(finalPackages));
@@ -343,13 +386,19 @@ namespace Mochj._PackageManager
         {
             string pkgDir = Path.Combine(outputDirectory, settings.PackageName);
             Directory.CreateDirectory(pkgDir);
-            if (!File.Exists(settings.VersionRecordPath))
+            double versionNo = _startVersion;
+            if (!string.IsNullOrWhiteSpace(settings.VersionRecordPath))
             {
-                File.Create(settings.VersionRecordPath).Close();
-                File.WriteAllText(settings.VersionRecordPath, _startVersion.ToString());
+                if (!File.Exists(settings.VersionRecordPath))
+                {
+                    File.Create(settings.VersionRecordPath).Close();
+                    File.WriteAllText(settings.VersionRecordPath, _startVersion.ToString());
+                }
+                versionNo = double.Parse(File.ReadAllText(settings.VersionRecordPath));
             }
+            
 
-            double versionNo = double.Parse(File.ReadAllText(settings.VersionRecordPath));
+
             double bumpedVersionNo = settings.BumpMajorVersion ? versionNo + 1 : versionNo + 0.01;
             string versionDir = $"{Path.Combine(pkgDir, bumpedVersionNo.ToString())}/";
             Directory.CreateDirectory(versionDir);
@@ -385,9 +434,13 @@ namespace Mochj._PackageManager
                     Log($"Hashes not equal, continuing with new package creation");
                 }
             }
-
-            File.WriteAllText(settings.VersionRecordPath, bumpedVersionNo.ToString());
             Log($"Bumped version to {bumpedVersionNo}");
+
+            if (!string.IsNullOrEmpty(settings.VersionRecordPath))
+            {
+                Log($"saved version to {settings.VersionRecordPath}");
+                File.WriteAllText(settings.VersionRecordPath, bumpedVersionNo.ToString());
+            }
             return new VersionedPackage()
             {
                 Name = settings.PackageName,

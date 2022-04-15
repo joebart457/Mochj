@@ -1,0 +1,29 @@
+
+
+(PackageManager.Use $FileSystem $latest 'C:\zzz_WIP\new-project-space\Setup\local-manifest.json')
+(PackageManager.Use $String $latest 'C:\zzz_WIP\new-project-space\Setup\local-manifest.json')
+(PackageManager.Use $Console $latest 'C:\zzz_WIP\new-project-space\Setup\local-manifest.json')
+
+@namespace Program;
+@entry Program.main;
+
+@defn main:number [targetDir:string]
+	@set count 0;
+	(FileSystem.Directory.ForEach targetDir
+		(defn [filename:string] 
+			(FileSystem.File.ForEachLine
+				filename
+				(defn [line:string]
+					(if (not (String.IsNullOrWhiteSpace line))
+						(defn @set count (addn count 1);)
+					)
+				)
+			)
+		)
+		'*.cs' 
+		true
+	)
+	(Console.WriteLine (Convert.ToString count))
+	(Console.ReadKey)
+	(Fn.Return 0)
+;

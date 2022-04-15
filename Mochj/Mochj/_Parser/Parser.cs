@@ -59,9 +59,19 @@ namespace Mochj._Parser
                 throw new Exception($"unexpected token where statement expected: {current()}");
             }
             
-
-            return parseExpressionStatement();
-
+            Statement stmt = parseExpressionStatement();
+            if (stmt is StmtExpression stmtExpr && stmtExpr.Expression is ExprFnDeclaration exprFn)
+            {
+                return new StmtFnDeclaration(exprFn.Loc)
+                {
+                    Label = exprFn.Label,
+                    Name = exprFn.Name,
+                    Parameters = exprFn.Parameters,
+                    ReturnType = exprFn.ReturnType,
+                    Statements = exprFn.Statements,
+                };
+            }
+            return stmt;
         }
         private Statement parseSet()
         {
@@ -223,7 +233,7 @@ namespace Mochj._Parser
         private Expression parseLiteralFunctionDeclaration()
         {
             ExprFnDeclaration exprFnDeclaration = new ExprFnDeclaration(previous().Loc);
-            if (match(TokenTypes.TTWord))
+            if (match(current(), TokenTypes.TTWord))
             {
                 StmtParameter fnNameRetType = parseParameter(0, false);
                 exprFnDeclaration.Name = fnNameRetType.Alias;

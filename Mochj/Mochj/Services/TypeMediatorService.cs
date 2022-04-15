@@ -47,6 +47,10 @@ namespace Mochj.Services
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.NativeList, ContainedType = new DataType { TypeId = Enums.DataTypeEnum.Any } };
             }
+            if (typeof(Ty).IsGenericType && typeof(Ty).GetGenericTypeDefinition() == typeof(List<>))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.NativeList, ContainedType = DataType(typeof(Ty).GenericTypeArguments[0]) };
+            }
             if (typeof(Ty) == typeof(DataType))
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.TypeInfo };
@@ -95,6 +99,10 @@ namespace Mochj.Services
             if (ty == typeof(NativeList))
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.NativeList, ContainedType = new DataType { TypeId = Enums.DataTypeEnum.Any } };
+            }
+            if (ty.IsGenericType && ty.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.NativeList, ContainedType = DataType(ty.GenericTypeArguments[0]) };
             }
             if (ty == typeof(DataType))
             {

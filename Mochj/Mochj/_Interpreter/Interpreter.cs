@@ -37,7 +37,7 @@ namespace Mochj._Interpreter
         {
             if (_entryPoint == null)
             {
-                throw new Exception("entry point not defined");
+                return null;
             }
             try
             {
@@ -48,6 +48,7 @@ namespace Mochj._Interpreter
                 throw new Exception($"Unable to resolve symbol {_entryPoint} to functional entry point. Error: {e.Message}");
             }
         }
+
 
         public virtual void Accept(IEnumerable<Statement> statements)
         {
