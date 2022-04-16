@@ -300,6 +300,23 @@ namespace ExportItems
                   .Build()
               ));
 
+            stringNamespace.Define("Join",
+              QualifiedObjectBuilder.BuildFunction(
+                  new NativeFunction()
+                  .Named("Join")
+                  .Action((Args args) =>
+                  {
+                      string sep = args.Get<string>(0);
+                      NativeList ls = args.Get<NativeList>(1);
+
+                      return QualifiedObjectBuilder.BuildString(string.Join(sep, ls.Get<string>()));
+                  })
+                  .RegisterParameter<string>("separator")
+                  .RegisterParameter<NativeList>("ls")
+                  .Returns<string>()
+                  .Build()
+              ));
+
             environment.Define("String", QualifiedObjectBuilder.BuildNamespace(stringNamespace));
 
             return 0;

@@ -1,0 +1,23 @@
+
+
+@entry FirstRun.Go;
+
+@namespace FirstRun;
+
+@defn Go:empty
+	(PackageManager.ShowOutput)
+	(PackageManager.Update)
+	(PackageManager.FetchAllLatest)
+	
+	(println "Testing package manager...")
+	(PackageManager.Use $Debug)
+	(println "Using packages: ")
+	(PackageManager.ShowUsedPackages)
+	(println "Testing imported function...")
+	@set msg (try (Fn.Bind Debug.Help println));
+	(if (not-equal msg '') 
+		(defn (println "FAILED validation. Please call me lol."))
+		(defn (println "SUCCESS. Finished testing PackageManager. You're good to go!"))
+	)
+	
+;

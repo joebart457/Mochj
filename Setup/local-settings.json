@@ -1,6 +1,6 @@
 {
 	"PublishToLocal": true,
-	"UsePreviousLoadFiles": true,
+	"UsePreviousLoadFiles": false,
 	"ManifestPath": "C:\\zzz_WIP\\new-project-space\\Setup\\local-manifest.json",
 	"OutputDirectory": "C:\\zzz_WIP\\new-project-space\\Setup\\LocalPackages",
 	"PackageInfo": [
@@ -16,6 +16,9 @@
 			"PackageName": "Debug",
 			"IncludedFiles": [
 				"C:\\zzz_WIP\\new-project-space\\Mochj.Debug\\Mochj.Debug\\bin\\Release\\"
+			],
+			"LoadFiles": [
+				"Mochj.Debug.dll"
 			]
 		},
 		{
@@ -23,6 +26,9 @@
 			"PackageName": "FileSystem",
 			"IncludedFiles": [
 				"C:\\zzz_WIP\\new-project-space\\Mochj.FileSystem\\Mochj.FileSystem\\bin\\Release\\"
+			],
+			"LoadFiles": [
+				"Mochj.FileSystem.dll"
 			]
 		},
 		{
@@ -30,6 +36,9 @@
 			"PackageName": "String",
 			"IncludedFiles": [
 				"C:\\zzz_WIP\\new-project-space\\Mochj.String\\Mochj.String\\bin\\Release\\"
+			],
+			"LoadFiles": [
+				"Mochj.String.dll"
 			]
 		},
 		{
@@ -37,6 +46,9 @@
 			"PackageName": "Web",
 			"IncludedFiles": [
 				"C:\\zzz_WIP\\new-project-space\\Mochj.Web\\Mochj.Web\\bin\\Release\\"
+			],
+			"LoadFiles": [
+				"Mochj.Web.dll"
 			]
 		},
 		{
@@ -44,6 +56,9 @@
 			"PackageName": "Console",
 			"IncludedFiles": [
 				"C:\\zzz_WIP\\new-project-space\\Mochj.Console\\Mochj.Console\\bin\\Release\\"
+			],
+			"LoadFiles": [
+				"Mochj.Console.dll"
 			]
 		},
 		{
@@ -51,6 +66,9 @@
 			"PackageName": "LPM",
 			"IncludedFiles": [
 				"C:\\zzz_WIP\\new-project-space\\Setup\\LPM\\lpm.mochj"
+			],
+			"LoadFiles": [
+				"lpm.mochj"
 			]
 		}
 	]

@@ -4,6 +4,7 @@ using Mochj.Models;
 using Mochj.Models.Fn;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,6 +15,9 @@ namespace Mochj.Services
 {
     static class ProgramStartupService
     {
+        private static readonly string StartupDirectoryVariable = "Directory";
+        private static readonly string RunFileVariable = "RunFile";
+
         private static void ShowHelp()
         {
             Console.WriteLine("usage: mochj.exe [run_file] [args...]");
@@ -34,12 +38,14 @@ namespace Mochj.Services
                 Args arguments = new _CmdParser.CmdParser().ParseCommandLineArgs(args);
                 if (!arguments.ToList().Any())
                 {
+                    SetWorkingDirectoryAndRunFile(null);
                     ShowHelp();
                     repl();
                     return 0;
                 }
 
                 string runFile = TypeMediatorService.ToNativeType<string>(arguments.Get(0));
+                SetWorkingDirectoryAndRunFile(runFile);
 
                 var Tokenizer = DefaultTokenizerBuilder.Build();
                 var Parser = new _Parser.Parser();
@@ -60,6 +66,27 @@ namespace Mochj.Services
                 Console.WriteLine(e.Message);
                 return -1;
             }
+        }
+
+        private static void SetWorkingDirectoryAndRunFile(string runFile)
+        {
+            _Storage.Environment startupNamespace = new _Storage.Environment(null).WithAlias("Startup");
+
+            string fullPath = System.Reflection.Assembly.GetCallingAssembly().Location;
+            string workingDirectory = Path.GetDirectoryName(fullPath);
+
+            if (!string.IsNullOrWhiteSpace(runFile))
+            {
+                fullPath = Path.GetFullPath(runFile);
+                workingDirectory = Path.GetDirectoryName(fullPath);
+            }
+
+            startupNamespace.Define(StartupDirectoryVariable, QualifiedObjectBuilder.BuildString(workingDirectory));
+            startupNamespace.Define(RunFileVariable, QualifiedObjectBuilder.BuildString(fullPath));
+
+            DefaultEnvironmentBuilder.Default.Define("Startup", QualifiedObjectBuilder.BuildNamespace(startupNamespace));
+
+            Directory.SetCurrentDirectory(workingDirectory);
         }
 
         public static void repl()

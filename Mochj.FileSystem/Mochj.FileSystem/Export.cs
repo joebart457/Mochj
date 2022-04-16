@@ -20,9 +20,11 @@ namespace ExportItems
             Mochj._Storage.Environment fsNamespace = new Mochj._Storage.Environment(null).WithAlias("FileSystem");
             Mochj._Storage.Environment fileNamespace = new Mochj._Storage.Environment(null).WithAlias("File");
             Mochj._Storage.Environment dirNamespace = new Mochj._Storage.Environment(null).WithAlias("Directory");
+            Mochj._Storage.Environment pathNamespace = new Mochj._Storage.Environment(null).WithAlias("Path");
 
             fsNamespace.Define("File", QualifiedObjectBuilder.BuildNamespace(fileNamespace));
             fsNamespace.Define("Directory", QualifiedObjectBuilder.BuildNamespace(dirNamespace));
+            fsNamespace.Define("Path", QualifiedObjectBuilder.BuildNamespace(pathNamespace));
 
             dirNamespace.Define("ForEach",
               QualifiedObjectBuilder.BuildFunction(
@@ -31,8 +33,8 @@ namespace ExportItems
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
-                      string pattern = args.Get<string>("pattern");
                       Function fn = args.Get<Function>("fn");
+                      string pattern = args.Get<string>("pattern");
                       bool recursive = args.Get<bool>("recursive");
 
                       foreach (string file in Directory.EnumerateFiles(path, pattern, recursive? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
@@ -101,6 +103,35 @@ namespace ExportItems
                   .ReturnsEmpty()
                   .Build()
               ));
+
+            dirNamespace.Define("SetWorkingDirectory",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("SetWorkingDirectory")
+                    .Action((Args args) =>
+                    {
+                        string path = args.Get<string>("path");
+
+                        Directory.SetCurrentDirectory(path);
+
+                        return QualifiedObjectBuilder.BuildEmptyValue();
+                    })
+                    .RegisterParameter<string>("path")
+                    .ReturnsEmpty()
+                    .Build()
+                ));
+
+            dirNamespace.Define("GetWorkingDirectory",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("GetWorkingDirectory")
+                    .Action((Args args) =>
+                    {
+                        return QualifiedObjectBuilder.BuildString(Directory.GetCurrentDirectory());
+                    })
+                    .Returns<string>()
+                    .Build()
+                ));
 
             fileNamespace.Define("ForEachTag",
               QualifiedObjectBuilder.BuildFunction(
@@ -331,7 +362,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("GetFileName",
+            pathNamespace.Define("GetFileName",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Named("GetFileName")
@@ -345,10 +376,10 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("GetDirectory",
+            pathNamespace.Define("GetDirectoryName",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
-                  .Named("GetDirectory")
+                  .Named("GetDirectoryName")
                   .Action((Args args) =>
                   {
                       string path = args.Get<string>("path");
@@ -359,7 +390,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("GetExtension",
+            pathNamespace.Define("GetExtension",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Named("GetExtension")
@@ -373,7 +404,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("GetFileNameWithoutExtension",
+            pathNamespace.Define("GetFileNameWithoutExtension",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Named("GetFileNameWithoutExtension")
@@ -387,7 +418,7 @@ namespace ExportItems
                   .Build()
               ));
 
-            fileNamespace.Define("GetFullPath",
+            pathNamespace.Define("GetFullPath",
               QualifiedObjectBuilder.BuildFunction(
                   new NativeFunction()
                   .Named("GetFullPath")
@@ -400,6 +431,116 @@ namespace ExportItems
                   .Returns<string>()
                   .Build()
               ));
+
+            pathNamespace.Define("Combine",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("Combine")
+                    .Action((Args args) =>
+                    {
+                        string path1 = args.Get<string>(0);
+                        string path2 = args.Get<string>(1);
+                        return QualifiedObjectBuilder.BuildString(Path.Combine(path1, path2));
+                    })
+                    .RegisterParameter<string>("path1")
+                    .RegisterParameter<string>("path2")
+                    .Returns<string>()
+                    .Build()
+                ));
+
+            pathNamespace.Define("ChangeExtension",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("ChangeExtension")
+                    .Action((Args args) =>
+                    {
+                        string path = args.Get<string>(0);
+                        string ext = args.Get<string>(1);
+                        return QualifiedObjectBuilder.BuildString(Path.ChangeExtension(path, ext));
+                    })
+                    .RegisterParameter<string>("path")
+                    .RegisterParameter<string>("extension")
+                    .Returns<string>()
+                    .Build()
+                ));
+
+            pathNamespace.Define("GetPathRoot",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("GetPathRoot")
+                    .Action((Args args) =>
+                    {
+                        string path = args.Get<string>(0);
+                        return QualifiedObjectBuilder.BuildString(Path.GetPathRoot(path));
+                    })
+                    .RegisterParameter<string>("path")
+                    .Returns<string>()
+                    .Build()
+                ));
+
+            pathNamespace.Define("GetRandomFileName",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("GetRandomFileName")
+                    .Action((Args args) =>
+                    {
+                        return QualifiedObjectBuilder.BuildString(Path.GetRandomFileName());
+                    })
+                    .Returns<string>()
+                    .Build()
+                ));
+
+            pathNamespace.Define("GetTempFileName",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("GetTempFileName")
+                    .Action((Args args) =>
+                    {
+                        return QualifiedObjectBuilder.BuildString(Path.GetTempFileName());
+                    })
+                    .Returns<string>()
+                    .Build()
+                ));
+
+            pathNamespace.Define("GetTempPath",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("GetTempPath")
+                    .Action((Args args) =>
+                    {
+                        return QualifiedObjectBuilder.BuildString(Path.GetTempPath());
+                    })
+                    .Returns<string>()
+                    .Build()
+                ));
+
+            pathNamespace.Define("HasExtension",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("HasExtension")
+                    .Action((Args args) =>
+                    {
+                        string path = args.Get<string>(0);
+                        return QualifiedObjectBuilder.BuildBoolean(Path.HasExtension(path));
+                    })
+                    .RegisterParameter<string>("path")
+                    .Returns<bool>()
+                    .Build()
+                ));
+
+            pathNamespace.Define("IsPathRooted",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("IsPathRooted")
+                    .Action((Args args) =>
+                    {
+                        string path = args.Get<string>(0);
+                        return QualifiedObjectBuilder.BuildBoolean(Path.IsPathRooted(path));
+                    })
+                    .RegisterParameter<string>("path")
+                    .Returns<bool>()
+                    .Build()
+                ));
 
             fileNamespace.Define("GenerateHash",
               QualifiedObjectBuilder.BuildFunction(

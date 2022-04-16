@@ -12,5 +12,6 @@ namespace Mochj._PackageManager.Models
         public List<string> IncludedFiles { get; set; } = new List<string>();
         public string VersionRecordPath { get; set; }
         public bool BumpMajorVersion { get; set; }
+        public List<string> LoadFiles { get; set; } = new List<string>();
     }
 }

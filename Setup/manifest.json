@@ -4,7 +4,7 @@
 		"Versions": [
 			{
 				"VersionNumber": "2.4",
-				"RemoteUrl": "",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/aa8x7iypi1tgnhy/2.4.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "582d958159011234702e890f4b66b3e6",
 				"LoadFiles": [
@@ -13,7 +13,7 @@
 			},
 			{
 				"VersionNumber": "2.34",
-				"RemoteUrl": "https://www.dropbox.com/s/jv3gg2shwubkr6c/2.34.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/jv3gg2shwubkr6c/2.34.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "d0b9da852c7483e88536efb4edc66352",
 				"LoadFiles": [
@@ -22,7 +22,7 @@
 			},
 			{
 				"VersionNumber": "2.17",
-				"RemoteUrl": "https://www.dropbox.com/s/s8ol7dfsqb7nd2c/2.17.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/s8ol7dfsqb7nd2c/2.17.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "e608caf6b8e3ed402a9b926f704c1d28",
 				"LoadFiles": [
@@ -90,7 +90,7 @@
 		"Versions": [
 			{
 				"VersionNumber": "2.4",
-				"RemoteUrl": "",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/bw0vi0mov0x94yz/2.4.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "039cd093816182bd0cce928369f90709",
 				"LoadFiles": [
@@ -99,7 +99,7 @@
 			},
 			{
 				"VersionNumber": "2.34",
-				"RemoteUrl": "https://www.dropbox.com/s/aihqcbonyshmklr/2.34.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/aihqcbonyshmklr/2.34.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "f1d120f38ea78c6cb3ac5775a4a4f180",
 				"LoadFiles": [
@@ -108,7 +108,7 @@
 			},
 			{
 				"VersionNumber": "2.17",
-				"RemoteUrl": "https://www.dropbox.com/s/al35gln2t4g3s59/2.17.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/al35gln2t4g3s59/2.17.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "9efc7870ba60a4359b61aeb3c790a28e",
 				"LoadFiles": [
@@ -176,7 +176,7 @@
 		"Versions": [
 			{
 				"VersionNumber": "2.4",
-				"RemoteUrl": "",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/qrjws22o7atey8d/2.4.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "e1c748c1735df0f16690ef1ac4982910",
 				"LoadFiles": [
@@ -185,7 +185,7 @@
 			},
 			{
 				"VersionNumber": "2.34",
-				"RemoteUrl": "https://www.dropbox.com/s/efbgcqkrcz9f4vl/2.34.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/efbgcqkrcz9f4vl/2.34.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "3dcd1f7d9079bbb0cb0512a8e8724d62",
 				"LoadFiles": [
@@ -194,7 +194,7 @@
 			},
 			{
 				"VersionNumber": "2.17",
-				"RemoteUrl": "https://www.dropbox.com/s/3s20v3ho6np8hio/2.17.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/3s20v3ho6np8hio/2.17.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "ec6f0801bfcc893d1066b52c2068dd9c",
 				"LoadFiles": [
@@ -262,21 +262,21 @@
 		"Versions": [
 			{
 				"VersionNumber": "4",
-				"RemoteUrl": "",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/1x2be1w3599ke5p/4.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "433a10be0df95d1bcc2c8f8076df40b1",
 				"LoadFiles": []
 			},
 			{
 				"VersionNumber": "3.39",
-				"RemoteUrl": "https://www.dropbox.com/s/1aar9ui60wlt19n/3.39.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/1aar9ui60wlt19n/3.39.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "1129ffb938fd29cd67f3eb34476e06a9",
 				"LoadFiles": []
 			},
 			{
 				"VersionNumber": "2.18",
-				"RemoteUrl": "https://www.dropbox.com/s/7jkozsa3qk2pgf2/2.18.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/7jkozsa3qk2pgf2/2.18.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "5b29c1acb5fb5b0fe9c0fadbdeba3ec0",
 				"LoadFiles": []
@@ -330,7 +330,7 @@
 		"Versions": [
 			{
 				"VersionNumber": "2.4",
-				"RemoteUrl": "",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/iu5a7gopzr34aur/2.4.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "af9c8d12394dbce30c00879e9d71775a",
 				"LoadFiles": [
@@ -339,7 +339,7 @@
 			},
 			{
 				"VersionNumber": "2.34",
-				"RemoteUrl": "https://www.dropbox.com/s/ghe7uyvhzrrvcpu/2.34.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/ghe7uyvhzrrvcpu/2.34.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "34287456ca64fc3cf9a609a87907fe57",
 				"LoadFiles": [
@@ -348,7 +348,7 @@
 			},
 			{
 				"VersionNumber": "2.17",
-				"RemoteUrl": "https://www.dropbox.com/s/sxxuvx1x6znxqu7/2.17.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/sxxuvx1x6znxqu7/2.17.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "a99a9a1f49dff2ed9ca1c950ba0439ab",
 				"LoadFiles": [
@@ -416,7 +416,7 @@
 		"Versions": [
 			{
 				"VersionNumber": "2.4",
-				"RemoteUrl": "",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/tdo54jpogcyk1v3/2.4.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "fa28159875a743766d4ad2214a5a838d",
 				"LoadFiles": [
@@ -425,7 +425,7 @@
 			},
 			{
 				"VersionNumber": "2.34",
-				"RemoteUrl": "https://www.dropbox.com/s/ybfhdqf3q0r6gqq/2.34.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/ybfhdqf3q0r6gqq/2.34.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "0a971dfb1f00659fdb0fa3bfac07e054",
 				"LoadFiles": [
@@ -434,7 +434,7 @@
 			},
 			{
 				"VersionNumber": "2.17",
-				"RemoteUrl": "https://www.dropbox.com/s/fyjb26garptfhu5/2.17.zip?dl=0",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/fyjb26garptfhu5/2.17.zip?dl=0",
 				"LocalPath": "",
 				"Hash": "c2daec0941dc7d5608963973f57bffe5",
 				"LoadFiles": [

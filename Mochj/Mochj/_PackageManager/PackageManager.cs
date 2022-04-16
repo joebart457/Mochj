@@ -103,6 +103,7 @@ namespace Mochj._PackageManager
             }
             foreach (string file in pkg.LoadFiles)
             {
+                Log($"Running loadfile '{file}'");
                 _Interpreter.Helpers.LoadFileHelper.LoadFile(environment, Path.Combine(pkgDir, file));
             }
             _usedPackages.Add($"{moduleName}@{pkg.VersionNumber}");
@@ -457,6 +458,7 @@ namespace Mochj._PackageManager
                         RemoteUrl = "",
                         Hash = hash,
                         LocalPath = publishLocally? $"{Path.Combine(pkgDir, bumpedVersionNo.ToString())}.zip" : "",
+                        LoadFiles = settings.LoadFiles,
                     }
                 }
             };
