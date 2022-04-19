@@ -121,6 +121,7 @@ namespace MochjLanguage
                     if (_supportedTypes.ContainsKey(token.Type))
                     {
                         var tokenSpan = new SnapshotSpan(curSpan.Snapshot, GetSpanForToken(token));
+                
                         if (tokenSpan.IntersectsWith(curSpan))
                         {
                             yield return new TagSpan<MochjTokenTag>(tokenSpan, new MochjTokenTag(_supportedTypes[token.Type]));

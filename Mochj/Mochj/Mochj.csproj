@@ -51,6 +51,9 @@
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Assets\mochj-script.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -135,6 +138,9 @@
     </None>
     <None Include="install-user.bat" />
     <None Include="packages.config" />
+    <None Include="dmochj.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="remote.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -150,6 +156,7 @@
     <Folder Include="_Interpreter\Models\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Assets\mochj-script.ico" />
     <Content Include="license.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

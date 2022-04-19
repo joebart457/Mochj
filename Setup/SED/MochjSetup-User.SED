@@ -37,7 +37,8 @@ FILE3="Mochj.pdb"
 FILE4="Newtonsoft.Json.dll"
 FILE5="Newtonsoft.Json.xml"
 FILE6="remote.json"
-FILE7="install-user.bat"
+FILE7="dmochj.bat"
+FILE8="install-user.bat"
 [SourceFiles]
 SourceFiles0=C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\
 SourceFiles1=C:\zzz_WIP\new-project-space\Mochj\Mochj\
@@ -49,5 +50,6 @@ SourceFiles1=C:\zzz_WIP\new-project-space\Mochj\Mochj\
 %FILE4%=
 %FILE5%=
 %FILE6%=
-[SourceFiles1]
 %FILE7%=
+[SourceFiles1]
+%FILE8%=

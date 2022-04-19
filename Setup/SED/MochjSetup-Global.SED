@@ -38,6 +38,7 @@ FILE4="Newtonsoft.Json.dll"
 FILE5="Newtonsoft.Json.xml"
 FILE6="remote.json"
 FILE7="install-global.bat"
+FILE8="dmochj.bat"
 [SourceFiles]
 SourceFiles0=C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\
 [SourceFiles0]
@@ -49,3 +50,4 @@ SourceFiles0=C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\
 %FILE5%=
 %FILE6%=
 %FILE7%=
+%FILE8%=

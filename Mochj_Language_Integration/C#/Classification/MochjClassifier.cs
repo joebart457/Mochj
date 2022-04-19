@@ -29,12 +29,12 @@ namespace MochjLanguage
         [Export]
         [Name("MOCHJ")]
         [BaseDefinition("code")]
-        internal static ContentTypeDefinition OokContentType = null;
+        internal static ContentTypeDefinition OokContentType;
 
         [Export]
         [FileExtension(".mochj")]
         [ContentType("MOCHJ")]
-        internal static FileExtensionToContentTypeDefinition OokFileType = null;
+        internal static FileExtensionToContentTypeDefinition OokFileType;
 
         [Import]
         internal IClassificationTypeRegistryService ClassificationTypeRegistry = null;

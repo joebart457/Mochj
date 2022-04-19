@@ -1,5 +1,6 @@
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\license.txt
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\install-global.bat
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\dmochj.bat
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\remote.json
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\RunTests.bat
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Debug\Test.mochj

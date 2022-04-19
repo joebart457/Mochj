@@ -3,6 +3,7 @@ C:\zzz_WIP\new-project-space\Release\Mochj.exe.config
 C:\zzz_WIP\new-project-space\Release\Mochj.exe
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\license.txt
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\install-global.bat
+C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\dmochj.bat
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\remote.json
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\RunTests.bat
 C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\Test.mochj

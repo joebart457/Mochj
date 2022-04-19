@@ -60,6 +60,7 @@ namespace MochjLanguage
             if (m_isDisposed) throw new ObjectDisposedException("MochjCompletionSource");
             if (session == null) return;
 
+
             var triggerPoint = (SnapshotPoint)session.GetTriggerPoint(m_textBuffer.CurrentSnapshot);      
             if (triggerPoint == null) return;
 

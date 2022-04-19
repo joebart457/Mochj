@@ -1,0 +1,2 @@
+mochj %*
+pause
