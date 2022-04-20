@@ -29,6 +29,7 @@ namespace Mochj_VSIntegration
     [Guid(Mochj_VSIntegrationPackage.PackageGuidString)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.FolderOpened_string, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class Mochj_VSIntegrationPackage : AsyncPackage
     {
         /// <summary>
@@ -49,6 +50,7 @@ namespace Mochj_VSIntegration
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            await Mochj_VSIntegration.Commands.OpenMochjCommand.InitializeAsync(this);
         }
 
         #endregion

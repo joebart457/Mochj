@@ -19,3 +19,9 @@ C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\obj\Release
 C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\obj\Release\extension.vsixmanifest
 C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\obj\Release\files.json
 C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\obj\Release\createTemplateManifests.cache
+C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\obj\Release\Mochj_VSIntegrationPackage.cto
+C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\obj\Release\VSCT.read.1.tlog
+C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\obj\Release\VSCT.write.1.tlog
+C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\obj\Release\resources.json
+C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\obj\Release\ctoFiles.json
+C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\obj\Release\mergeCto.cache

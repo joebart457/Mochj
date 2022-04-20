@@ -17,5 +17,6 @@
   </Prerequisites>
   <Assets>
     <Asset Type="Microsoft.VisualStudio.VsPackage" Path="Mochj_VSIntegration.pkgdef" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" Path="Mochj_VSIntegration.dll" />
   </Assets>
 </PackageManifest>

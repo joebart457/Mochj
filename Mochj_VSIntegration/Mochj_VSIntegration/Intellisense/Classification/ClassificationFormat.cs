@@ -40,7 +40,7 @@ namespace Mochj_VSIntegration.Intellisense.Classification
         public Namespace()
         {
             DisplayName = "Namespace";
-            ForegroundColor = Colors.CadetBlue;
+            ForegroundColor = Colors.MediumPurple;
         }
     }
     [Export(typeof(EditorFormatDefinition))]
