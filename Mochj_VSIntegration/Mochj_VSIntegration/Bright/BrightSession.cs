@@ -41,8 +41,8 @@ namespace Mochj.IDE.Bright
             Classifiers[TokenTypes.TTFloat] = TokenClassifierEnum.Number_1;
             Classifiers[TokenTypes.TTInteger] = TokenClassifierEnum.Number_1;
 
-            Classifiers[TokenTypes.LiteralTrue] = TokenClassifierEnum.Keyword_1;
-            Classifiers[TokenTypes.LiteralFalse] = TokenClassifierEnum.Keyword_1;
+            Classifiers[TokenTypes.LiteralTrue] = TokenClassifierEnum.Boolean_1;
+            Classifiers[TokenTypes.LiteralFalse] = TokenClassifierEnum.Boolean_1;
 
             Classifiers[TokenTypes.Set] = TokenClassifierEnum.Keyword_2;
             Classifiers[TokenTypes.Defn] = TokenClassifierEnum.Keyword_2;

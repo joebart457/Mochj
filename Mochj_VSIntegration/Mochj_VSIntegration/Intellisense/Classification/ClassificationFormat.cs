@@ -26,7 +26,8 @@ namespace Mochj_VSIntegration.Intellisense.Classification
         public Function()
         {
             DisplayName = "Function";
-            ForegroundColor = Colors.DarkViolet;
+            ForegroundColor = Colors.Navy;
+            IsBold = true;
         }
     }
     [Export(typeof(EditorFormatDefinition))]
@@ -39,7 +40,7 @@ namespace Mochj_VSIntegration.Intellisense.Classification
         public Namespace()
         {
             DisplayName = "Namespace";
-            ForegroundColor = Colors.Navy;
+            ForegroundColor = Colors.CadetBlue;
         }
     }
     [Export(typeof(EditorFormatDefinition))]
@@ -52,7 +53,7 @@ namespace Mochj_VSIntegration.Intellisense.Classification
         public Identifier_1()
         {
             DisplayName = "Identifier_1";
-            ForegroundColor = Colors.Gray;
+            ForegroundColor = Colors.DarkSlateGray;
         }
     }
     [Export(typeof(EditorFormatDefinition))]
@@ -91,7 +92,8 @@ namespace Mochj_VSIntegration.Intellisense.Classification
         public Boolean_1()
         {
             DisplayName = "Boolean_1";
-            ForegroundColor = Colors.Navy;
+            ForegroundColor = Colors.Blue;
+            IsBold = true;
         }
     }
     [Export(typeof(EditorFormatDefinition))]
@@ -117,7 +119,7 @@ namespace Mochj_VSIntegration.Intellisense.Classification
         public Error_1()
         {
             DisplayName = "Error_1";
-            ForegroundColor = Colors.Honeydew;
+            ForegroundColor = Colors.Red;
         }
     }
     [Export(typeof(EditorFormatDefinition))]
@@ -156,7 +158,7 @@ namespace Mochj_VSIntegration.Intellisense.Classification
         public Keyword_2()
         {
             DisplayName = "Keyword_2";
-            ForegroundColor = Colors.BlueViolet;
+            ForegroundColor = Colors.Blue;
         }
     }
     [Export(typeof(EditorFormatDefinition))]
@@ -169,7 +171,7 @@ namespace Mochj_VSIntegration.Intellisense.Classification
         public Keyword_3()
         {
             DisplayName = "Keyword_3";
-            ForegroundColor = Colors.GreenYellow;
+            ForegroundColor = Colors.Blue;
         }
     }
     [Export(typeof(EditorFormatDefinition))]
@@ -182,7 +184,7 @@ namespace Mochj_VSIntegration.Intellisense.Classification
         public Keyword_4()
         {
             DisplayName = "Keyword_4";
-            ForegroundColor = Colors.DeepPink;
+            ForegroundColor = Colors.SteelBlue;
         }
     }
     [Export(typeof(EditorFormatDefinition))]
