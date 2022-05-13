@@ -176,13 +176,20 @@ namespace Mochj.Services
                 }
                 throw new Exception($"unable to convert value of type {value.Type} to type {Enums.DataTypeEnum.TypeInfo}");
             }
-
-            object nativeObj = Convert.ChangeType(value.Object, typeof(Ty));
-            if (nativeObj is Ty tyObj)
+            if (value.Object is IConvertible convertibleObj)
             {
-                return tyObj;
+                object nativeObj = Convert.ChangeType(convertibleObj, typeof(Ty));
+                if (nativeObj is Ty tyObj)
+                {
+                    return tyObj;
+                }
+                throw new Exception($"failed conversion of object {value} to type {typeof(Ty).FullName}");
             }
-            throw new Exception($"unable to convert object {value} to type {typeof(Ty).FullName}");
+            if (value.Object is Ty typedObject)
+            {
+                return typedObject;
+            }
+            throw new Exception($"unable to natively convert object {value} to type {typeof(Ty).FullName}");
         }
 
         public static List<Ty> ToList<Ty>(QualifiedObject value)

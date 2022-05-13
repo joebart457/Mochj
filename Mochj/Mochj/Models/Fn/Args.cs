@@ -145,5 +145,32 @@ namespace Mochj.Models.Fn
             throw new Exception($"argument at {position} is not defined; position out of range");
         }
 
+        public Ty GetOrDefault<Ty>(string alias, Ty _default)
+        {
+            try
+            {
+                return TypeMediatorService.ToNativeType<Ty>(_argumentsByAlias[alias].Value);
+            } catch (Exception)
+            {
+                return _default;
+            }
+        }
+
+        public Ty GetOrDefault<Ty>(int position, Ty _default)
+        {
+            try
+            {
+                return TypeMediatorService.ToNativeType<Ty>(_argumentsByPosition[position].Value);
+            } catch (Exception)
+            {
+                return _default;
+            }
+        }
+
+        public bool ContainsKey(string alias)
+        {
+            return _argumentsByAlias.ContainsKey(alias);
+        }
+
     }
 }

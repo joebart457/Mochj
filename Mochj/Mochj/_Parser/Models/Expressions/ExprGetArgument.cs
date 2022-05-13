@@ -13,15 +13,17 @@ namespace Mochj._Parser.Models.Expressions
     {
         public Expression Lhs { get; set; }
         public string Identifier { get; set; }
+        public bool Strict { get; set; }
         public ExprGetArgument(Location loc)
             : base("ExprGetArgument", loc)
         {
         }
 
-        public ExprGetArgument(Location loc, Expression lhs)
+        public ExprGetArgument(Location loc, Expression lhs, bool strict)
             : base("ExprGetArgument", loc)
         {
             Lhs = lhs;
+            Strict = strict;
         }
 
         public override QualifiedObject Visit(Interpreter interpreter)

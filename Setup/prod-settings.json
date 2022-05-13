@@ -46,6 +46,13 @@
 			"IncludedFiles": [
 				"C:\\zzz_WIP\\new-project-space\\Mochj.Console\\Mochj.Console\\bin\\Release\\"
 			]
+		},
+		{
+			"VersionRecordPath": "C:\\zzz_WIP\\Frames\\version",
+			"PackageName": "Frames",
+			"IncludedFiles": [
+				"C:\\zzz_WIP\\Frames\\Frames\\bin\\Release\\"
+			]
 		}
 	]
 }

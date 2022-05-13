@@ -11,12 +11,46 @@ namespace Mochj.Builders
 {
     public static class QualifiedObjectBuilder
     {
+        private static Dictionary<Type, Func<object, QualifiedObject>> _mappings = new Dictionary<Type, Func<object, QualifiedObject>>();
+
         private static QualifiedObject emptyFunction = null;
+
+        public static bool RegisterMapping<Ty>(Func<object, QualifiedObject> action)
+        {
+            if (action == null) return false;
+            _mappings[typeof(Ty)] = action;
+            return true;
+        }
+
+        public static QualifiedObject MapValue<Ty>(Ty value)
+        {
+            if (_mappings.ContainsKey(typeof(Ty)))
+            {
+                return _mappings[typeof(Ty)](value);
+            }
+            throw new Exception($"mapping from type {typeof(Ty).FullName} has not been provided");
+        }
+
+        public static QualifiedObject MapValue(object value)
+        {
+            if (value == null) return BuildEmptyValue();
+            if (_mappings.ContainsKey(value.GetType()))
+            {
+                return _mappings[value.GetType()](value);
+            }
+            throw new Exception($"mapping from type {value.GetType().FullName} has not been provided");
+        }
 
         public static QualifiedObject BuildValue(object obj)
         {
             if (obj == null) return BuildEmptyValue();
             return new QualifiedObject { Object = obj, Type = TypeMediatorService.DataType(obj.GetType()) };
+        }
+
+        public static QualifiedObject BuildAnyValue(object obj)
+        {
+            if (obj == null) return BuildEmptyValue();
+            return new QualifiedObject { Object = obj, Type = TypeMediatorService.DataType<object>() };
         }
 
         public static QualifiedObject BuildEmptyValue()

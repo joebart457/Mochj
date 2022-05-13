@@ -1,8 +1,8 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
   <Metadata>
-    <Identity Id="Mochj_VSIntegration.761e03ca-0cce-47fe-b5b6-94f5b57927ed" Version="1.0" Language="en-US" Publisher="Joe Bartholomaus" />
+    <Identity Id="Mochj_VSIntegration.761e03ca-0cce-47fe-b5b6-94f5b57927ed" Version="1.1" Language="en-US" Publisher="Joe Bartholomaus" />
     <DisplayName>Mochj_VSIntegration</DisplayName>
-    <Description>Empty VSIX Project.</Description>
+    <Description xml:space="preserve">Mochj Language code highlighting and autocomplete support.</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">

@@ -209,7 +209,12 @@ namespace Mochj._Interpreter
         {
             QualifiedObject lhs = Accept(exprGetArgument.Lhs);
             BoundFn fn = TypeMediatorService.ToNativeType<BoundFn>(lhs);
-            return fn.BoundArguments.Get(exprGetArgument.Identifier);
+            if (exprGetArgument.Strict || fn.BoundArguments.ContainsKey(exprGetArgument.Identifier))
+            {
+                return fn.BoundArguments.Get(exprGetArgument.Identifier);
+            }
+            return QualifiedObjectBuilder.BuildEmptyValue();
+
         }
 
         public virtual QualifiedObject Accept(ExprIdentifier exprIdentifier)

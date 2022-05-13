@@ -217,15 +217,22 @@ namespace Mochj._Parser
         private Expression parseBinary()
         {
             Expression expr = parseCall();
-            if (match(TokenTypes.DoubleQuestionMark))
+            while (match(TokenTypes.DoubleQuestionMark) || match(TokenTypes.DoubleDot) || match(TokenTypes.Colon))
             {
-                expr = new ExprNullableSwitch(previous().Loc, expr, parseBinary());
-            }
-            else while (match(TokenTypes.DoubleDot))
-            {
-                var exprGetArg = new ExprGetArgument(previous().Loc, expr);
-                exprGetArg.Identifier = consume(TokenTypes.TTWord).Lexeme;
-                expr = exprGetArg;       
+                if (match(previous(), TokenTypes.DoubleQuestionMark))
+                {
+                    expr = new ExprNullableSwitch(previous().Loc, expr, parseBinary());
+                } else if (match(previous(), TokenTypes.DoubleDot))
+                {
+                    var exprGetArg = new ExprGetArgument(previous().Loc, expr, false);
+                    exprGetArg.Identifier = consume(TokenTypes.TTWord).Lexeme;
+                    expr = exprGetArg;
+                } else
+                {
+                    var exprGetArg = new ExprGetArgument(previous().Loc, expr, true);
+                    exprGetArg.Identifier = consume(TokenTypes.TTWord).Lexeme;
+                    expr = exprGetArg;
+                }
             }
             return expr;
         }
@@ -424,6 +431,7 @@ namespace Mochj._Parser
                 exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo(dt);
                 return exprLiteral;
             }
+
             throw new Exception($"unexpected token in primary {current()}");
         }
     }

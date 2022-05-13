@@ -70,6 +70,16 @@
 			"LoadFiles": [
 				"lpm.mochj"
 			]
+		},
+		{
+			"VersionRecordPath": "C:\\zzz_WIP\\Frames\\version",
+			"PackageName": "Frames",
+			"IncludedFiles": [
+				"C:\\zzz_WIP\\Frames\\Frames\\bin\\Release\\"
+			],
+			"LoadFiles": [
+				"Frames.dll"
+			]
 		}
 	]
 }

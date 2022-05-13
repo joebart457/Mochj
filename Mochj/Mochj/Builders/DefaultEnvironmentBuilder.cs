@@ -26,7 +26,7 @@ namespace Mochj.Builders
         {
             if (!_force && _default != null) return _default;
             _Storage.Environment environment = new _Storage.Environment(null);
-            _default = environment;
+            if (!_force || _default == null) _default = environment;
 
             _Storage.Environment convertNamespace = new _Storage.Environment(null).WithAlias("Convert");
             _Storage.Environment fnNamespace = new _Storage.Environment(null).WithAlias("Fn");
@@ -35,7 +35,7 @@ namespace Mochj.Builders
             _Storage.Environment nativeListNamespace = new _Storage.Environment(null).WithAlias("NativeList");
             _Storage.Environment settingsNamespace = new _Storage.Environment(null).WithAlias("Settings");
 
-            environment.Define("version", QualifiedObjectBuilder.BuildString("s4.30"));
+            environment.Define("version", QualifiedObjectBuilder.BuildString("s4.50"));
 
             environment.Define("typeof",
                 QualifiedObjectBuilder.BuildFunction(

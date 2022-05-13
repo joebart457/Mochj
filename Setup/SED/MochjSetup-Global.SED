@@ -39,8 +39,10 @@ FILE5="Newtonsoft.Json.xml"
 FILE6="remote.json"
 FILE7="install-global.bat"
 FILE8="dmochj.bat"
+FILE9="Mochj_VSIntegration.vsix"
 [SourceFiles]
 SourceFiles0=C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\
+SourceFiles1=C:\zzz_WIP\new-project-space\Mochj_VSIntegration\Mochj_VSIntegration\bin\Release\
 [SourceFiles0]
 %FILE0%=
 %FILE1%=
@@ -51,3 +53,5 @@ SourceFiles0=C:\zzz_WIP\new-project-space\Mochj\Mochj\bin\Release\
 %FILE6%=
 %FILE7%=
 %FILE8%=
+[SourceFiles1]
+%FILE9%=
