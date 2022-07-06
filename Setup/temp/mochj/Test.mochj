@@ -1,0 +1,280 @@
+
+@namespace Mochj.Test;
+
+@entry Mochj.Test.main;
+
+@set floatVariance 0.001d;
+
+@set testCount 0;
+@set failCount 0;
+@set passCount 0;
+
+@defn main:empty
+
+	//region NativeList
+
+	// Initialize data
+	@set lsNumberType (NativeList.Create 1 2 3);
+	@set lsStringType (NativeList.Create "a" "b" "c");
+	@set lsBooleanType (NativeList.Create true false true);
+	@set lsFnType (NativeList.Create (defn) (defn) (defn));
+	@set lsNestedType 
+		(NativeList.Create
+			(NativeList.Create (NativeList.Create 1234))
+			(NativeList.CreateEmpty list<number>)
+			(NativeList.CreateEmpty list<number>)
+		);
+
+	// Check types
+
+	(expect (typeof lsNumberType) (toBe list<number>))
+	(expect (typeof lsStringType) (toBe list<string>))
+	(expect (typeof lsBooleanType) (toBe list<boolean>))
+	(expect (typeof lsFnType) (toBe list<function>))
+	(expect (typeof lsNestedType) (toBe list<list<list<number>>>))
+	
+	// Check expected values
+	
+	(value (NativeList.Count lsNumberType) (shouldBe 3))
+	(value (NativeList.Count lsStringType) (shouldBe 3))
+	(value (NativeList.Count lsBooleanType) (shouldBe 3))
+	(value (NativeList.Count lsFnType) (shouldBe 3))
+	(value (NativeList.Count lsNestedType) (shouldBe 3))
+	
+	(value (NativeList.At (NativeList.At (NativeList.At lsNestedType 0) 0) 0) (shouldBe 1234))
+	
+	
+	//endregion
+	
+	//region Number
+	
+	// Initialize data
+	
+	@set numberVal-1 156;
+	@set numberVal-2 2.7345f;
+	@set numberVal-3 0.34582d;
+	
+	
+	// Check types
+	
+	(expect (typeof numberVal-1) (toBe number))
+	(expect (typeof numberVal-2) (toBe number))
+	(expect (typeof numberVal-3) (toBe number))
+	
+	// Check expected values
+	
+	(value numberVal-1 (shouldBe 156))
+	(value numberVal-2 (shouldBe 2.7345f))
+	(value numberVal-3 (shouldBe 0.34582d))
+	
+	// Manipulate data
+	
+	@set numberVal-1 (addn numberVal-1 1);
+	@set numberVal-2 (subn numberVal-2 1);
+	@set numberVal-3 (divn numberVal-3 67);
+	@set numberVal-3 (muln numberVal-3 67);
+	
+	// Re-check types
+	
+	(expect (typeof numberVal-1) (toBe number))
+	(expect (typeof numberVal-2) (toBe number))
+	(expect (typeof numberVal-3) (toBe number))
+	
+	// Re-check expected values
+	
+	(value numberVal-1 (shouldBe 157))
+	(value numberVal-2 (shouldBe (within floatVariance (of 1.7345f))))
+	(value numberVal-3 (shouldBe 0.34582d))
+	
+	
+	//endregion
+	
+	//region String
+	
+	// Initialize data
+	
+	@set stringVal-1 "Hello, World!";
+	@set stringVal-2 $Goodbye\ ,Still;
+	
+	
+	// Check types
+	
+	(expect (typeof stringVal-1) (toBe string))
+	(expect (typeof stringVal-2) (toBe string))
+	
+	// Check expected values
+	
+	(value stringVal-1 (shouldBe "Hello, World!"))
+	(value stringVal-2 (shouldBe "Goodbye ,Still"))
+	
+	// Manipulate data
+	
+	@set stringVal-1 (adds stringVal-1 "appended");
+	@set stringVal-2 (adds stringVal-2 "!");
+	
+	// Re-check types
+	
+	(expect (typeof stringVal-1) (toBe string))
+	(expect (typeof stringVal-2) (toBe string))
+	
+	// Re-check expected values
+	
+	(value stringVal-1 (shouldBe "Hello, World!appended"))
+	(value stringVal-2 (shouldBe "Goodbye ,Still!"))	
+	
+	//endregion
+	
+	//region Boolean
+	
+	// Initialize data
+	
+	@set booleanVal-1 true;
+	@set booleanVal-2 false;
+	
+	
+	// Check types
+	
+	(expect (typeof booleanVal-1) (toBe boolean))
+	(expect (typeof booleanVal-2) (toBe boolean))
+	
+	// Check expected values
+	
+	(value booleanVal-1 (shouldBe true))
+	(value booleanVal-2 (shouldBe false))
+	
+	// Manipulate data
+	
+	@set booleanVal-1 (not booleanVal-1);
+	@set booleanVal-2 (or booleanVal-2 (and true (not booleanVal-2)));
+	
+	// Re-check types
+	
+	(expect (typeof booleanVal-1) (toBe boolean))
+	(expect (typeof booleanVal-2) (toBe boolean))
+	
+	// Re-check expected values
+	
+	(value booleanVal-1 (shouldBe false))
+	(value booleanVal-2 (shouldBe true))	
+	
+	//endregion
+
+	//region Nullable Switch Tests
+
+	// Initialize data
+	
+	@set emptyValue (Empty);
+	@set nonEmptyValue 27;
+	
+	
+	// Check types
+	
+	(expect (typeof emptyValue) (toBe empty))
+	(expect (typeof nonEmptyValue) (toBe number))
+	
+	// Check expected values
+	
+	(value emptyValue (shouldBe (Empty)))
+	(value nonEmptyValue (shouldBe 27))
+	
+	// Manipulate data
+	
+	@set nonEmptyValue emptyValue ?? 44;
+	
+	// Re-check types
+	
+	(expect (typeof emptyValue) (toBe empty))
+	(expect (typeof nonEmptyValue) (toBe number))
+	
+	// Re-check expected values
+	
+	(value emptyValue (shouldBe (Empty)))
+	(value nonEmptyValue (shouldBe 44))
+
+	//endregion
+	
+	(summarize)
+;
+
+@defn expect:empty [type1:typeinfo]
+				   [type2:typeinfo]
+				   
+	@set testCount (addn testCount 1);
+	(if (equal type1 type2)
+		(defn 
+			@set passCount (addn passCount 1);
+			(Fn.Return --toFn expect)
+		)
+		(defn 
+			(println (adds "expected " (Convert.ToString type2) " but got " (Convert.ToString type1)))
+			@set failCount (addn failCount 1);
+			(Fn.Return --toFn expect)
+		)
+	)
+;
+
+@defn toBe:typeinfo [type:typeinfo]
+	(Fn.Return type)
+;
+
+@defn value:empty [obj1:any]
+				   [obj2:any]
+				   
+	@set testCount (addn testCount 1);
+	(if (and (equal number (typeof obj1)) (equal (symbol obj2) $Mochj.Test.Range))
+		(defn 
+			(if (and (gte obj1 (Fn.GetArgument obj2 $lowerBound)) (lte obj1 (Fn.GetArgument obj2 $upperBound)))
+				(defn
+					@set passCount (addn passCount 1);
+					(Fn.Return --toFn value)
+				)
+				(defn
+					(println (adds "value should be within (" (Convert.ToString (Fn.GetArgument obj2 $lowerBound)) "," (Convert.ToString (Fn.GetArgument obj2 $upperBound)) ") but was " (Convert.ToString obj1)))
+					@set failCount (addn failCount 1);
+					(Fn.Return --toFn value)
+				)
+			)
+		)
+		(defn)
+	)
+	(if (equal obj1 obj2)
+		(defn 
+			@set passCount (addn passCount 1);
+			(Fn.Return --toFn value)
+		)
+		(defn 
+			(println (adds "value should be " (Convert.ToString obj2) " but was " (Convert.ToString obj1)))
+			@set failCount (addn failCount 1);
+			(Fn.Return --toFn value)
+		)
+	)
+;
+
+@defn shouldBe:any [obj:any]
+	(Fn.Return obj)
+;
+
+@defn of:number [obj:number]
+	(Fn.Return obj)
+;
+
+@defn Range:empty  [lowerBound:number]
+				   [upperBound:number]
+;
+
+@defn within:function [base:number]
+				      [variance:number]
+	(Fn.Return (Fn.Bind Range (subn base variance) (addn base variance)))
+;
+
+@defn summarize:empty
+	(if (gt failCount 0)
+		(defn (println "FAIL----------------------------"))
+		(defn (println "PASSED----------------------------"))
+	)
+	(println (adds (Convert.ToString passCount) " tests passed out of " (Convert.ToString testCount)))
+	(println (adds (Convert.ToString failCount) " tests failed out of " (Convert.ToString testCount)))
+	(if (gt failCount 0)
+		(defn (Process.Exit 1))
+	)
+;

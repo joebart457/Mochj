@@ -35,7 +35,7 @@ namespace Mochj.Builders
             _Storage.Environment nativeListNamespace = new _Storage.Environment(null).WithAlias("NativeList");
             _Storage.Environment settingsNamespace = new _Storage.Environment(null).WithAlias("Settings");
 
-            environment.Define("version", QualifiedObjectBuilder.BuildString("s4.50"));
+            environment.Define("version", QualifiedObjectBuilder.BuildString("s4.53"));
 
             environment.Define("typeof",
                 QualifiedObjectBuilder.BuildFunction(

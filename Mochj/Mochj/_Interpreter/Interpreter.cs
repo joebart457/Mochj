@@ -105,7 +105,7 @@ namespace Mochj._Interpreter
             {
                 resolvedParameters.Add(ResolveParameter(stmtParameter));
             }
-            Models.Fn.Function fn = new UserDefinedFunction(_environment, stmtFnDeclaration, resolvedParameters);
+            Function fn = new UserDefinedFunction(_environment, stmtFnDeclaration, resolvedParameters);
             StorageHelper.Define(_environment, fn.Name, QualifiedObjectBuilder.BuildFunction(fn));
         }
 
@@ -131,6 +131,23 @@ namespace Mochj._Interpreter
         {
             return expression.Visit(this);
         }
+
+        public virtual QualifiedObject Accept(ExprSet exprSet)
+        {
+            if (SymbolResolverHelper.Resolvable(_environment, exprSet.Identifier))
+            {
+                var value = Accept(exprSet.Value);
+                StorageHelper.AssignStrict(_environment, exprSet.Identifier, value);
+                return value;
+            }
+            else
+            {
+                var value = Accept(exprSet.Value);
+                StorageHelper.Define(_environment, exprSet.Identifier, value);
+                return value;
+            }
+        }
+
         public virtual QualifiedObject Accept(ExprCall exprCall)
         {
             QualifiedObject callable = SymbolResolverHelper.Resolve(_environment, exprCall.Symbol);
@@ -167,7 +184,7 @@ namespace Mochj._Interpreter
                 }
                 catch (Exception e)
                 {
-                    throw new Exception($"Error in Call [symbol:{exprCall.Symbol}] location: {exprCall.Loc}\n\t{e.Message}");
+                    throw new Exception($"Error in Call [symbol:{exprCall.Symbol}] location: {exprCall.Loc}\n\t{e.ToString()}");
                 }
             } else
             {
@@ -191,7 +208,7 @@ namespace Mochj._Interpreter
             {
                 resolvedParameters.Add(ResolveParameter(stmtParameter));
             }
-            Models.Fn.Function fn = new UserDefinedFunction(_environment, exprFnDeclaration, resolvedParameters);
+            Function fn = new UserDefinedFunction(_environment, exprFnDeclaration, resolvedParameters);
             return  QualifiedObjectBuilder.BuildFunction(fn);
         }
 

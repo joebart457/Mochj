@@ -114,6 +114,7 @@
     <Compile Include="_Parser\Models\Expressions\ExprIdentifier.cs" />
     <Compile Include="_Parser\Models\Expressions\ExprLiteral.cs" />
     <Compile Include="_Parser\Models\Expressions\ExprNullableSwitch.cs" />
+    <Compile Include="_Parser\Models\Expressions\ExprSet.cs" />
     <Compile Include="_Parser\Models\Statements\Statement.cs" />
     <Compile Include="_Parser\Models\Statements\StmtEntry.cs" />
     <Compile Include="_Parser\Models\Statements\StmtExpression.cs" />

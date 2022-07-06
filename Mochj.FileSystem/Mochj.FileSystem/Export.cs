@@ -37,7 +37,7 @@ namespace ExportItems
                       string pattern = args.Get<string>("pattern");
                       bool recursive = args.Get<bool>("recursive");
 
-                      foreach (string file in Directory.EnumerateFiles(path, pattern, recursive? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+                      foreach (string file in Directory.EnumerateFileSystemEntries(path, pattern, recursive? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
                       {
                           IList<Argument> arguments = new List<Argument>();
                           arguments.Add(new Argument { Position = 0, Value = QualifiedObjectBuilder.BuildString(file) });

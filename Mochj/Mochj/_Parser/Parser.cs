@@ -276,6 +276,9 @@ namespace Mochj._Parser
                 if (match(TokenTypes.Defn))
                 {
                     return parseLiteralFunctionDeclaration();
+                } else if (match(TokenTypes.Set))
+                {
+                    return parseExprSet();
                 }
                 Symbol sym = parseSymbol();
                 ExprCall exprCall = new ExprCall(previous().Loc);
@@ -292,6 +295,16 @@ namespace Mochj._Parser
                 return exprCall;
             }
             return parsePrimary();
+        }
+
+        private Expression parseExprSet()
+        {
+            Location loc = previous().Loc;
+            var expr = new ExprSet(loc);
+            expr.Identifier = consume(TokenTypes.TTWord, "expect identifier in 'set'").Lexeme;
+            expr.Value = parseExpression();
+            consume(TokenTypes.RParen, "expect enclosing ')' in 'set'");
+            return expr;
         }
 
         private ExprArgument parseArgument(int argCount, ref bool wasExplicitlyNamed)

@@ -37,7 +37,7 @@ namespace Mochj.Models
 
         public bool IsEmpty()
         {
-            return _ls.Any();
+            return !_ls.Any();
         }
 
         public List<Ty> Get<Ty>()

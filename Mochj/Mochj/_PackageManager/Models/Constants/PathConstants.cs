@@ -9,7 +9,7 @@ namespace Mochj._PackageManager.Models.Constants
 {
     public static class PathConstants
     {
-        public static readonly string StagePath = $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/stage/";
+        public static readonly string StagePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "stage");
         public static readonly string PackagePath = $"{Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)}/pkg/";
 
     }

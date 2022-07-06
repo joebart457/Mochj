@@ -155,7 +155,11 @@ namespace Mochj.IDE._Interpreter
                     stmtLoad.Path.Message = "Filepath does not exist";
                 }
             }
-            //LoadFileHelper.LoadFile(_environment.Top(), path);
+            try
+            {
+                LoadFileHelper.LoadFile(_environment.Top(), path);
+            }
+            catch (Exception) { }
         }
 
         public void Accept(StmtEntry stmtEntry)

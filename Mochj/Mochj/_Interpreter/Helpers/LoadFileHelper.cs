@@ -79,7 +79,7 @@ namespace Mochj._Interpreter.Helpers
         public static void LoadPackage(_Storage.Environment environment, string packageName, string version)
         {
             RemotePackage pkg = _PackageManager.PackageManager.FindPackage(packageName, version, DefaultPathConstants.ManifestPath);
-            string pkgDir = $"{PathConstants.PackagePath}{packageName}@{version}/";
+            string pkgDir = $"{PathConstants.PackagePath}{packageName}-{version}/";
             foreach(string file in pkg.LoadFiles)
             {
                 LoadFile(environment, Path.Combine(pkgDir, file));

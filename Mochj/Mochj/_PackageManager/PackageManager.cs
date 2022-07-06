@@ -53,9 +53,9 @@ namespace Mochj._PackageManager
             {
                 pkg.Versions.ForEach(version =>
                 {
-                    Log($"\nVerifying package {pkg.Name}@{version.VersionNumber}");
+                    Log($"\nVerifying package {pkg.Name}-{version.VersionNumber}");
 
-                    string stageDestination = $"{PathConstants.StagePath}{pkg.Name}@{version.VersionNumber}.zip";
+                    string stageDestination = $"{PathConstants.StagePath}{pkg.Name}-{version.VersionNumber}.zip";
                     
                     if (!File.Exists(stageDestination)) {
                         Log($"unable to verify package integrity; package not staged");
@@ -70,10 +70,10 @@ namespace Mochj._PackageManager
                             Log($"Package hash: {hash}");
                             if (hash == version.Hash)
                             {
-                                Log($"Package {pkg.Name}@{version.VersionNumber} verification SUCCESS.");
+                                Log($"Package {pkg.Name}-{version.VersionNumber} verification SUCCESS.");
                             } else
                             {
-                                Log($"Package {pkg.Name}@{version.VersionNumber} verification FAIL. Hashes differ. Please redownload and reinstall the package.");
+                                Log($"Package {pkg.Name}-{version.VersionNumber} verification FAIL. Hashes differ. Please redownload and reinstall the package.");
                             }
                         }
                     }
@@ -92,10 +92,10 @@ namespace Mochj._PackageManager
         public static void Use(string moduleName, string version, string manifestPath, _Storage.Environment environment)
         {
             RemotePackage pkg = FindPackage(moduleName, version, manifestPath);
-            string pkgDir = $"{PathConstants.PackagePath}{moduleName}@{pkg.VersionNumber}/";
+            string pkgDir = $"{PathConstants.PackagePath}{moduleName}-{pkg.VersionNumber}/";
             if (!Directory.Exists(pkgDir))
             {
-                Log($"Package {moduleName}@{pkg.VersionNumber} is not installed. Attempting to fetch...");
+                Log($"Package {moduleName}-{pkg.VersionNumber} is not installed. Attempting to fetch...");
                 Fetch(moduleName, version, manifestPath);
             } else
             {
@@ -106,15 +106,15 @@ namespace Mochj._PackageManager
                 Log($"Running loadfile '{file}'");
                 _Interpreter.Helpers.LoadFileHelper.LoadFile(environment, Path.Combine(pkgDir, file));
             }
-            _usedPackages.Add($"{moduleName}@{pkg.VersionNumber}");
+            _usedPackages.Add($"{moduleName}-{pkg.VersionNumber}");
         }
 
         public static void Fetch(string moduleName, string version, string manifestPath, bool force = false)
         {
             RemotePackage remotePackage = FindPackage(moduleName, version, manifestPath);
 
-            string downloadDestination = $"{PathConstants.StagePath}{moduleName}@{remotePackage.VersionNumber}.zip";
-            string unzipDestination = $"{PathConstants.PackagePath}{moduleName}@{remotePackage.VersionNumber}";
+            string downloadDestination = Path.Combine(PathConstants.StagePath, $"{moduleName}-{remotePackage.VersionNumber}.zip");
+            string unzipDestination = Path.Combine(PathConstants.PackagePath, $"{moduleName}-{remotePackage.VersionNumber}");
 
             if (!Directory.Exists(PathConstants.StagePath))
             {
@@ -224,21 +224,21 @@ namespace Mochj._PackageManager
         {
             RemotePackage remotePackage = FindPackage(moduleName, version, manifestPath);
 
-            string downloadDestination = $"{PathConstants.StagePath}{moduleName}@{version}.zip";
-            string unzipDestination = $"{PathConstants.PackagePath}{moduleName}@{version}";
+            string downloadDestination = $"{PathConstants.StagePath}{moduleName}-{version}.zip";
+            string unzipDestination = $"{PathConstants.PackagePath}{moduleName}-{version}";
 
             if (Directory.Exists(unzipDestination))
             {
-                Log($"Deleting {moduleName}@{version} from {unzipDestination}...");
+                Log($"Deleting {moduleName}-{version} from {unzipDestination}...");
                 Directory.Delete(unzipDestination, true);
             } else
             {
-                Log($"Package {moduleName}@{version} not installed, skipping...");
+                Log($"Package {moduleName}-{version} not installed, skipping...");
             }
             
             if (!keepCached)
             {
-                Log($"Attempting to delete {moduleName}@{version} from cache at {downloadDestination}");
+                Log($"Attempting to delete {moduleName}-{version} from cache at {downloadDestination}");
                 if (File.Exists(downloadDestination)) File.Delete(downloadDestination);
             }
         }
@@ -255,14 +255,14 @@ namespace Mochj._PackageManager
                 {
                     vpkg.Versions.ForEach(pkg =>
                     {
-                        string installPath = $"{PathConstants.PackagePath}{vpkg.Name}@{pkg.VersionNumber}";
+                        string installPath = $"{PathConstants.PackagePath}{vpkg.Name}-{pkg.VersionNumber}";
                         if (Directory.Exists(installPath))
                         {
-                            Log($"Deleting {vpkg.Name}@{pkg.VersionNumber} from {installPath}...");
+                            Log($"Deleting {vpkg.Name}-{pkg.VersionNumber} from {installPath}...");
                             Directory.Delete(installPath, true);
                             return;
                         }
-                        Log($"Package {vpkg.Name}@{pkg.VersionNumber} not installed, skipping...");
+                        Log($"Package {vpkg.Name}-{pkg.VersionNumber} not installed, skipping...");
                     });
                 });
             }        
@@ -301,7 +301,7 @@ namespace Mochj._PackageManager
         {
             List<string> pkgNamesAndVersions = new List<string>();
             List<VersionedPackage> items = ListPackages(manifestPath);
-            items.ForEach(vPkg => vPkg.Versions.ForEach(pkg => pkgNamesAndVersions.Add($"{vPkg.Name}@{pkg.VersionNumber}")));
+            items.ForEach(vPkg => vPkg.Versions.ForEach(pkg => pkgNamesAndVersions.Add($"{vPkg.Name}-{pkg.VersionNumber}")));
             return pkgNamesAndVersions;
         }
 
