@@ -73,6 +73,11 @@ namespace Mochj.Builders
             return new QualifiedObject { Object = value, Type = new DataType { TypeId = Enums.DataTypeEnum.Number } };
         }
 
+        public static QualifiedObject BuildDateTime(DateTime value)
+        {
+            return new QualifiedObject { Object = value, Type = new DataType { TypeId = Enums.DataTypeEnum.DateTime } };
+        }
+
         public static QualifiedObject BuildFunction(Models.Fn.Function value)
         {
             return new QualifiedObject { Object = value, Type = new DataType { TypeId = Enums.DataTypeEnum.Fn } };

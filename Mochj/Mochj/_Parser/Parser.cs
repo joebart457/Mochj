@@ -192,6 +192,10 @@ namespace Mochj._Parser
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.TypeInfo };
             }
+            if (match(TokenTypes.DateTime))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.DateTime };
+            }
             if (match(TokenTypes.NativeList))
             {
                 DataType dt = new DataType { TypeId = Enums.DataTypeEnum.NativeList };
@@ -423,6 +427,11 @@ namespace Mochj._Parser
             if (match(TokenTypes.TypeInfo))
             {
                 exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo<DataType>();
+                return exprLiteral;
+            }
+            if (match(TokenTypes.DateTime))
+            {
+                exprLiteral.Value = QualifiedObjectBuilder.BuildTypeInfo<DateTime>();
                 return exprLiteral;
             }
             if (match(TokenTypes.Empty))

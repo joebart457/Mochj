@@ -159,6 +159,41 @@
 	
 	//endregion
 
+	//region DateTime
+	
+	// Initialize data
+	
+	@set dateTimeVal-1 (DateTime.Create 2022 7 8);
+	@set dateTimeVal-2 (DateTime.Create 2022 8 9);
+	
+	
+	// Check types
+	
+	(expect (typeof dateTimeVal-1) (toBe datetime))
+	(expect (typeof dateTimeVal-2) (toBe datetime))
+	
+	// Check expected values
+	
+	(value dateTimeVal-1 (shouldBe (DateTime.Create 2022 7 8)))
+	(value dateTimeVal-2 (shouldBe (DateTime.Create 2022 8 9)))
+	
+	// Manipulate data
+	
+	@set dateTimeVal-1 (DateTime.AddYears dateTimeVal-1 42);
+	@set dateTimeVal-2 (DateTime.AddDays dateTimeVal-2 -1);
+	
+	// Re-check types
+	
+	(expect (typeof dateTimeVal-1) (toBe datetime))
+	(expect (typeof dateTimeVal-2) (toBe datetime))
+	
+	// Re-check expected values
+	
+	(value dateTimeVal-1 (shouldBe (DateTime.Create 2064 7 8)))
+	(value dateTimeVal-2 (shouldBe (DateTime.Create 2022 8 8)))	
+	
+	//endregion
+
 	//region Nullable Switch Tests
 
 	// Initialize data

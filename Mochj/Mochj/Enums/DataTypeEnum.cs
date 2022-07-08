@@ -19,5 +19,6 @@ namespace Mochj.Enums
         NativeList = 9,
         TypeInfo = 10,
         Unknown = 11,
+        DateTime = 12,
     }
 }

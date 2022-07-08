@@ -3,6 +3,15 @@
 		"Name": "Console",
 		"Versions": [
 			{
+				"VersionNumber": "2.5",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/8wrw1q3h8i08wsf/2.5.zip?dl=0",
+				"LocalPath": "",
+				"Hash": "7db106bb5a19cc897e177d2554c7c326",
+				"LoadFiles": [
+					"Mochj.Console.dll"
+				]
+			},
+			{
 				"VersionNumber": "2.49",
 				"RemoteUrl": "https://dl.dropboxusercontent.com/s/g8cc0lpkj6zhhfz/2.49.zip?dl=0",
 				"LocalPath": "",
@@ -124,6 +133,15 @@
 	{
 		"Name": "Debug",
 		"Versions": [
+			{
+				"VersionNumber": "2.5",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/vlyjwur7654odwz/2.5.zip?dl=0",
+				"LocalPath": "",
+				"Hash": "073f755151fdb3b51f6a09854ba06cd1",
+				"LoadFiles": [
+					"Mochj.Debug.dll"
+				]
+			},
 			{
 				"VersionNumber": "2.49",
 				"RemoteUrl": "https://dl.dropboxusercontent.com/s/e8kqp7ncaym3bod/2.49.zip?dl=0",
@@ -247,6 +265,15 @@
 		"Name": "FileSystem",
 		"Versions": [
 			{
+				"VersionNumber": "2.5",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/if23durs4w4lnn4/2.5.zip?dl=0",
+				"LocalPath": "",
+				"Hash": "ff805a451566f3511cee7089d53323be",
+				"LoadFiles": [
+					"Mochj.FileSystem.dll"
+				]
+			},
+			{
 				"VersionNumber": "2.49",
 				"RemoteUrl": "https://dl.dropboxusercontent.com/s/5ik3wdvpkm5npz1/2.49.zip?dl=0",
 				"LocalPath": "",
@@ -369,6 +396,24 @@
 		"Name": "Frames",
 		"Versions": [
 			{
+				"VersionNumber": "1.05",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/nx0hra5la1v7edh/1.05.zip?dl=0",
+				"LocalPath": "",
+				"Hash": "26bd3aaea4d19ac57fc4898e449a5d19",
+				"LoadFiles": [
+					"Frames.dll"
+				]
+			},
+			{
+				"VersionNumber": "1.04",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/dfdy2xxkdvnmvde/1.04.zip?dl=0",
+				"LocalPath": "",
+				"Hash": "9a83485ab15f699288be248b367f3b2e",
+				"LoadFiles": [
+					"Frames.dll"
+				]
+			},
+			{
 				"VersionNumber": "1.03",
 				"RemoteUrl": "https://dl.dropboxusercontent.com/s/3flggt9iuzc33mi/1.03.zip?dl=0",
 				"LocalPath": "",
@@ -391,6 +436,13 @@
 	{
 		"Name": "Mochj",
 		"Versions": [
+			{
+				"VersionNumber": "5",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/qoqpto5sovmew5x/5.zip?dl=0",
+				"LocalPath": "",
+				"Hash": "a67f93976ed0de798bbba67319e99d6a",
+				"LoadFiles": []
+			},
 			{
 				"VersionNumber": "4.14",
 				"RemoteUrl": "https://dl.dropboxusercontent.com/s/oiqzkxmq4pmni46/4.14.zip?dl=0",
@@ -487,6 +539,15 @@
 	{
 		"Name": "String",
 		"Versions": [
+			{
+				"VersionNumber": "2.5",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/39k66a8psdwix60/2.5.zip?dl=0",
+				"LocalPath": "",
+				"Hash": "265c4297ea224a3bcd2b816a1ce631b3",
+				"LoadFiles": [
+					"Mochj.String.dll"
+				]
+			},
 			{
 				"VersionNumber": "2.49",
 				"RemoteUrl": "https://dl.dropboxusercontent.com/s/oc8t0ptjcl3spva/2.49.zip?dl=0",
@@ -609,6 +670,15 @@
 	{
 		"Name": "Web",
 		"Versions": [
+			{
+				"VersionNumber": "2.5",
+				"RemoteUrl": "https://dl.dropboxusercontent.com/s/r16ve61bocu5tlq/2.5.zip?dl=0",
+				"LocalPath": "",
+				"Hash": "29e470f3813bcba552fe8327be070ad7",
+				"LoadFiles": [
+					"Mochj.Web.dll"
+				]
+			},
 			{
 				"VersionNumber": "2.49",
 				"RemoteUrl": "https://dl.dropboxusercontent.com/s/xp0guprunyi800q/2.49.zip?dl=0",

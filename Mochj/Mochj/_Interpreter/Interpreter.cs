@@ -184,7 +184,7 @@ namespace Mochj._Interpreter
                 }
                 catch (Exception e)
                 {
-                    throw new Exception($"Error in Call [symbol:{exprCall.Symbol}] location: {exprCall.Loc}\n\t{e.ToString()}");
+                    throw new Exception($"Error in Call [symbol:{exprCall.Symbol}] location: {exprCall.Loc}\n\t{e.Message}");
                 }
             } else
             {

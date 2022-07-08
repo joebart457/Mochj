@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -33,9 +34,10 @@ namespace Mochj.Builders
             _Storage.Environment pmNamespace = new _Storage.Environment(null).WithAlias("PackageManager");
             _Storage.Environment processNamespace = new _Storage.Environment(null).WithAlias("Process");
             _Storage.Environment nativeListNamespace = new _Storage.Environment(null).WithAlias("NativeList");
+            _Storage.Environment dateTimeNamespace = new _Storage.Environment(null).WithAlias("DateTime");
             _Storage.Environment settingsNamespace = new _Storage.Environment(null).WithAlias("Settings");
 
-            environment.Define("version", QualifiedObjectBuilder.BuildString("s4.53"));
+            environment.Define("version", QualifiedObjectBuilder.BuildString("s5.00"));
 
             environment.Define("typeof",
                 QualifiedObjectBuilder.BuildFunction(
@@ -1316,6 +1318,318 @@ namespace Mochj.Builders
 
             #endregion
 
+            #region DateTime
+
+            dateTimeNamespace.Define("Create",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("Create")
+                    .Action((Args args) =>
+                    {
+                        int year = args.Get<int>("year");
+                        int month = args.Get<int>("month");
+                        int day = args.Get<int>("day");
+                        int hour = args.Get<int>("hour");
+                        int minute = args.Get<int>("minute");
+                        int second = args.Get<int>("second");
+                        int millisecond = args.Get<int>("millisecond");
+
+                        DateTime val = new DateTime(year, month, day, hour, minute, second, millisecond);
+
+                        return QualifiedObjectBuilder.BuildDateTime(val);
+                    })
+                    .RegisterParameter<int>("year")
+                    .RegisterParameter<int>("month")
+                    .RegisterParameter<int>("day")
+                    .RegisterParameter<int>("hour", QualifiedObjectBuilder.BuildNumber(0))
+                    .RegisterParameter<int>("minute", QualifiedObjectBuilder.BuildNumber(0))
+                    .RegisterParameter<int>("second", QualifiedObjectBuilder.BuildNumber(0))
+                    .RegisterParameter<int>("millisecond", QualifiedObjectBuilder.BuildNumber(0))
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("FromTicks",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("FromTicks")
+                    .Action((Args args) =>
+                    {
+                        long ticks = args.Get<long>("ticks");
+
+                        DateTime val = new DateTime(ticks);
+
+                        return QualifiedObjectBuilder.BuildDateTime(val);
+                    })
+                    .RegisterParameter<int>("ticks")
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("Parse",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("Parse")
+                    .Action((Args args) =>
+                    {
+                        string str = args.Get<string>(0);
+                        string format = args.Get<string>(1);
+
+                        DateTime val = string.IsNullOrEmpty(format)? DateTime.Parse(str) : DateTime.ParseExact(str, format, CultureInfo.InvariantCulture);
+
+                        return QualifiedObjectBuilder.BuildDateTime(val);
+                    })
+                    .RegisterParameter<string>("str")
+                    .RegisterParameter<string>("format", QualifiedObjectBuilder.BuildString(string.Empty))
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("Ticks",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("ToTicks")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+
+                        return QualifiedObjectBuilder.BuildNumber(source.Ticks);
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .Returns<int>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("Year",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("Year")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+
+                        return QualifiedObjectBuilder.BuildNumber(source.Year);
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .Returns<int>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("Hour",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("Hour")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+
+                        return QualifiedObjectBuilder.BuildNumber(source.Hour);
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .Returns<int>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("Minute",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("Minute")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+
+                        return QualifiedObjectBuilder.BuildNumber(source.Minute);
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .Returns<int>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("Second",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("Second")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+
+                        return QualifiedObjectBuilder.BuildNumber(source.Second);
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .Returns<int>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("Millisecond",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("Millisecond")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+
+                        return QualifiedObjectBuilder.BuildNumber(source.Millisecond);
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .Returns<int>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("AddTicks",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("AddTicks")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+                        int amount = args.Get<int>(1);
+
+                        return QualifiedObjectBuilder.BuildDateTime(source.AddTicks(amount));
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .RegisterParameter<int>("amount")
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("AddYears",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("AddYears")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+                        int amount = args.Get<int>(1);
+
+                        return QualifiedObjectBuilder.BuildDateTime(source.AddYears(amount));
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .RegisterParameter<int>("amount")
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("AddMonths",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("AddMonths")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+                        int amount = args.Get<int>(1);
+
+                        return QualifiedObjectBuilder.BuildDateTime(source.AddMonths(amount));
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .RegisterParameter<int>("amount")
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("AddDays",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("AddDays")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+                        int amount = args.Get<int>(1);
+
+                        return QualifiedObjectBuilder.BuildDateTime(source.AddDays(amount));
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .RegisterParameter<int>("amount")
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("AddHours",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("AddHours")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+                        int amount = args.Get<int>(1);
+
+                        return QualifiedObjectBuilder.BuildDateTime(source.AddHours(amount));
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .RegisterParameter<int>("amount")
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("AddMinutes",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("AddMinutes")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+                        int amount = args.Get<int>(1);
+
+                        return QualifiedObjectBuilder.BuildDateTime(source.AddMinutes(amount));
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .RegisterParameter<int>("amount")
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("AddSeconds",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("AddSeconds")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+                        int amount = args.Get<int>(1);
+
+                        return QualifiedObjectBuilder.BuildDateTime(source.AddSeconds(amount));
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .RegisterParameter<int>("amount")
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("AddMilliseconds",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("AddMilliseconds")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+                        int amount = args.Get<int>(1);
+
+                        return QualifiedObjectBuilder.BuildDateTime(source.AddMilliseconds(amount));
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .RegisterParameter<int>("amount")
+                    .Returns<DateTime>()
+                    .Build()
+               ));
+
+            dateTimeNamespace.Define("ToString",
+                QualifiedObjectBuilder.BuildFunction(
+                    new NativeFunction()
+                    .Named("ToString")
+                    .Action((Args args) =>
+                    {
+                        DateTime source = args.Get<DateTime>(0);
+                        string format = args.Get<string>(1);
+
+                        return QualifiedObjectBuilder.BuildString(string.IsNullOrEmpty(format)? source.ToString() : source.ToString(format));
+                    })
+                    .RegisterParameter<DateTime>("source")
+                    .RegisterParameter<string>("format", QualifiedObjectBuilder.BuildString(string.Empty))
+                    .Returns<string>()
+                    .Build()
+               ));
+
+            #endregion
+
             #region Settings
             settingsNamespace.Define("GetExeHome",
                 QualifiedObjectBuilder.BuildFunction(
@@ -1400,6 +1714,7 @@ namespace Mochj.Builders
             environment.Define("PackageManager", QualifiedObjectBuilder.BuildNamespace(pmNamespace));
             environment.Define("Process", QualifiedObjectBuilder.BuildNamespace(processNamespace));
             environment.Define("NativeList", QualifiedObjectBuilder.BuildNamespace(nativeListNamespace));
+            environment.Define("DateTime", QualifiedObjectBuilder.BuildNamespace(dateTimeNamespace));
             environment.Define("Settings", QualifiedObjectBuilder.BuildNamespace(settingsNamespace));
 
             return environment;

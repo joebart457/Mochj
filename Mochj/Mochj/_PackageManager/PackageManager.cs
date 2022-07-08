@@ -101,11 +101,19 @@ namespace Mochj._PackageManager
             {
                 Log($"Package found at {pkgDir}");
             }
-            foreach (string file in pkg.LoadFiles)
+            string pkgDescriptor = $"{moduleName}-{pkg.VersionNumber}";
+            if (_usedPackages.Contains(pkgDescriptor))
             {
-                Log($"Running loadfile '{file}'");
-                _Interpreter.Helpers.LoadFileHelper.LoadFile(environment, Path.Combine(pkgDir, file));
+                Log($"Package: {pkgDescriptor} is already used. Skipping loading.");
+            } else
+            {
+                foreach (string file in pkg.LoadFiles)
+                {
+                    Log($"Running loadfile '{file}'");
+                    _Interpreter.Helpers.LoadFileHelper.LoadFile(environment, Path.Combine(pkgDir, file));
+                }
             }
+            
             _usedPackages.Add($"{moduleName}-{pkg.VersionNumber}");
         }
 

@@ -170,7 +170,7 @@ namespace ExportItems
                   .Action((Args args) =>
                   {
                       string source = args.Get<string>(0);
-
+                      
                       return QualifiedObjectBuilder.BuildString(source.ToUpper());
                   })
                   .RegisterParameter<string>("source")

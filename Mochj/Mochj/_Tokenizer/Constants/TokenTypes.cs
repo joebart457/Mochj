@@ -40,6 +40,7 @@ namespace Mochj._Tokenizer.Constants
         public const string Empty = "Empty";
         public const string Any = "Any";
         public const string TypeInfo = "TypeInfo";
+        public const string DateTime = "DateTime";
 
         // Custom types - single character symbols
         public const string SemiColon = "SemiColon";

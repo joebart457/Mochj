@@ -31,6 +31,10 @@ namespace Mochj.Services
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.Boolean };
             }
+            if (typeof(Ty) == typeof(DateTime))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.DateTime };
+            }
             if (typeof(Ty) == typeof(Models.Fn.Function))
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.Fn };
@@ -83,6 +87,10 @@ namespace Mochj.Services
             if (ty == typeof(bool))
             {
                 return new DataType { TypeId = Enums.DataTypeEnum.Boolean };
+            }
+            if (ty == typeof(DateTime))
+            {
+                return new DataType { TypeId = Enums.DataTypeEnum.DateTime };
             }
             if (ty == typeof(Models.Fn.Function))
             {

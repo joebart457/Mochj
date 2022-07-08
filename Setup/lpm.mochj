@@ -1,0 +1,2 @@
+(PackageManager.ShowOutput)
+(PackageManager.AddPackage "LPM" 'C:\zzz_WIP\new-project-space\Setup\LocalPackages\LPM\1.01.zip' (NativeList.Create 'C:\zzz_WIP\new-project-space\Setup\LPM\lpm.mochj') "" "1.01")

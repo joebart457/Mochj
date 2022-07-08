@@ -41,6 +41,7 @@ namespace Mochj.Builders
             rules.Add(new TokenizerRule(TokenTypes.Empty, "empty"));
             rules.Add(new TokenizerRule(TokenTypes.Any, "any"));
             rules.Add(new TokenizerRule(TokenTypes.TypeInfo, "typeinfo"));
+            rules.Add(new TokenizerRule(TokenTypes.DateTime, "datetime"));
 
             rules.Add(new TokenizerRule(TokenTypes.Set, "set"));
             rules.Add(new TokenizerRule(TokenTypes.Defn, "defn"));
